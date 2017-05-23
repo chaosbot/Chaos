@@ -55,10 +55,6 @@ weighted total of {total:.1f} and a threshold of {threshold:.1f}.
         else:
             raise
 
-    # chaosbot rewards merge owners with a follow
-    pr_owner = pr["user"]["login"]
-    follow_user(api, pr_owner)
-
 def label_pr(api, urn, pr, labels):
     """ apply an issue label to a pr """
     path = "/repos/{urn}/issues/{pr}/labels".format(urn=urn, pr=pr)
