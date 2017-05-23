@@ -9,6 +9,10 @@ direction of a software project is turned over to the open source community.
 
 ![There was clearly a kitty missing.](http://thecatapi.com/api/images/get?format=src&type=png&size=small)
 
+
+[![Pinkie Pie Approval Status](http://dosowisko.net/pinkiepieapproved.svg)](https://www.youtube.com/watch?v=FULyN9Ai-A0)
+
+
 ## How it works
 
 1. Fork the code and make any changes you wish.
@@ -69,8 +73,7 @@ and the server must be restarted manually.
 * **It has root access on its server.**  This means you are able to install
 packages and perform other privileged operations, provided you can initiate those
 changes through a pull request.
-* **Its domain name is chaosthebot.com,** but nothing is listening on
-any port...yet.
+* **Its domain name is chaosthebot.com,**, the netdata HTTP server is listening on port 19999
 * **It's hosted on a low-tier machine in the cloud.**  This means there aren't a
 ton of resources available to it: 2TB network transfer, 30GB storage, 2GB memory,
 1 cpu core.  Try not to deliberately DoS it.
