@@ -24,4 +24,4 @@ def showChaosStats():
 if os.getenv("CHAOS_STAT_RUN", "TRUE") == "TRUE":
     cur_file_path = inspect.getframeinfo(inspect.currentframe()).filename
     print(cur_file_path)
-    os.system("FLASK_APP=" + cur_file_path + " CHAOS_STAT_RUN=FALSE python -m flask run")
+    os.system("FLASK_APP=" + cur_file_path + " CHAOS_STAT_RUN=FALSE python -m flask run --host=0.0.0.0")
