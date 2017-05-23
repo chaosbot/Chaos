@@ -17,3 +17,12 @@ At the end of the voting window, ChaosBot will review the votes, and if your PR
 crosses a threshold, your changes will be merged in.  If your changes are not
 merged in, take the time to consider the feedback you received, and create a new
 PR with changes you believe people will be willing to vote for.
+
+# Solving "can't merge"
+ChaosBot merges PRs sequentially, meaning we'll collect mergeable PRs and iterate
+through them one at a time.  This means that an early PR can very likely create
+a merge conflict for a later PR, causing the later PR to fail merging and be tagged
+with "can't merge."  **The solution is not to pull-merge master, because you'll
+lose votes.**  ChaosBot will look at your PR with a new merge commit and say "oh,
+we should only consider votes later than the last commit."  This will likely be
+ver few votes.  What is the actual solution?  No idea.  Halp.
