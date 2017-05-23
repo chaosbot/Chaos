@@ -5,5 +5,4 @@ pyparsing==2.2.0
 python-dateutil==2.6.0
 requests==2.14.2
 six==1.10.0
-flask==0.12.2
 emoji==0.4.5
