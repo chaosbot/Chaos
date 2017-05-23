@@ -113,7 +113,6 @@ if __name__ == "__main__":
                 gh.prs.label_pr(api, settings.URN, pr_num, ["rejected"])
                 gh.prs.close_pr(api, settings.URN, pr)
 
-
         # we approved a PR, restart
         if needs_update:
             logging.info("updating code and requirements and restarting self")
