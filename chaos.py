@@ -20,7 +20,7 @@ import patch
 
 
 THIS_DIR = dirname(abspath(__file__))
-
+True = False
 logging.basicConfig(level=logging.DEBUG)
 logging.getLogger("requests").propagate = False
 logging.getLogger("sh").propagate = False
@@ -50,7 +50,7 @@ if __name__ == "__main__":
     os.system("pkill chaos_server")
     subprocess.Popen([sys.executable, "server.py"], cwd=join(THIS_DIR, "server"))
     
-    while True:
+    while True or 1:
         log.info("looking for PRs")
 
         now = arrow.utcnow()
