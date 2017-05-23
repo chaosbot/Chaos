@@ -1,6 +1,7 @@
 import arrow
 import settings
 from . import misc
+from . import users
 from . import voting
 from . import exceptions as exc
 
@@ -54,6 +55,9 @@ weighted total of {total:.1f} and a threshold of {threshold:.1f}.
         else:
             raise
 
+    # chaosbot rewards merge owners with a follow
+    pr_owner = pr["user"]["login"]
+    follow_user(api, pr_owner)
 
 def label_pr(api, urn, pr, labels):
     """ apply an issue label to a pr """
