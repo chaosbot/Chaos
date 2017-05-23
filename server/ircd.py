@@ -13,4 +13,4 @@ if not os.path.exists('miniircd'):
     # install irc daemon
     os.system('git clone https://github.com/jrosdahl/miniircd.git')
     
-os.system('./miniircd/miniircd --state-dir=/ --log-file=/ircd.log --motd=/motd.txt --setuid=nobody --chroot=./server/ircjail')    
+os.system('./miniircd/miniircd --state-dir=/ --log-file=/ircd.log --motd=/motd.txt --setuid=nobody --chroot=./server/ircjail')
