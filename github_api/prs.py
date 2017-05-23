@@ -13,26 +13,15 @@ def merge_pr(api, urn, pr, votes, total, threshold):
 
     pr_num = pr["number"]
     path = "/repos/{urn}/pulls/{pr}/merge".format(urn=urn, pr=pr_num)
-
-    record = voting.friendly_voting_record(votes)
-    if record:
-        record = "Vote record:\n" + record
-
-    vfor = sum(v for v in votes.values() if v > 0)
-    vagainst = abs(sum(v for v in votes.values() if v < 0))
-
+    
     pr_url = "https://github.com/{urn}/pull/{pr}".format(urn=urn, pr=pr_num)
 
     title = "merging PR #%d" % pr_num
     desc = """
 {pr_url}
 
-:ok_woman: PR passed with a vote of {vfor} for and {vagainst} against, with a 
-weighted total of {total:.1f} and a threshold of {threshold:.1f}.
-
-{record}
-""".strip().format(vfor=vfor, vagainst=vagainst, total=total,
-        threshold=threshold, record=record, pr_url=pr_url)
+:ok_woman: PR passed!
+"""
 
     data = {
         "commit_title": title,
