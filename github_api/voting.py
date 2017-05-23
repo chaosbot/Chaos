@@ -1,6 +1,7 @@
 from math import log
 import arrow
 import re
+from emoji import demojize
 
 from . import prs
 from . import comments
@@ -153,21 +154,29 @@ def parse_review_for_vote(state):
 
 def parse_reaction_for_vote(body):
     """ turns a comment reaction into a vote, if possible """
-    try:
-        vote = int(body)
-    except ValueError:
-        vote = 0
-    return vote
+    return parse_emojis_for_vote(":{emoji}:".format(emoji=body))
 
 
 def parse_comment_for_vote(body):
     """ turns a comment into a vote, if possible """
-    vote = 0
-    m = re.search(":((?:\+|\-)1):", body, re.M)
-    if m:
-        vote = int(m.group(1))
-    return vote
+    return parse_emojis_for_vote(demojize(body))
 
+def parse_emojis_for_vote(body):
+    """ searches text for matching emojis """
+    for positive_emoji in prepare_emojis_list('positive'):
+        if positive_emoji in body:
+            return 1
+    for negative_emoji in prepare_emojis_list('negative'):
+        if negative_emoji in body:
+            return -1
+    return 0
+
+def prepare_emojis_list(type):
+    fname = "emojis.{type}".format(type=type)
+    with open(fname) as f:
+        content = f.readlines()
+    content = [x.strip() for x in content]
+    return list(filter(None, content))
 
 def friendly_voting_record(votes):
     """ returns a sorted list (a string list, not datatype list) of voters and
