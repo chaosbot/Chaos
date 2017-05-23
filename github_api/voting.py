@@ -185,15 +185,8 @@ def friendly_voting_record(votes):
 
 
 def get_voting_window(now):
-    """ returns the current voting window for new PRs.  currently, this biases
-    a smaller window for waking hours around the timezone the chaosbot server is
-    located in (US West Coast) """
-    local = now.to(settings.TIMEZONE)
-    lhour = local.hour
+    """ returns the current voting window for new PRs. 24 hours by default
+    to give the same treatment to users in all timezones"""
 
-    hours = 2
-    if lhour <= 10 or lhour >= 22:
-        hours = 3
-
-    seconds = hours * 60 * 60 * settings.VOTE_WINDOW_SCALE
+    seconds = 24 * 60 * 60 * settings.VOTE_WINDOW_SCALE
     return seconds
