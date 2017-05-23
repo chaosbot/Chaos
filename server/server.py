@@ -27,9 +27,4 @@ set_proc_name("chaos_server")
 random.seed()
 
 #start server on port 80
-PORT = 80
-#Handler = http.server.SimpleHTTPRequestHandler
-#httpd = socketserver.TCPServer(("", PORT), Handler)
-#httpd.serve_forever()
-
-app.run(host="0.0.0.0", port=8080, threaded=False)
+app.run(host="0.0.0.0", port=80, threaded=False)
