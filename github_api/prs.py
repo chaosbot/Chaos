@@ -25,7 +25,7 @@ def merge_pr(api, urn, pr, votes, total, threshold):
     desc = """
 {pr_url}
 
-PR passed with a vote of {vfor} for and {vagainst} against, with a 
+:ok_woman: PR passed with a vote of {vfor} for and {vagainst} against, with a 
 weighted total of {total:.1f} and a threshold of {threshold:.1f}.
 
 {record}

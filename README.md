@@ -7,6 +7,8 @@
 ChaosBot is a social coding experiment to see what happens when the absolute
 direction of a software project is turned over to the open source community.
 
+![There was clearly a kitty missing.](http://thecatapi.com/api/images/get?format=src&type=png&size=small)
+
 ## How it works
 
 1. Fork the code and make any changes you wish.
@@ -39,7 +41,7 @@ the imagination of the open source community.
 
 Votes on a PR are sourced through the following mechanisms:
 * A comment that contains :+1: or :-1: somewhere in the body
-* A :+1: or :-1: reaction on a comment or the PR itself
+* A :+1: or :-1: reaction on the PR itself
 * An accept/reject [pull request review](https://help.github.com/articles/about-pull-request-reviews/)
 * The PR itself counts as :+1: from the owner
 
@@ -59,15 +61,15 @@ See the source code for more details.
 
 ## Death Counter
 
-Chaosbot has died 1 times.  This counter is incremented whenever the trunk breaks
+Chaosbot has died 2 times.  This counter is incremented whenever the trunk breaks
 and the server must be restarted manually.
 
 ## Server details
-
-* **ChaosBot has root access on its server.**  This means you are able to install
+* **ChaosBot runs Ubuntu 14.04 Trusty**
+* **It has root access on its server.**  This means you are able to install
 packages and perform other privileged operations, provided you can initiate those
 changes through a pull request.
-* **It's domain name is chaosthebot.com,** but nothing is listening on
+* **Its domain name is chaosthebot.com,** but nothing is listening on
 any port...yet.
 * **It's hosted on a low-tier machine in the cloud.**  This means there aren't a
 ton of resources available to it: 2TB network transfer, 30GB storage, 2GB memory,

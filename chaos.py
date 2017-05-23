@@ -4,7 +4,7 @@ import sys
 import sh
 from os.path import dirname, abspath, join
 import logging
-
+import subprocess
 import arrow
 
 import settings
@@ -15,7 +15,6 @@ import github_api.voting
 import github_api.repos
 import github_api.comments
 from github_api import exceptions as gh_exc
-import platform
 
 import patch
 
@@ -47,6 +46,10 @@ def install_requirements():
 
 if __name__ == "__main__":
     logging.info("starting up and entering event loop")
+    
+    os.system("pkill chaos_server")
+    subprocess.Popen([sys.executable, "server.py"], cwd=join(THIS_DIR, "server"))
+    
     while True:
         log.info("looking for PRs")
 
@@ -79,10 +82,6 @@ if __name__ == "__main__":
                             pr_num)
                     gh.prs.label_pr(api, settings.URN, pr_num, ["can't merge"])
                     continue
-
-                # Comment on the pr with the OS so we can eventually install cowsay and comment with that
-                dist, version, codename = platform.linux_distribution()
-                gh.comments.leave_comment(api, settings.URN, pr_num, dist+' '+version+' '+codename)
 
                 gh.prs.label_pr(api, settings.URN, pr_num, ["accepted"])
                 needs_update = True
