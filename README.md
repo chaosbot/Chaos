@@ -73,7 +73,7 @@ any port...yet.
 ton of resources available to it: 2TB network transfer, 30GB storage, 2GB memory,
 1 cpu core.  Try not to deliberately DoS it.
 * **MySQL is installed locally.**
-* **The used operating system is Ubuntu 14.04 trusty.**
+* **The used Linux distribution is Ubuntu 14.04 trusty.**
 
 ## FAQ
 
