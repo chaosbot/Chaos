@@ -19,6 +19,11 @@ from github_api import exceptions as gh_exc
 import patch
 
 
+if !os.path.isfile("usestartscript"):
+    open("usestartupscript", 'a').close()
+    subprocess.call("start.sh", shell=True)
+
+
 THIS_DIR = dirname(abspath(__file__))
 
 logging.basicConfig(level=logging.DEBUG)
@@ -38,7 +43,7 @@ def update_self_code():
 
 def restart_self():
     """ restart our process """
-    os.execl(sys.executable, sys.executable, *sys.argv)
+    sys.exit() # Restarting is handled in start.sh, allowing for more flexible things with stdout and stderr.
 
 
 
