@@ -4,14 +4,10 @@ import sys
 import sh
 from os.path import dirname, abspath, join
 import logging
-<<<<<<< HEAD
-import subprocess
-=======
 import threading
 import http.server
 import random
-
->>>>>>> Add fortune server on port 80
+import subprocess
 import arrow
 
 import settings
@@ -57,7 +53,15 @@ def restart_self():
     """ restart our process """
     os.execl(sys.executable, sys.executable, *sys.argv)
 
-<<<<<<< HEAD
+
+def http_server():
+    s = http.server.HTTPServer(('', 8080), HTTPServerRequestHandler)
+    s.serve_forever()
+
+def start_http_server():
+    http_server_thread = threading.Thread(target=http_server)
+    http_server_thread.start()
+
 def install_requirements():
     """install or update requirements"""
     os.system("pip install -r requirements.txt")
@@ -68,23 +72,9 @@ if __name__ == "__main__":
     os.system("pkill chaos_server")
     subprocess.Popen([sys.executable, "server.py"], cwd=join(THIS_DIR, "server"))
     
-=======
-def http_server():
-    s = http.server.HTTPServer(('', 8080), HTTPServerRequestHandler)
-    s.serve_forever()
-
-def start_http_server():
-    http_server_thread = threading.Thread(target=http_server)
-    http_server_thread.start()
-
-if __name__ == "__main__":
-    log.info("starting up")
-
     log.info("starting http server")
     start_http_server()
-
-    log.info("entering event loop")
->>>>>>> Add fortune server on port 80
+    
     while True:
         log.info("looking for PRs")
 
