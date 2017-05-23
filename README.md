@@ -43,7 +43,7 @@ Votes on a PR are sourced through the following mechanisms:
 * A comment that contains :+1: or :-1: somewhere in the body
 * A :+1: or :-1: reaction on the PR itself
 * An accept/reject [pull request review](https://help.github.com/articles/about-pull-request-reviews/)
-* The PR itself counts as :+1: from the owner
+* The PR itself counts as :+1: from the owner, unless they later add a :-1: reaction/comment.
 
 ### Weights and thresholds
 
