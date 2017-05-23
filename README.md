@@ -45,7 +45,7 @@ Votes on a PR are sourced through the following mechanisms:
 * An accept/reject [pull request review](https://help.github.com/articles/about-pull-request-reviews/)
 * The PR itself counts as :+1: from the owner
 
-### Weights and thresholds
+### Voting thresholds
 
 Vote thresholds must also be met for a PR to be approved.  This is determined as
 a percentage of the number of watchers on the repository.  **However, it is more
