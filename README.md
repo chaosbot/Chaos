@@ -67,7 +67,7 @@ and the server must be restarted manually.
 * **ChaosBot has root access on its server.**  This means you are able to install
 packages and perform other privileged operations, provided you can initiate those
 changes through a pull request.
-* **It's domain name is chaosthebot.com,** but nothing is listening on
+* **It's domain name is (http://chaosthebot.com)[http://chaosthebot.com],** but nothing is listening on
 any port...yet.
 * **It's hosted on a low-tier machine in the cloud.**  This means there aren't a
 ton of resources available to it: 2TB network transfer, 30GB storage, 2GB memory,
