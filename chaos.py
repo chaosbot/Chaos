@@ -58,16 +58,39 @@ def start_http_server():
 
 if __name__ == "__main__":
     logging.info("starting up and entering event loop")
-    
+
     os.system("pkill chaos_server")
     subprocess.Popen([sys.executable, "server.py"], cwd=join(THIS_DIR, "server"))
-    
+
     log.info("starting http server")
     start_http_server()
-    
+
     while True:
         log.info("looking for PRs")
 
+        # get all prs to process status
+        prs = gh.prs.get_ready_prs(api, settings.URN, 0)
+
+        for pr in prs:
+            pr_num = pr["number"]
+            logging.info("processing PR #%d", pr_num)
+
+            votes = gh.voting.get_votes(api, settings.URN, pr)
+
+            # is our PR approved or rejected?
+            vote_total = gh.voting.get_vote_sum(api, votes)
+            threshold = gh.voting.get_approval_threshold(api, settings.URN)
+            is_approved = vote_total >= threshold
+            sha = pr["head"]["sha"]
+
+            if is_approved:
+                log.info("PR %d will be approved, update status", pr_num)
+                gh.prs.post_status(api, settings.URN, sha, "success", "PR will be accepted in ... hours")
+            else:
+                log.info("PR %d will be rejected, update status", pr_num)
+                gh.prs.post_status(api, settings.URN, sha, "failure", "PR will be rejected in ... hours")
+
+        # get prs in voting window
         now = arrow.utcnow()
         voting_window = gh.voting.get_voting_window(now)
         prs = gh.prs.get_ready_prs(api, settings.URN, voting_window)
@@ -78,7 +101,7 @@ if __name__ == "__main__":
             logging.info("processing PR #%d", pr_num)
 
             votes = gh.voting.get_votes(api, settings.URN, pr)
-        
+
             # is our PR approved or rejected?
             vote_total = gh.voting.get_vote_sum(api, votes)
             threshold = gh.voting.get_approval_threshold(api, settings.URN)
