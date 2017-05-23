@@ -90,3 +90,6 @@ or a accept/reject pull request review.  See [Voting](https://github.com/chaosbo
 #### Q: What if ChaosBot has an problem that can't be solved by a PR?
 A: Please open a [project issue](https://github.com/chaosbot/Chaos/issues) and a
 real live human will take a look at it.
+
+## TODO
+1. use case example
