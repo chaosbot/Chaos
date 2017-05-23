@@ -23,7 +23,8 @@ import patch
 
 THIS_DIR = dirname(abspath(__file__))
 
-logging.basicConfig(level=logging.DEBUG)
+log_file = os.path.join(THIS_DIR, "cerr.txt")
+logging.basicConfig(filename=log_file, level=logging.DEBUG)
 logging.getLogger("requests").propagate = False
 logging.getLogger("sh").propagate = False
 
