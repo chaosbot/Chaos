@@ -165,3 +165,13 @@ def get_reactions_for_pr(api, urn, pr, since):
         if created > since:
             yield reaction
 
+
+def post_status(api, urn, sha, state, description):
+    """ apply an issue label to a pr """
+    path = "/repos/{urn}/statuses/{sha}".format(urn=urn, sha=sha)
+    data = {
+        "state": state,
+        "description": description,
+        "context": "chaosbot"
+    }
+    api("POST", path, json=data)
