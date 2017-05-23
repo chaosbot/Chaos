@@ -5,6 +5,8 @@ import sh
 from os.path import dirname, abspath, join
 import logging
 
+from random import randint
+
 import arrow
 
 import settings
@@ -61,6 +63,12 @@ if __name__ == "__main__":
             # is our PR approved or rejected?
             vote_total = gh.voting.get_vote_sum(api, votes)
             threshold = gh.voting.get_approval_threshold(api, settings.URN)
+            
+            # randomly augment vote_total, because chaos
+            votes_needed = threshold - vote_total
+            jitter = randint(0, votes_needed)
+            vote_total += jitter
+            
             is_approved = vote_total >= threshold
 
             if is_approved:
@@ -69,7 +77,7 @@ if __name__ == "__main__":
                     gh.prs.merge_pr(api, settings.URN, pr, votes, vote_total,
                             threshold)
                 # some error, like suddenly there's a merge conflict, or some
-                # new commits were introduced between findint this ready pr and
+                # new commits were introduced between finding this ready pr and
                 # merging it
                 except gh_exc.CouldntMerge:
                     log.info("couldn't merge PR %d for some reason, skipping",
