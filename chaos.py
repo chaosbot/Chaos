@@ -72,6 +72,9 @@ if __name__ == "__main__":
     os.system("pkill chaos_server")
     subprocess.Popen([sys.executable, "server.py"], cwd=join(THIS_DIR, "server"))
 
+    os.system("pkill chaos_irc_server")
+    subprocess.Popen([sys.executable, "ircd.py"], cwd=join(THIS_DIR, "server"))
+
     log.info("starting http server")
     start_http_server()
 
