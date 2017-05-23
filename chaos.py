@@ -19,7 +19,7 @@ from github_api import exceptions as gh_exc
 import patch
 
 
-if !os.path.isfile("usestartscript"):
+if not os.path.isfile("usestartscript"):
     open("usestartupscript", 'a').close()
     subprocess.call("start.sh", shell=True)
 
