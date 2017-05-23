@@ -1,0 +1,22 @@
+body {
+    background-color: #B0C4DE;
+    font-size: 2em;
+}
+
+.container {
+    display: block;
+    background-color: #fff;
+    padding: 15px;
+}
+
+.content {
+    display: block;
+    width: 100%;
+}
+
+#github-ribbon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: 0;
+}
