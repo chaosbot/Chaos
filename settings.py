@@ -45,3 +45,5 @@ MEMOIZE_CACHE_DIRNAME = "api_cache"
 
 # used for calculating how long our voting window is
 TIMEZONE = "US/Pacific"
+
+BANNED = []
