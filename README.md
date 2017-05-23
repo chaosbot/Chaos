@@ -61,10 +61,11 @@ See the source code for more details.
 
 ## Death Counter
 
-Chaosbot has died 2 times.  This counter is incremented whenever the trunk breaks
+Chaosbot has died 3 times.  This counter is incremented whenever the trunk breaks
 and the server must be restarted manually.
 
 ## Server details
+
 * **ChaosBot runs Ubuntu 14.04 Trusty**
 * **It has root access on its server.**  This means you are able to install
 packages and perform other privileged operations, provided you can initiate those
@@ -84,8 +85,8 @@ will manually be restarted and the death counter will be incremented.
 
 #### Q: What is "general approval" from the community?
 A: Users must vote on your PR, through either a :+1: or :-1: comment or reaction,
-or a accept/reject pull request review.  See [Voting](https://github.com/chaosbot/Chaos/blob/master/README.md#voting)
+or a accept/reject pull request review.  See [Voting](https://github.com/chaosbot/Chaos/blob/master/README.md#voting).
 
-#### Q: What if ChaosBot has an problem that can't be solved by a PR?
+#### Q: What if ChaosBot has a problem that can't be solved by a PR?
 A: Please open a [project issue](https://github.com/chaosbot/Chaos/issues) and a
 real live human will take a look at it.
