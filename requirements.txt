@@ -4,6 +4,5 @@ packaging==16.8
 pyparsing==2.2.0
 python-dateutil==2.6.0
 requests==2.14.2
-sh==1.12.13
 six==1.10.0
 emoji==0.4.5
