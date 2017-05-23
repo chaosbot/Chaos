@@ -1,3 +1,6 @@
+from os.path import exists, abspath, dirname, join
+THIS_DIR = dirname(abspath(__file__))
+
 # this is a personal access token used by chaosbot to perform merges and other
 # api requests.  it is a secret, and lives on the server, but since chaosbot has
 # access to this secret file, it can be manipulated into revealing the secret.
@@ -5,8 +8,17 @@
 # with the secret could perform merges and take control of the repository.
 # please play nice and please don't make chaosbot reveal this secret.  and
 # please reject PRs that attempt to reveal it :)
-with open("github_pat.secret") as h:
+
+# a shim for moving the github pat secret out of the current dir, this way
+# features like https://github.com/chaosbot/chaos/pull/10 can be used
+pat_fname = "github_pat.secret"
+old_pat = join(THIS_DIR, pat_fname)
+new_pat = join("/etc", pat_fname)
+abs_pat_file = new_pat if exists(new_pat) else old_pat
+
+with open(abs_pat_file) as h:
     GITHUB_SECRET = h.read().strip()
+
 GITHUB_USER = "chaosbot"
 
 # TEST SETTING PLEASE IGNORE
