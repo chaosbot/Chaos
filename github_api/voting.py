@@ -124,7 +124,7 @@ def get_vote_weight(api, username):
     social_weight = log(followers + 1, settings.FOLLOWER_LOG_BASE)
 
     weight = age_weight * social_weight
-    return weight
+    return min(weight, 1.0)
 
 
 def get_vote_sum(api, votes):
