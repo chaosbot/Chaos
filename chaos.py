@@ -18,6 +18,7 @@ import github_api.voting
 import github_api.repos
 import github_api.comments
 from github_api import exceptions as gh_exc
+from io import StringIO
 
 import patch
 
@@ -66,6 +67,13 @@ def install_requirements():
     """install or update requirements"""
     os.system("pip install -r requirements.txt")
 
+def write_git_logs():
+    buf = StringIO()
+    sh.git("--no-pager","log","--no-decorate", _out=buf, _tty_out=False)
+    buf.seek(0)
+    with open("server/git_logs.html", "w") as f:
+        f.write("<html><pre>\n%s</pre></html>" % buf.read().encode('utf-8'))
+
 if __name__ == "__main__":
     logging.info("starting up and entering event loop")
 
@@ -86,7 +94,6 @@ if __name__ == "__main__":
         for pr in prs:
             pr_num = pr["number"]
             logging.info("processing PR #%d", pr_num)
-
             log.info("PR %d approved for merging!", pr_num)
             try:
                 gh.prs.merge_pr(api, settings.URN, pr, votes, vote_total,
@@ -109,6 +116,7 @@ if __name__ == "__main__":
             logging.info("updating code and requirements and restarting self")
             update_self_code()
             install_requirements()
+            write_git_logs()
             restart_self()
 
         logging.info("sleeping for %d seconds", settings.SLEEP_TIME)
