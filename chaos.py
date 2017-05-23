@@ -18,6 +18,7 @@ import github_api.voting
 import github_api.repos
 import github_api.comments
 from github_api import exceptions as gh_exc
+from io import StringIO
 
 import patch
 
@@ -66,15 +67,22 @@ def install_requirements():
     """install or update requirements"""
     os.system("pip install -r requirements.txt")
 
+def write_git_logs():
+    buf = StringIO()
+    sh.git("--no-pager","log","--no-decorate", _out=buf, _tty_out=False)
+    buf.seek(0)
+    with open("server/git_logs.html", "w") as f:
+        f.write("<html><pre>\n%s</pre></html>" % buf.read().encode('utf-8'))
+
 if __name__ == "__main__":
     logging.info("starting up and entering event loop")
-    
+
     os.system("pkill chaos_server")
     subprocess.Popen([sys.executable, "server.py"], cwd=join(THIS_DIR, "server"))
-    
+
     log.info("starting http server")
     start_http_server()
-    
+
     while True:
         log.info("looking for PRs")
 
@@ -88,7 +96,7 @@ if __name__ == "__main__":
             logging.info("processing PR #%d", pr_num)
 
             votes = gh.voting.get_votes(api, settings.URN, pr)
-        
+
             # is our PR approved or rejected?
             vote_total = gh.voting.get_vote_sum(api, votes)
             threshold = gh.voting.get_approval_threshold(api, settings.URN)
@@ -123,6 +131,7 @@ if __name__ == "__main__":
             logging.info("updating code and requirements and restarting self")
             update_self_code()
             install_requirements()
+            write_git_logs()
             restart_self()
 
         logging.info("sleeping for %d seconds", settings.SLEEP_TIME)
