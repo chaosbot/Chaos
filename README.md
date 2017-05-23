@@ -69,8 +69,7 @@ and the server must be restarted manually.
 * **It has root access on its server.**  This means you are able to install
 packages and perform other privileged operations, provided you can initiate those
 changes through a pull request.
-* **Its domain name is chaosthebot.com,** but nothing is listening on
-any port...yet.
+* **Its domain name is chaosthebot.com.** A simple web server is listening on port 80, as of now. 
 * **It's hosted on a low-tier machine in the cloud.**  This means there aren't a
 ton of resources available to it: 2TB network transfer, 30GB storage, 2GB memory,
 1 cpu core.  Try not to deliberately DoS it.
