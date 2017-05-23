@@ -13,6 +13,7 @@ import settings
 
 import github_api as gh
 import github_api.prs
+import github_api.users
 import github_api.voting
 import github_api.repos
 import github_api.comments
@@ -99,6 +100,11 @@ if __name__ == "__main__":
                     continue
 
                 gh.prs.label_pr(api, settings.URN, pr_num, ["accepted"])
+
+                # chaosbot rewards merge owners with a follow
+                pr_owner = pr["user"]["login"]
+                gh.users.follow_user(api, pr_owner)
+
                 needs_update = True
 
             else:
@@ -106,7 +112,6 @@ if __name__ == "__main__":
                 gh.comments.leave_reject_comment(api, settings.URN, pr_num)
                 gh.prs.label_pr(api, settings.URN, pr_num, ["rejected"])
                 gh.prs.close_pr(api, settings.URN, pr)
-
 
         # we approved a PR, restart
         if needs_update:

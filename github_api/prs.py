@@ -1,6 +1,7 @@
 import arrow
 import settings
 from . import misc
+from . import users
 from . import voting
 from . import exceptions as exc
 
@@ -53,7 +54,6 @@ weighted total of {total:.1f} and a threshold of {threshold:.1f}.
             raise exc.CouldntMerge
         else:
             raise
-
 
 def label_pr(api, urn, pr, labels):
     """ apply an issue label to a pr """
