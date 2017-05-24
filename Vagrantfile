@@ -14,7 +14,7 @@ Vagrant.configure("2") do |config|
   # Ensure basic python requirements are initialized.
   config.vm.provision "shell", inline: <<-SHELL2
     cd /vagrant
-    apt-get install python3-pip
+    apt-get install python3-pip -y
     pip3 install -r requirements.txt
   SHELL2
 
