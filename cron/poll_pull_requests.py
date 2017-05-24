@@ -23,6 +23,16 @@ def poll_pull_requests():
         pr_num = pr["number"]
         __log.info("processing PR #%d", pr_num)
 
+        # If the owner of this PR added their name to the codebase in any way.
+        if gh.prs.owner_name_added_in_diff(api, settings.URN, pr_num, pr['user']['login']):
+            # We will reject the PR with a message about selfishness not being allowed.
+            __log.info("PR %d rejected for selfishness, closing", pr_num)
+            gh.comments.leave_reject_comment_too_selfish(api, settings.URN, pr_num)
+            gh.prs.label_pr(api, settings.URN, pr_num, ["rejected"])
+            gh.prs.close_pr(api, settings.URN, pr)
+            # Skip to processing the next PR.
+            continue
+
         votes = gh.voting.get_votes(api, settings.URN, pr)
 
         # is our PR approved or rejected?
@@ -54,7 +64,7 @@ def poll_pull_requests():
 
         else:
             __log.info("PR %d rejected, closing", pr_num)
-            gh.comments.leave_reject_comment(api, settings.URN, pr_num)
+            gh.comments.leave_reject_comment_not_enough_votes(api, settings.URN, pr_num)
             gh.prs.label_pr(api, settings.URN, pr_num, ["rejected"])
             gh.prs.close_pr(api, settings.URN, pr)
 

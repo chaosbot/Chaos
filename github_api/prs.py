@@ -1,4 +1,6 @@
 import arrow
+import re
+import requests
 import settings
 from . import misc
 from . import voting
@@ -24,7 +26,7 @@ def merge_pr(api, urn, pr, votes, total, threshold):
 
     pr_url = "https://github.com/{urn}/pull/{pr}".format(urn=urn, pr=pr_num)
 
-    title = "merging PR #{num}: {pr_title}".format(num=pr_num, pr_title=pr_title) 
+    title = "merging PR #{num}: {pr_title}".format(num=pr_num, pr_title=pr_title)
     desc = """
 {pr_url}: {pr_title}
 
@@ -104,6 +106,16 @@ def get_pr_comments(api, urn, pr_num):
     comments = api("get", path, params=params)
     for comment in comments:
         yield comment
+
+def owner_name_added_in_diff(api, urn, pr_num, owner_name):
+    """
+    Attempt to match the owner name in a diff as an addition.
+    Returns True if the owner_name is in the diff on an addition line.
+    """
+    path = 'http://github.com/{urn}/pull/{pr_num}.diff'
+    diff = api('get', path)
+    regex = '\+.+{username}'.format(username=owner_name)
+    return re.match(regex, diff)
 
 
 def get_ready_prs(api, urn, window):
