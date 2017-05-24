@@ -58,6 +58,10 @@ class DebugServer:
         self.sock = socket.socket()
         self.sock.bind(('0.0.0.0', port))
         self.sock.listen(5)
+
+        # Redirect outputs
+        sys.stdout = self
+        sys.stderr = self
         
         self.sockets = []
 
