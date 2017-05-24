@@ -144,8 +144,6 @@ def get_ready_prs(api, urn, window):
             if get_is_mergeable(api, urn, pr_num):
                 label_pr(api, urn, pr_num, ["mergeable"])
                 yield pr
-            else:
-                label_pr(api, urn, pr_num, ["conflicts"])
 
 
 def voting_window_remaining_seconds(pr, window):
