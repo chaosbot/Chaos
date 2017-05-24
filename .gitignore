@@ -2,3 +2,9 @@
 .DS_Store
 .venv
 github_pat.secret
+__pycache__
+*.pyo
+*.bak
+*.tmp
+*.swp
+*~
