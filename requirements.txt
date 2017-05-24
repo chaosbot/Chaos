@@ -1,9 +1,12 @@
 appdirs==1.4.3
 arrow==0.10.0
+emoji==0.4.5
 packaging==16.8
+praw==4.5.1
+prawcore==0.10.1
 pyparsing==2.2.0
 python-dateutil==2.6.0
 requests==2.14.2
 schedule==0.4.2
 six==1.10.0
-emoji==0.4.5
+update-checker==0.16
