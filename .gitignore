@@ -1,4 +1,13 @@
-*.pyc
+### ide
+.idea
+
+### system
 .DS_Store
+
+### local
 .venv
+
+### runtime
+*.pyc
 github_pat.secret
+api_cache
