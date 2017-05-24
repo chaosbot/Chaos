@@ -12,7 +12,7 @@ def set_proc_name(newname):
 set_proc_name("chaos_server")
 
 #start server on port 80
-PORT = 80
+PORT = 8080
 Handler = http.server.SimpleHTTPRequestHandler
 
 class NoTimeWaitTCPServer(socketserver.TCPServer):

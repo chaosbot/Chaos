@@ -1,5 +1,6 @@
 import arrow
 import logging
+import json
 import os
 from os.path import join, abspath, dirname
 
@@ -57,6 +58,31 @@ def poll_pull_requests():
             gh.comments.leave_reject_comment(api, settings.URN, pr_num)
             gh.prs.label_pr(api, settings.URN, pr_num, ["rejected"])
             gh.prs.close_pr(api, settings.URN, pr)
+
+        # This sets up a voting record, with each user having a count of votes
+        # that they have cast.
+        try:
+            fp = open('voters.json', 'x')
+            fp.close()
+        except:
+            # file already exists, which is what we want
+            pass
+
+        with open('voters.json', 'r+') as fp:
+            old_votes = {}
+            fs = fp.read()
+            if fs:
+                # if the voting record exists, read it in
+                old_votes = json.loads(fs)
+                # then prepare for overwriting
+                fp.seek(0)
+                fp.truncate()
+            for user in votes:
+                if user in old_votes:
+                    old_votes[user] += 1
+                else:
+                    old_votes[user] = 1
+            json.dump(old_votes, fp)
 
     # we approved a PR, restart
     if needs_update:
