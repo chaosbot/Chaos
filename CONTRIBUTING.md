@@ -17,3 +17,7 @@ At the end of the voting window, ChaosBot will review the votes, and if your PR
 crosses a threshold, your changes will be merged in.  If your changes are not
 merged in, take the time to consider the feedback you received, and create a new
 PR with changes you believe people will be willing to vote for.
+
+# Code of Conduct
+
+Though this project is autonomously controlled, it is governed by the Contributor Covenant version 1.4 (http://contributor-covenant.org/version/1/4/code_of_conduct.md). All contributors and participants agree to abide by its terms.
