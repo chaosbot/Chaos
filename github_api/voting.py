@@ -32,7 +32,7 @@ def get_votes(api, urn, pr):
         if vote and vote_owner != pr_owner:
             votes[vote_owner] = vote
 
-    # by virtue of creating the PR, the owner casts their vote as 1
+    # by virtue of creating the PR, the owner casts his or her vote as 1
     votes[pr_owner] = 1
 
     return votes
