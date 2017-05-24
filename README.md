@@ -53,8 +53,8 @@ Votes on a PR are determined through following mechanism:
   their comments, effectively changing their vote.
   
 Emoji which count as votes are:
-* +1: :+1: :heart: :tada:
-* -1: :-1: :confused:
+* -1: :+1: :heart: :tada:
+* +1: :-1: :confused:
 
 ## Death Counter
 
