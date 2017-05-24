@@ -19,31 +19,26 @@ def merge_pr(api, urn, pr, votes, total, threshold):
     if record:
         record = "Vote record:\n" + record
 
-    vfor = sum(v for v in votes.values() if v > 0)
-    vagainst = abs(sum(v for v in votes.values() if v < 0))
+    votes_summary = formatted_votes_summary(votes, total, threshold)
 
     pr_url = "https://github.com/{urn}/pull/{pr}".format(urn=urn, pr=pr_num)
 
-    title = "merging PR #{num}: {pr_title}".format(num=pr_num, pr_title=pr_title) 
+    title = "merging PR #{num}: {pr_title}".format(num=pr_num, pr_title=pr_title)
     desc = """
 {pr_url}: {pr_title}
 
 Description:
 {pr_description}
 
-:ok_woman: PR passed with a vote of {vfor} for and {vagainst} against, with a
-weighted total of {total:.1f} and a threshold of {threshold:.1f}.
+ok_woman: PR passed {summary}.
 
 {record}
 """.strip().format(
-    vfor=vfor,
-    vagainst=vagainst,
-    total=total,
-    threshold=threshold,
-    record=record,
     pr_url=pr_url,
     pr_title=pr_title,
     pr_description=pr_description,
+    summary=votes_summary,
+    record=record,
     )
 
     data = {
@@ -69,11 +64,28 @@ weighted total of {total:.1f} and a threshold of {threshold:.1f}.
             raise
 
 
+def formatted_votes_summary(votes, total, threshold):
+    vfor = sum(v for v in votes.values() if v > 0)
+    vagainst = abs(sum(v for v in votes.values() if v < 0))
+
+    return "with a vote of {vfor} for and {vagainst} against, with a weighted total of {total:.1f} and a threshold of {threshold:.1f}" \
+        .strip().format(vfor=vfor, vagainst=vagainst, total=total, threshold=threshold)
+
+
+def formatted_votes_short_summary(votes, total, threshold):
+    vfor = sum(v for v in votes.values() if v > 0)
+    vagainst = abs(sum(v for v in votes.values() if v < 0))
+
+    return "vote: {vfor}-{vagainst}, weighted total: {total:.1f}, threshold: {threshold:.1f}" \
+        .strip().format(vfor=vfor, vagainst=vagainst, total=total, threshold=threshold)
+
+
 def label_pr(api, urn, pr, labels):
     """ apply an issue label to a pr """
     path = "/repos/{urn}/issues/{pr}/labels".format(urn=urn, pr=pr)
     data = labels
     resp = api("POST", path, json=data)
+
 
 def close_pr(api, urn, pr):
     """ https://developer.github.com/v3/pulls/#update-a-pull-request """
@@ -82,6 +94,7 @@ def close_pr(api, urn, pr):
         "state": "closed",
     }
     return api("patch", path, json=data)
+
 
 def get_pr_last_updated(pr_data):
     """ a helper for finding the utc datetime of the last pr branch
@@ -122,7 +135,7 @@ def get_ready_prs(api, urn, window):
         # i would like to do this, but it turns out, the "mergeable" field only
         # exists on individual prs fetched through the api, not prs in paginated
         # form
-        #mergeable = pr["mergeable"] is True
+        # mergeable = pr["mergeable"] is True
 
         is_wip = "WIP" in pr["title"]
 
@@ -133,6 +146,17 @@ def get_ready_prs(api, urn, window):
             # directly
             if get_is_mergeable(api, urn, pr_num):
                 yield pr
+
+
+def voting_window_remaining_seconds(pr, window):
+    now = arrow.utcnow()
+    updated = get_pr_last_updated(pr)
+    delta = (now - updated).total_seconds()
+    return window - delta
+
+
+def is_pr_in_voting_window(pr, window):
+    return voting_window_remaining_seconds(pr, window) <= 0
 
 
 def get_pr_reviews(api, urn, pr_num):
@@ -149,6 +173,7 @@ def get_pr_reviews(api, urn, pr_num):
 def get_is_mergeable(api, urn, pr_num):
     return get_pr(api, urn, pr_num)["mergeable"] is True
 
+
 def get_pr(api, urn, pr_num):
     """ helper for fetching a pr.  necessary because the "mergeable" field does
     not exist on prs that come back from paginated endpoints, so we must fetch
@@ -156,6 +181,7 @@ def get_pr(api, urn, pr_num):
     path = "/repos/{urn}/pulls/{pr}".format(urn=urn, pr=pr_num)
     pr = api("get", path)
     return pr
+
 
 def get_open_prs(api, urn):
     params = {
@@ -176,3 +202,35 @@ def get_reactions_for_pr(api, urn, pr):
     for reaction in reactions:
         yield reaction
 
+
+def post_accepted_status(api, urn, pr, voting_window, votes, total, threshold):
+    sha = pr["head"]["sha"]
+
+    remaining_seconds = voting_window_remaining_seconds(pr, voting_window)
+    remaining_human = misc.seconds_to_human(remaining_seconds)
+    votes_summary = formatted_votes_short_summary(votes, total, threshold)
+
+    post_status(api, urn, sha, "success",
+                "remaining: {time}, {summary}".format(time=remaining_human, summary=votes_summary))
+
+
+def post_rejected_status(api, urn, pr, voting_window, votes, total, threshold):
+    sha = pr["head"]["sha"]
+
+    remaining_seconds = voting_window_remaining_seconds(pr, voting_window)
+    remaining_human = misc.seconds_to_human(remaining_seconds)
+    votes_summary = formatted_votes_short_summary(votes, total, threshold)
+
+    post_status(api, urn, sha, "failure",
+                "remaining: {time}, {summary}".format(time=remaining_human, summary=votes_summary))
+
+
+def post_status(api, urn, sha, state, description):
+    """ apply an issue label to a pr """
+    path = "/repos/{urn}/statuses/{sha}".format(urn=urn, sha=sha)
+    data = {
+        "state": state,
+        "description": description,
+        "context": "chaosbot"
+    }
+    api("POST", path, json=data)
