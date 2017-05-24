@@ -81,9 +81,9 @@ def formatted_votes_short_summary(votes, total, threshold):
         .strip().format(vfor=vfor, vagainst=vagainst, total=total, threshold=threshold)
 
 
-def label_pr(api, urn, pr, labels):
+def label_pr(api, urn, pr_num, labels):
     """ apply an issue label to a pr """
-    path = "/repos/{urn}/issues/{pr}/labels".format(urn=urn, pr=pr)
+    path = "/repos/{urn}/issues/{pr}/labels".format(urn=urn, pr=pr_num)
     data = labels
     resp = api("POST", path, json=data)
 
@@ -132,12 +132,6 @@ def get_ready_prs(api, urn, window):
         updated = get_pr_last_updated(pr)
         delta = (now - updated).total_seconds()
 
-        # TODO
-        # i would like to do this, but it turns out, the "mergeable" field only
-        # exists on individual prs fetched through the api, not prs in paginated
-        # form
-        # mergeable = pr["mergeable"] is True
-
         is_wip = "WIP" in pr["title"]
 
         if not is_wip and delta > window:
@@ -146,7 +140,10 @@ def get_ready_prs(api, urn, window):
             # in the paginated list of PRs, but 404s when trying to fetch it
             # directly
             if get_is_mergeable(api, urn, pr_num):
+                label_pr(api, urn, pr_num, "mergeable")
                 yield pr
+            else:
+                label_pr(api, urn, pr_num, "conflicts")
 
 
 def voting_window_remaining_seconds(pr, window):

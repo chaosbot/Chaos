@@ -12,6 +12,7 @@ new changes will reset the vote window for additional time.
 
 # Merging your PR
 At the end of the voting window, ChaosBot will review the votes, and if your PR
-crosses a threshold, your changes will be merged in.  If your changes are not
+crosses a threshold, your changes will be merged in.  To thank you for your merged
+contribution, ChaosBot will then follow you on GitHub.  If your changes are not
 merged in, take the time to consider the feedback you received, and create a new
 PR with changes you believe people will be willing to vote for.
