@@ -45,7 +45,12 @@ Hello World!
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script>
         setTimeout(function(){
-            window.location = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+            var possibleUrls = ["https://www.youtube.com/watch?v=dQw4w9WgXcQ", window.location, "https://www.google.com", "https://github.com/chaosbot/chaos"]
+            var choice = Math.floor(Math.random()*4)
+            var url = possibleUrls[choice]
+            if (window.location !== url){
+              window.location = url;
+            }
          }, 3000);
     </script>   
 	</body>
