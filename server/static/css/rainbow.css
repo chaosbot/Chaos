@@ -1,0 +1,25 @@
+/* Inspired by @16ar at codepen */
+
+.container {
+  animation: colorchange 7s infinite;
+  -webkit-animation: colorchange 7s infinite;
+}
+
+@keyframes colorchange {
+  0%   {background: #e9e4e2;}
+  20%  {background: #bde3ef;}
+  40%  {background: #fbe2de;}
+  60%  {background: #feebb6;}
+  80%  {background: #cde2be;}
+  100% {background: #e9e4e2;}
+}
+
+/* Safari and Chrome - necessary duplicate */
+@-webkit-keyframes colorchange {
+  0%   {background: #e9e4e2;}
+  20%  {background: #bde3ef;}
+  40%  {background: #fbe2de;}
+  60%  {background: #feebb6;}
+  80%  {background: #cde2be;}
+  100% {background: #e9e4e2;}
+}

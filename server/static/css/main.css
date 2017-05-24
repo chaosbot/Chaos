@@ -1,11 +1,6 @@
-body {
-    background-color: #B0C4DE;
-    font-size: 2em;
-}
-
 .container {
     display: block;
-    background-color: #fff;
+    background-color: black;
     padding: 15px;
 }
 
