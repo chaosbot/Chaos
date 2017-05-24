@@ -25,6 +25,8 @@ import github_api.comments
 from github_api import exceptions as gh_exc
 
 
+# TODO: HTTP server has been fixed to serve static content, I'm not a python dev so unsure how to incorporate fortunes.
+# TODO: Should this fortune code be removed and use static content moving forward?
 class HTTPServerRequestHandler(http.server.BaseHTTPRequestHandler):
 
     def __init__(self):
@@ -43,11 +45,12 @@ class HTTPServerRequestHandler(http.server.BaseHTTPRequestHandler):
 
         self.wfile.write(random.choice(self.fortunes).encode("utf8"))
 
+# TODO: See comment above.
 def http_server():
     s = http.server.HTTPServer(('', 8080), HTTPServerRequestHandler)
     s.serve_forever()
 
-
+# TODO: See comment above.
 def start_http_server():
     http_server_thread = threading.Thread(target=http_server)
     http_server_thread.start()
@@ -59,17 +62,14 @@ def main():
 
     log = logging.getLogger("chaosbot")
 
-    api = gh.API(settings.GITHUB_USER, settings.GITHUB_SECRET)
-
     log.info("starting up and entering event loop")
 
-    os.system("pkill chaos_server")
-
-    server_dir = join(dirname(abspath(__file__)), "server")
-    subprocess.Popen([sys.executable, "server.py"], cwd=server_dir)
-
+    # TODO: I know this is probably hideous but, again, I'm not a python dev :(
     log.info("starting http server")
-    start_http_server()
+    os.chdir(THIS_DIR + "/public")
+    Handler = http.server.SimpleHTTPRequestHandler
+    httpd = socketserver.TCPServer(("", 80), Handler)
+    httpd.serve_forever()
 
     # Schedule all cron jobs to be run
     cron.schedule_jobs()
