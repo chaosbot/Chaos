@@ -115,7 +115,7 @@ def owner_name_added_in_diff(api, urn, pr_num, owner_name):
     path = 'http://github.com/{urn}/pull/{pr_num}.diff'
     diff = api('get', path)
     regex = '\+.+{username}'.format(username=owner_name)
-    return re.match(regex, diff)
+    return re.match(regex, diff, re.IGNORECASE)
 
 
 def get_ready_prs(api, urn, window):
