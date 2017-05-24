@@ -2,15 +2,13 @@ import arrow
 import settings
 
 
-def get_reactions_for_comment(api, urn, comment_id, since):
+def get_reactions_for_comment(api, urn, comment_id):
     path = "/repos/{urn}/issues/comments/{comment}/reactions"\
             .format(urn=urn, comment=comment_id)
     params = {"per_page": settings.DEFAULT_PAGINATION}
     reactions = api("get", path, params=params)
     for reaction in reactions:
-        created = arrow.get(reaction["created_at"])
-        if created > since:
-            yield reaction
+        yield reaction
 
 def leave_reject_comment(api, urn, pr):
     body = """

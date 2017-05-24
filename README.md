@@ -1,5 +1,7 @@
 # ChaosBot
 
+[![Gitter chat](https://badges.gitter.im/chaosthebot/gitter.png)](https://gitter.im/chaosthebot/Lobby)
+
 > Chaos, the vacant and infinite space which existed according to the ancient
 > cosmogonies previous to the creation of the world, and out of which the gods,
 > men, and all things arose.
@@ -7,7 +9,7 @@
 ChaosBot is a social coding experiment to see what happens when the absolute
 direction of a software project is turned over to the open source community.
 
-![Image of a kitten with overlay: "I WONDER IF BEING SANE MEANS DISREGARDING THE CHAOS THAT IS LIFE...PRETENDING ONLY AN INFINITESIMAL SEGMENT OF IT IS REALITY" Source: http://existentialpets.tumblr.com/post/48069725344](assets/chaos-kitty.jpg)
+![Image of a kitten with overlay: "I WONDER IF BEING SANE MEANS DISREGARDING THE CHAOS THAT IS LIFE...PRETENDING ONLY AN INFINITESIMAL SEGMENT OF IT IS REALITY" Source: http://existentialpets.tumblr.com/post/48069725344](data/imgs/chaos-kitty.jpg)
 
 ## How it works
 
@@ -40,33 +42,50 @@ the imagination of the open source community.
 ## Voting
 
 Votes on a PR are determined through following mechanism:
-* A comment that contains :+1: or :-1: somewhere in the body counts as a vote for
+* A comment that contains an emoji signifying a vote somewhere in the body counts as a vote for
   or against the PR.
-* Same for :+1: or :-1: reaction on the PR itself and an accept/reject [pull
+* Same for reactions on the PR itself and an accept/reject [pull
   request review](https://help.github.com/articles/about-pull-request-reviews/)
 * The PR itself counts as :+1: from the owner.
 * Voting goes on for the duration of the voting window - currently 2 or 3 hours,
   depending on the local server time.
 * While the voting process is going, users can change their reactions and edit
   their comments, effectively changing their vote.
+  
+Emoji which count as votes are:
+* +1: :+1: :heart: :tada:
+* -1: :-1: :confused:
 
 ## Death Counter
 
-Chaosbot has died 4 times.  This counter is incremented whenever the trunk breaks
-and the server must be restarted manually.
+Chaosbot has died 6 times.  This counter is incremented whenever the trunk breaks
+and the server must be restarted manually.  Last broken by #97
 
 ## Server details
 
-* **ChaosBot runs Ubuntu 14.04 Trusty**
+* **ChaosBot runs with Python 3.5 on Ubuntu 14.04 Trusty**
 * **It has root access on its server.**  This means you are able to install
 packages and perform other privileged operations, provided you can initiate those
 changes through a pull request.
-* **Its domain name is [chaosthebot.com](http://chaosthebot.com),** but nothing is listening on
-any port...yet.
+* **Its domain name is [chaosthebot.com](http://chaosthebot.com)**.
 * **It's hosted on a low-tier machine in the cloud.**  This means there aren't a
 ton of resources available to it: 2TB network transfer, 30GB storage, 2GB memory,
 1 cpu core.  Try not to deliberately DoS it.
 * **MySQL is installed locally.**
+
+### Local Development Server
+
+To run your own VM for local development, install [Vagrant](https://www.vagrantup.com/downloads.html) and [VirtualBox](https://www.virtualbox.org/wiki/Downloads). Then, type on your host machine:
+
+    vagrant up
+    vagrant ssh
+
+When in SSH:
+
+    sudo su
+    cd /vagrant
+    python3 chaos.py
+
 
 ## FAQ
 
@@ -75,7 +94,7 @@ A: Errors can happen, and in the interest of keeping things interesting, ChaosBo
 will manually be restarted and the death counter will be incremented.
 
 #### Q: What is "general approval" from the community?
-A: Users must vote on your PR, through either a :+1: or :-1: comment or reaction,
+A: Users must vote on your PR, through either a comment or reaction,
 or a accept/reject pull request review.  See [Voting](https://github.com/chaosbot/Chaos/blob/master/README.md#voting).
 
 #### Q: What if ChaosBot has a problem that can't be solved by a PR?

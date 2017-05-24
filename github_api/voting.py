@@ -21,10 +21,9 @@ def get_votes(api, urn, pr):
     votes = {}
     pr_owner = pr["user"]["login"]
     pr_num = pr["number"]
-    since = prs.get_pr_last_updated(pr)
 
     # get all the comment-and-reaction-based votes
-    for voter, vote in get_pr_comment_votes_all(api, urn, pr_num, since):
+    for voter, vote in get_pr_comment_votes_all(api, urn, pr_num):
         votes[voter] = vote
 
     # get all the pr-review-based votes
@@ -32,16 +31,16 @@ def get_votes(api, urn, pr):
         if vote and vote_owner != pr_owner:
             votes[vote_owner] = vote
 
-    # by virtue of creating the PR, the owner casts his vote as 1
+    # by virtue of creating the PR, the owner casts their vote as 1
     votes[pr_owner] = 1
 
     return votes
 
 
-def get_pr_comment_votes_all(api, urn, pr_num, since):
+def get_pr_comment_votes_all(api, urn, pr_num):
     """ yields votes via comments and votes via reactions on comments for a
     given pr """
-    for comment in prs.get_pr_comments(api, urn, pr_num, since):
+    for comment in prs.get_pr_comments(api, urn, pr_num):
         comment_owner = comment["user"]["login"]
 
         vote = parse_comment_for_vote(comment["body"])
@@ -68,16 +67,16 @@ def get_pr_comment_votes_all(api, urn, pr_num, since):
     # we consider the pr itself to be the "first comment."  in the web ui, it
     # looks like a comment, complete with reactions, so let's treat it like a
     # comment
-    reaction_votes = get_pr_reaction_votes(api, urn, pr_num, since)
+    reaction_votes = get_pr_reaction_votes(api, urn, pr_num)
     for reaction_owner, vote in reaction_votes:
         yield reaction_owner, vote
 
 
 
-def get_pr_reaction_votes(api, urn, pr_num, since):
+def get_pr_reaction_votes(api, urn, pr_num):
     """ yields reaction votes to a pr-comment.  very similar to getting
     reactions from comments on the pr """
-    reactions = prs.get_reactions_for_pr(api, urn, pr_num, since)
+    reactions = prs.get_reactions_for_pr(api, urn, pr_num)
     for reaction in reactions:
         reaction_owner = reaction["user"]["login"]
         vote = parse_reaction_for_vote(reaction["content"])
@@ -85,10 +84,10 @@ def get_pr_reaction_votes(api, urn, pr_num, since):
             yield reaction_owner, vote
 
 
-def get_comment_reaction_votes(api, urn, comment_id, since):
+def get_comment_reaction_votes(api, urn, comment_id):
     """ yields votes via reactions on comments on a pr.  don't use this
     directly, it is called by get_pr_comment_votes_all """
-    reactions = comments.get_reactions_for_comment(api, urn, comment_id, since)
+    reactions = comments.get_reactions_for_comment(api, urn, comment_id)
     for reaction in reactions:
         reaction_owner = reaction["user"]["login"]
         vote = parse_reaction_for_vote(reaction["content"])
@@ -172,7 +171,7 @@ def parse_emojis_for_vote(body):
     return 0
 
 def prepare_emojis_list(type):
-    fname = "emojis.{type}".format(type=type)
+    fname = "data/emojis.{type}".format(type=type)
     with open(fname) as f:
         content = f.readlines()
     content = [x.strip() for x in content]
@@ -193,9 +192,10 @@ def get_voting_window(now):
     local = now.to(settings.TIMEZONE)
     lhour = local.hour
 
-    hours = 2
-    if lhour <= 10 or lhour >= 22:
-        hours = 3
+    hours = settings.DEFAULT_VOTE_WINDOW
+    if (settings.AFTER_HOURS_START >= lhour or
+            settings.AFTER_HOURS_END <= lhour):
+        hours = settings.AFTER_HOURS_VOTE_WINDOW
 
-    seconds = hours * 60 * 60 * settings.VOTE_WINDOW_SCALE
+    seconds = hours * 60 * 60
     return seconds

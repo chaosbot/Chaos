@@ -10,6 +10,9 @@ def merge_pr(api, urn, pr, votes, total, threshold):
     message """
 
     pr_num = pr["number"]
+    pr_title = pr['title']
+    pr_description = pr['body']
+
     path = "/repos/{urn}/pulls/{pr}/merge".format(urn=urn, pr=pr_num)
 
     record = voting.friendly_voting_record(votes)
@@ -21,16 +24,27 @@ def merge_pr(api, urn, pr, votes, total, threshold):
 
     pr_url = "https://github.com/{urn}/pull/{pr}".format(urn=urn, pr=pr_num)
 
-    title = "merging PR #%d" % pr_num
+    title = "merging PR #{num}: {pr_title}".format(num=pr_num, pr_title=pr_title) 
     desc = """
-{pr_url}
+{pr_url}: {pr_title}
 
-:ok_woman: PR passed with a vote of {vfor} for and {vagainst} against, with a 
+Description:
+{pr_description}
+
+:ok_woman: PR passed with a vote of {vfor} for and {vagainst} against, with a
 weighted total of {total:.1f} and a threshold of {threshold:.1f}.
 
 {record}
-""".strip().format(vfor=vfor, vagainst=vagainst, total=total,
-        threshold=threshold, record=record, pr_url=pr_url)
+""".strip().format(
+    vfor=vfor,
+    vagainst=vagainst,
+    total=total,
+    threshold=threshold,
+    record=record,
+    pr_url=pr_url,
+    pr_title=pr_title,
+    pr_description=pr_description,
+    )
 
     data = {
         "commit_title": title,
@@ -80,11 +94,10 @@ def get_pr_last_updated(pr_data):
     return arrow.get(dt)
 
 
-def get_pr_comments(api, urn, pr_num, since):
+def get_pr_comments(api, urn, pr_num):
     """ yield all comments on a pr, weirdly excluding the initial pr comment
     itself (the one the owner makes) """
     params = {
-        "since": misc.dt_to_github_dt(since),
         "per_page": settings.DEFAULT_PAGINATION
     }
     path = "/repos/{urn}/issues/{pr}/comments".format(urn=urn, pr=pr_num)
@@ -156,12 +169,10 @@ def get_open_prs(api, urn):
     return data
 
 
-def get_reactions_for_pr(api, urn, pr, since):
+def get_reactions_for_pr(api, urn, pr):
     path = "/repos/{urn}/issues/{pr}/reactions".format(urn=urn, pr=pr)
     params = {"per_page": settings.DEFAULT_PAGINATION}
     reactions = api("get", path, params=params)
     for reaction in reactions:
-        created = arrow.get(reaction["created_at"])
-        if created > since:
-            yield reaction
+        yield reaction
 

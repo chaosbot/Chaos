@@ -20,3 +20,7 @@ body {
     right: 0;
     border: 0;
 }
+
+.unclickable {
+    z-index: 1;
+}

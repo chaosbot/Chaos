@@ -1,5 +1,6 @@
 import http.server
 import socketserver
+import socket
 
 #set the process name to "chaos_server" so we can easily kill it with "pkill chaos_server"
 def set_proc_name(newname):
@@ -13,5 +14,14 @@ set_proc_name("chaos_server")
 #start server on port 80
 PORT = 80
 Handler = http.server.SimpleHTTPRequestHandler
-httpd = socketserver.TCPServer(("", PORT), Handler)
+
+class NoTimeWaitTCPServer(socketserver.TCPServer):
+    """ when a socket does is shutdown dance, it ends up in a TIME-WAIT state,
+    which can prevent rebinding on it quickly.  here we say "shut up, socket",
+    let me rebind anyways even if you're in TIME-WAIT."  that will teach it. """
+    def server_bind(self):
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.socket.bind(self.server_address)
+
+httpd = NoTimeWaitTCPServer(("", PORT), Handler)
 httpd.serve_forever()

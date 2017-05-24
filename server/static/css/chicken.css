@@ -1,0 +1,15 @@
+body {
+  background: black;
+  position: fixed;
+  color: white;
+  margin: 0px;
+  padding: 0px;
+  font-family: sans-serif;
+  font-size: 3em;
+}
+
+#chicken {
+  position: absolute;
+  left: 4em;
+  top: 4em;
+}
