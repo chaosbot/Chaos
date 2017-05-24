@@ -51,7 +51,7 @@ Votes on a PR are determined through following mechanism:
   depending on the local server time.
 * While the voting process is going, users can change their reactions and edit
   their comments, effectively changing their vote.
-  
+
 Emoji which count as votes are:
 * +1: :+1: :heart: :tada:
 * -1: :-1: :confused:
@@ -112,3 +112,6 @@ or a accept/reject pull request review.  See [Voting](https://github.com/chaosbo
 #### Q: What if ChaosBot has a problem that can't be solved by a PR?
 A: Please open a [project issue](https://github.com/chaosbot/Chaos/issues) and a
 real live human will take a look at it.
+
+#### Q: What are the rules?
+A: Glad you asked! They reside in [RULES.md](https://github.com/chaosbot/chaos/blob/master/RULES.md).
