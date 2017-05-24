@@ -1,6 +1,5 @@
 import arrow
 import re
-import requests
 import settings
 from . import misc
 from . import voting
