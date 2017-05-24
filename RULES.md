@@ -1,8 +1,6 @@
 # Rules
 
-[![Gitter chat](https://badges.gitter.im/chaosthebot/gitter.png)](https://gitter.im/chaosthebot/Lobby)
-
-These are the rules of chaosbot:
+**These are the rules of chaosbot:**
 
 ## Changing the rules
 
