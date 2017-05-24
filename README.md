@@ -15,7 +15,7 @@ direction of a software project is turned over to the open source community.
 
 1. Fork the code and make any changes you wish.
 1. Open a pull request.
-1. If there is general approval\* from the community, the PR will be merged
+1. If there is approval by our all-knowing leader @PlasmaPower, the PR will be merged
    automatically by ChaosBot.
 1. **ChaosBot will automatically update its own code** with your changes and
    restart itself.
@@ -95,10 +95,6 @@ When in SSH:
 #### Q: What happens if ChaosBot merges bad code and doesn't start again?
 A: Errors can happen, and in the interest of keeping things interesting, ChaosBot
 will manually be restarted and the death counter will be incremented.
-
-#### Q: What is "general approval" from the community?
-A: Users must vote on your PR, through either a comment or reaction,
-or a accept/reject pull request review.  See [Voting](https://github.com/chaosbot/Chaos/blob/master/README.md#voting).
 
 #### Q: What if ChaosBot has a problem that can't be solved by a PR?
 A: Please open a [project issue](https://github.com/chaosbot/Chaos/issues) and a
