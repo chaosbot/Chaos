@@ -16,6 +16,7 @@ import github_api.prs
 import github_api.voting
 import github_api.repos
 import github_api.comments
+import github_api.misc
 from github_api import exceptions as gh_exc
 
 import patch
@@ -66,40 +67,23 @@ if __name__ == "__main__":
     start_http_server()
 
     while True:
+        needs_update = False
+
         log.info("looking for PRs")
+
+        # get voting window
+        now = arrow.utcnow()
+        voting_window = gh.voting.get_voting_window(now)
 
         # get all prs to process status
         prs = gh.prs.get_ready_prs(api, settings.URN, 0)
 
         for pr in prs:
             pr_num = pr["number"]
+
             logging.info("processing PR #%d", pr_num)
 
-            votes = gh.voting.get_votes(api, settings.URN, pr)
-
-            # is our PR approved or rejected?
-            vote_total = gh.voting.get_vote_sum(api, votes)
-            threshold = gh.voting.get_approval_threshold(api, settings.URN)
-            is_approved = vote_total >= threshold
-            sha = pr["head"]["sha"]
-
-            if is_approved:
-                log.info("PR %d will be approved, update status", pr_num)
-                gh.prs.post_status(api, settings.URN, sha, "success", "PR will be accepted in ... hours")
-            else:
-                log.info("PR %d will be rejected, update status", pr_num)
-                gh.prs.post_status(api, settings.URN, sha, "failure", "PR will be rejected in ... hours")
-
-        # get prs in voting window
-        now = arrow.utcnow()
-        voting_window = gh.voting.get_voting_window(now)
-        prs = gh.prs.get_ready_prs(api, settings.URN, voting_window)
-
-        needs_update = False
-        for pr in prs:
-            pr_num = pr["number"]
-            logging.info("processing PR #%d", pr_num)
-
+            # gather all current votes
             votes = gh.voting.get_votes(api, settings.URN, pr)
 
             # is our PR approved or rejected?
@@ -107,33 +91,46 @@ if __name__ == "__main__":
             threshold = gh.voting.get_approval_threshold(api, settings.URN)
             is_approved = vote_total >= threshold
 
-            if is_approved:
-                log.info("PR %d approved for merging!", pr_num)
-                try:
-                    gh.prs.merge_pr(api, settings.URN, pr, votes, vote_total,
-                            threshold)
-                # some error, like suddenly there's a merge conflict, or some
-                # new commits were introduced between findint this ready pr and
-                # merging it
-                except gh_exc.CouldntMerge:
-                    log.info("couldn't merge PR %d for some reason, skipping",
-                            pr_num)
-                    gh.prs.label_pr(api, settings.URN, pr_num, ["can't merge"])
-                    continue
+            # is our PR in voting window?
+            in_window = gh.prs.is_pr_in_voting_window(pr, voting_window)
 
-                gh.prs.label_pr(api, settings.URN, pr_num, ["accepted"])
-                needs_update = True
+            if is_approved:
+                log.info("PR %d current status: approved", pr_num)
+
+                gh.prs.post_accepted_status(api, settings.URN, pr, voting_window, votes, vote_total, threshold)
+
+                if in_window:
+                    log.info("PR %d approved for merging!", pr_num)
+                    try:
+                        gh.prs.merge_pr(api, settings.URN, pr, votes, vote_total,
+                                        threshold)
+                    # some error, like suddenly there's a merge conflict, or some
+                    # new commits were introduced between findint this ready pr and
+                    # merging it
+                    except gh_exc.CouldntMerge:
+                        log.info("couldn't merge PR %d for some reason, skipping",
+                                 pr_num)
+                        gh.prs.label_pr(api, settings.URN, pr_num, ["can't merge"])
+                        continue
+
+                    gh.prs.label_pr(api, settings.URN, pr_num, ["accepted"])
+                    needs_update = True
 
             else:
-                log.info("PR %d rejected, closing", pr_num)
-                gh.comments.leave_reject_comment(api, settings.URN, pr_num)
-                gh.prs.label_pr(api, settings.URN, pr_num, ["rejected"])
-                gh.prs.close_pr(api, settings.URN, pr)
+                log.info("PR %d current status: rejected", pr_num)
+
+                gh.prs.post_rejected_status(api, settings.URN, pr, voting_window, votes, vote_total, threshold)
+
+                if in_window:
+                    log.info("PR %d rejected, closing", pr_num)
+                    gh.comments.leave_reject_comment(api, settings.URN, pr_num)
+                    gh.prs.label_pr(api, settings.URN, pr_num, ["rejected"])
+                    gh.prs.close_pr(api, settings.URN, pr)
 
 
         # we approved a PR, restart
         if needs_update:
-            logging.info("updating code and requirements and restarting self")
+            logging.info("Updating code and requirements and restarting self")
             restart_self()
 
         logging.info("sleeping for %d seconds", settings.SLEEP_TIME)
