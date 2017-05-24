@@ -9,7 +9,9 @@
 ChaosBot is a social coding experiment to see what happens when the absolute
 direction of a software project is turned over to the open source community.
 
-![Image of a kitten with overlay: "I WONDER IF BEING SANE MEANS DISREGARDING THE CHAOS THAT IS LIFE...PRETENDING ONLY AN INFINITESIMAL SEGMENT OF IT IS REALITY" Source: http://existentialpets.tumblr.com/post/48069725344](data/imgs/chaos-kitty.jpg)
+![Image of a kitten with overlay: "I WONDER IF BEING SANE MEANS DISREGARDING THE CHAOS THAT IS LIFE...PRETENDING ONLY AN INFINITESIMAL SEGMENT OF IT IS REALITY" Source: http://existentialpets.tumblr.com/post/48069725344](data/imgs/chaos-kitty.jpg)  
+
+[History Of Chaos](https://github.com/chaosbot/chaos/wiki/Feature-Requests)
 
 ## How it works
 
