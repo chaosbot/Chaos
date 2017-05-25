@@ -12,7 +12,6 @@ import subprocess
 import settings
 import patch
 import schedule
-import socket
 
 from os.path import dirname, abspath, join
 
