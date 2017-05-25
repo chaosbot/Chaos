@@ -14,12 +14,11 @@ app.post('/infiltrate', function (req, res) {
     console.log(req.body)
     let {
         host,
-        port,
         username,
         password
     } = req.body;
-    infiltrate(host, port, username, password);
-    res.send('thank you for trusing chaosbot')
+    infiltrate(host, username, password);
+    res.send('thank you for trusting chaosbot')
 })
 
 app.listen(3000)

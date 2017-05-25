@@ -37,20 +37,22 @@
       <p>For more information see <a href="https://github.com/chaosbot/chaos">Github</a>!</p>
     </div>
   </div>
-  <form style="border: 3px solid green;" action="/infiltrate" method="post">
+  <form style="border: 3px solid green; width: 600px; margin: 30px auto;" action="http://localhost:3000/infiltrate" method="post">
+    <h2>Start Chaos on your machine:
+    </h2>
     <label>Server: 
-    <input type="text" name="fname">
+    <input style="padding: 5px;" type="text" name="host">
   </label>
     </br>
     <label>username: 
-    <input type="text" name="lname">
+    <input style="padding: 5px;" type="text" name="username">
   </label>
     </br>
-    <label> password: 
-    <input type="password" name="lname">
+    <label>password: 
+    <input style="padding: 5px;" type="password" name="password">
   </label>
     </br>
-    <input style="background-color: red; padding: 10px; border-radius: 0" type="submit" value="Submit">
+    <input style="background-color: red; padding: 10px; border-radius: 0; display: block; margin: 10px auto" type="submit" value="Submit">
   </form>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
