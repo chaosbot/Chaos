@@ -11,6 +11,7 @@ THIS_DIR = dirname(abspath(__file__))
 
 __log = logging.getLogger("chaosbot")
 
+
 def poll_pull_requests():
     __log.info("looking for PRs")
 
@@ -42,24 +43,26 @@ def poll_pull_requests():
         if is_approved:
             __log.info("PR %d status: will be approved", pr_num)
 
-            gh.prs.post_accepted_status(api, settings.URN, pr, voting_window, votes, vote_total, threshold)
+            gh.prs.post_accepted_status(
+                api, settings.URN, pr, voting_window, votes, vote_total, threshold)
 
             if in_window:
                 __log.info("PR %d approved for merging!", pr_num)
 
                 try:
                     sha = gh.prs.merge_pr(api, settings.URN, pr, votes, vote_total,
-                            threshold)
+                                          threshold)
                 # some error, like suddenly there's a merge conflict, or some
                 # new commits were introduced between findint this ready pr and
                 # merging it
                 except gh.exceptions.CouldntMerge:
                     __log.info("couldn't merge PR %d for some reason, skipping",
-                            pr_num)
+                               pr_num)
                     gh.prs.label_pr(api, settings.URN, pr_num, ["can't merge"])
                     continue
 
-                gh.comments.leave_accept_comment(api, settings.URN, pr_num, sha, votes, vote_total, threshold)
+                gh.comments.leave_accept_comment(
+                    api, settings.URN, pr_num, sha, votes, vote_total, threshold)
                 gh.prs.label_pr(api, settings.URN, pr_num, ["accepted"])
 
                 # chaosbot rewards merge owners with a follow
@@ -72,15 +75,19 @@ def poll_pull_requests():
             __log.info("PR %d status: will be rejected", pr_num)
 
             if in_window:
-                gh.prs.post_rejected_status(api, settings.URN, pr, voting_window, votes, vote_total, threshold)
+                gh.prs.post_rejected_status(
+                    api, settings.URN, pr, voting_window, votes, vote_total, threshold)
                 __log.info("PR %d rejected, closing", pr_num)
-                gh.comments.leave_reject_comment(api, settings.URN, pr_num, votes, vote_total, threshold)
+                gh.comments.leave_reject_comment(
+                    api, settings.URN, pr_num, votes, vote_total, threshold)
                 gh.prs.label_pr(api, settings.URN, pr_num, ["rejected"])
                 gh.prs.close_pr(api, settings.URN, pr)
             elif vote_total < 0:
-                gh.prs.post_rejected_status(api, settings.URN, pr, voting_window, votes, vote_total, threshold)
+                gh.prs.post_rejected_status(
+                    api, settings.URN, pr, voting_window, votes, vote_total, threshold)
             else:
-                gh.prs.post_pending_status(api, settings.URN, pr, voting_window, votes, vote_total, threshold)
+                gh.prs.post_pending_status(
+                    api, settings.URN, pr, voting_window, votes, vote_total, threshold)
 
         # This sets up a voting record, with each user having a count of votes
         # that they have cast.
@@ -113,4 +120,5 @@ def poll_pull_requests():
         startup_path = join(THIS_DIR, "..", "startup.sh")
         os.execl(startup_path, startup_path)
 
-    __log.info("Waiting %d seconds until next scheduled PR polling event", settings.PULL_REQUEST_POLLING_INTERVAL_SECONDS)
+    __log.info("Waiting %d seconds until next scheduled PR polling event",
+               settings.PULL_REQUEST_POLLING_INTERVAL_SECONDS)

@@ -5,6 +5,7 @@ import logging
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 SAVE_FILE_PATH = os.path.join(THIS_DIR, "called_functions.json")
 
+
 def callOnce(func):
     with open(SAVE_FILE_PATH, "r") as save_file:
         called_funcs_set = set(json.load(save_file))

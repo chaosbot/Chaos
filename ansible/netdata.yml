@@ -1,0 +1,18 @@
+---
+- name: ensure netdata is installed
+  hosts: localhost
+  connection: local
+  tasks:
+    - stat: path=/etc/netdata
+      register: netdata_etc
+
+    - block: 
+      - name: install dependencies
+        command: curl -Ss 'https://raw.githubusercontent.com/firehol/netdata-demo-site/master/install-required-packages.sh' >/tmp/kickstart.sh && bash /tmp/kickstart.sh -i netdata-all
+      - name: install netdata
+        command: 
+        with_items:
+          - git clone https://github.com/firehol/netdata.git --depth=1 netdata
+          - cd netdata
+          - ./netdata-installer.sh -u --dont-wait
+      when: netdata_etc.stat.exists == False

@@ -73,7 +73,6 @@ def get_pr_comment_votes_all(api, urn, pr_num):
         yield reaction_owner, vote
 
 
-
 def get_pr_reaction_votes(api, urn, pr_num):
     """ yields reaction votes to a pr-comment.  very similar to getting
     reactions from comments on the pr """
@@ -105,7 +104,6 @@ def get_pr_review_votes(api, urn, pr_num):
             user = review["user"]["login"]
             vote = parse_review_for_vote(state)
             yield user, vote
-
 
 
 def get_vote_weight(api, username):
@@ -161,6 +159,7 @@ def parse_comment_for_vote(body):
     """ turns a comment into a vote, if possible """
     return parse_emojis_for_vote(demojize(body))
 
+
 def parse_emojis_for_vote(body):
     """ searches text for matching emojis """
     for positive_emoji in prepare_emojis_list('positive'):
@@ -171,12 +170,14 @@ def parse_emojis_for_vote(body):
             return -1
     return 0
 
+
 def prepare_emojis_list(type):
     fname = "data/emojis.{type}".format(type=type)
     with open(fname) as f:
         content = f.readlines()
     content = [x.strip() for x in content]
     return list(filter(None, content))
+
 
 def friendly_voting_record(votes):
     """ returns a sorted list (a string list, not datatype list) of voters and

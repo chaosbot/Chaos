@@ -17,20 +17,20 @@ class TestExtractArgs(unittest.TestCase):
     def test_basic(self):
         fn = _extract_args
         to_use = fn(["a", "b", "c", "d"], ("default",), [1, 2, 3], {"e": 4},
-                None, None)
+                    None, None)
         self.assertDictEqual(to_use, {"a": 1, "b": 2, "c": 3, "d": "default",
-            "e": 4})
+                                      "e": 4})
 
     def test_whitelist(self):
         fn = _extract_args
         to_use = fn(["a", "b", "c", "d"], ("default",), [1, 2, 3], {"e": 4},
-                ["b", "c"], None)
+                    ["b", "c"], None)
         self.assertDictEqual(to_use, {"b": 2, "c": 3})
 
     def test_blacklist(self):
         fn = _extract_args
         to_use = fn(["a", "b", "c", "d"], ("default",), [1, 2, 3], {"e": 4},
-                None, ["b"])
+                    None, ["b"])
         self.assertDictEqual(to_use, {"a": 1, "c": 3, "d": "default", "e": 4})
 
 
@@ -39,12 +39,11 @@ class TestMemoize(unittest.TestCase):
         self.backend = {}
         self.backend_factory = lambda fn: self.backend
 
-
     def test_set(self):
 
         @memoize("1m", backend=self.backend_factory)
         def fn(a, b, c):
-            return a+b+c
+            return a + b + c
 
         # set 1
         now = time.time()
@@ -70,7 +69,6 @@ class TestMemoize(unittest.TestCase):
         self.assertAlmostEqual(inserted, now, delta=0.1)
         self.assertEqual(mvalue, res)
 
-
     def test_get(self):
         state = {"counter": 0}
 
@@ -85,11 +83,10 @@ class TestMemoize(unittest.TestCase):
         res = fn(1, 2, 3)
         self.assertEqual(res, 0)
 
-
     def test_whitelist(self):
         @memoize("1m", whitelist=("b", "c"))
         def fn(a, b, c):
-            return a+b+c
+            return a + b + c
 
         res = fn(1, 2, 3)
         self.assertEqual(res, 6)
@@ -98,11 +95,10 @@ class TestMemoize(unittest.TestCase):
         res = fn(2, 2, 4)
         self.assertEqual(res, 8)
 
-
     def test_blacklist(self):
         @memoize("1m", blacklist=("a", "c"))
         def fn(a, b, c):
-            return a+b+c
+            return a + b + c
 
         res = fn(1, 2, 3)
         self.assertEqual(res, 6)
@@ -111,10 +107,9 @@ class TestMemoize(unittest.TestCase):
         res = fn(9, 3, 7)
         self.assertEqual(res, 19)
 
-
-
     def test_refresh(self):
         state = {"counter": 0}
+
         def get_now():
             return time.time() + state["counter"] * 60
 
@@ -142,8 +137,7 @@ class TestMemoize(unittest.TestCase):
 
         inserted, mvalue = self.backend[mkey]
         self.assertEqual(mvalue, res)
-        self.assertAlmostEqual(inserted, now+60, delta=0.1)
-
+        self.assertAlmostEqual(inserted, now + 60, delta=0.1)
 
 
 if __name__ == "__main__":

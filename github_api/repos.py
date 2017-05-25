@@ -6,4 +6,3 @@ def get_num_watchers(api, urn):
     # this is the field for watchers.  do not be tricked by "watchers_count"
     # which always matches "stargazers_count"
     return data["subscribers_count"]
-
