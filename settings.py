@@ -54,3 +54,7 @@ MEMOIZE_CACHE_DIRNAME = "api_cache"
 
 # used for calculating how long our voting window is
 TIMEZONE = "US/Pacific"
+		+
+# repo description
+with open("description.txt", "r") as h:
+    REPO_DESCRIPTION = h.read().strip()

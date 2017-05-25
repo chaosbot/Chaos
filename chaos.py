@@ -73,6 +73,9 @@ def main():
     # Schedule all cron jobs to be run
     cron.schedule_jobs()
 
+    log.info("Setting description to {desc}".format(desc=settings.REPO_DESCRIPTION))
+    repos.set_desc(api, settings.URN, settings.REPO_DESCRIPTION)
+
     while True:
         # Run any scheduled jobs on the next second.
         schedule.run_pending()
