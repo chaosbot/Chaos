@@ -22,6 +22,8 @@ import github_api.voting
 import github_api.repos
 import github_api.comments
 
+import encryption
+
 from github_api import exceptions as gh_exc
 
 
