@@ -105,7 +105,7 @@ When in SSH:
 
 ## Nbody simulation status
 
-![So chaotic](data/imgs/nbody.png)
+![So chaotic](chaosthebot.com/static/imgs/nbody.png)
 
 
 ## FAQ

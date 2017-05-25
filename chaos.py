@@ -106,7 +106,7 @@ def main():
         ax = plt.gca()
         ax.scatter(positions[:,0],positions[:,1],s=5,
                    color='#64B5CD') # Love that blue
-        fig.savefig("data/imgs/nbody.png")
+        fig.savefig("server/static/png/nbody.png")
 
 if __name__ == "__main__":
     main()
