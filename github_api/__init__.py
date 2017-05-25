@@ -42,10 +42,10 @@ class API(object):
         reset_in = max(self._reset - now, 0)
         cooldown = compute_api_cooldown(self._remaining, reset_in)
         log.debug("requests remaining: %s, reset in: %ds, cooldown sleep: %0.2fs",
-                self._remaining, reset_in, cooldown)
+                  self._remaining, reset_in, cooldown)
         time.sleep(cooldown)
 
-        url = self.BASE_URL+path
+        url = self.BASE_URL + path
         if re.match("https?://", path):
             url = path
 
@@ -53,7 +53,7 @@ class API(object):
 
         log.info("requesting %s to %r", method.upper(), path)
         resp = requests.request(method, url, headers=headers, auth=self._auth,
-                **kwargs)
+                                **kwargs)
 
         h = resp.headers
 
@@ -64,7 +64,6 @@ class API(object):
         # on error, we won't receive these headers
         except KeyError:
             pass
-
 
         resp.raise_for_status()
 

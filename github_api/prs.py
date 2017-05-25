@@ -24,7 +24,8 @@ def merge_pr(api, urn, pr, votes, total, threshold):
 
     pr_url = "https://github.com/{urn}/pull/{pr}".format(urn=urn, pr=pr_num)
 
-    title = "merging PR #{num}: {pr_title}".format(num=pr_num, pr_title=pr_title)
+    title = "merging PR #{num}: {pr_title}".format(
+        num=pr_num, pr_title=pr_title)
     desc = """
 {pr_url}: {pr_title}
 
@@ -35,11 +36,11 @@ Description:
 
 {record}
 """.strip().format(
-    pr_url=pr_url,
-    pr_title=pr_title,
-    pr_description=pr_description,
-    summary=votes_summary,
-    record=record,
+        pr_url=pr_url,
+        pr_title=pr_title,
+        pr_description=pr_description,
+        summary=votes_summary,
+        record=record,
     )
 
     data = {
@@ -151,7 +152,8 @@ def get_ready_prs(api, urn, window):
                 last_update = max(arrow.get(pr["updated_at"]), updated)
                 update_delta = (now - last_update).total_seconds()
                 if update_delta >= 60 * 60 * settings.PR_STALE_HOURS:
-                    comments.leave_stale_comment(api, urn, pr["number"], round(update_delta / 60 / 60))
+                    comments.leave_stale_comment(
+                        api, urn, pr["number"], round(update_delta / 60 / 60))
                     close_pr(api, urn, pr)
             # mergeable can also be None, in which case we just skip it for now
 

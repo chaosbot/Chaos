@@ -6,8 +6,8 @@ from . import helpers
 
 
 def memoize(ttl_spec, whitelist=None, blacklist=None,
-        key_fn=helpers._json_keyify, backend=lambda fn: dict(),
-        get_now=time.time):
+            key_fn=helpers._json_keyify, backend=lambda fn: dict(),
+            get_now=time.time):
     """ memoize/cache the decorated function for ttl amount of time """
 
     ttl = helpers._time_code_to_seconds(ttl_spec)
@@ -20,7 +20,7 @@ def memoize(ttl_spec, whitelist=None, blacklist=None,
         def wrapper2(*args, **kwargs):
             # extract the arg names and values to use in our memoize key
             to_use = helpers._extract_args(sig.args, sig.defaults, args, kwargs,
-                    whitelist, blacklist)
+                                           whitelist, blacklist)
 
             # and construct our memoize key
             key = key_fn(to_use)
