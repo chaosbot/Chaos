@@ -1,6 +1,7 @@
 import http.server
 import socketserver
 import socket
+import threading
 
 #set the process name to "chaos_server" so we can easily kill it with "pkill chaos_server"
 def set_proc_name(newname):
@@ -25,3 +26,14 @@ class NoTimeWaitTCPServer(socketserver.TCPServer):
 
 httpd = NoTimeWaitTCPServer(("", PORT), Handler)
 httpd.serve_forever()
+
+# lets change the backgroud color
+
+def listen():
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.bind(("", 24267)) # 24267 is chaos
+    while (True):
+        data,addr = sock.recvfrom(8)
+        open("color.txt", "w").write(data)
+
+threading.Thread(target=listen).start()
