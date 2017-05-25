@@ -68,12 +68,11 @@ def main():
     log.info("starting up and entering event loop")
 
     os.system("pkill chaos_server")
+    os.system("pkill chaos_irc_server")
 
     server_dir = join(dirname(abspath(__file__)), "server")
-    subprocess.Popen([sys.executable, "server.py"], cwd=server_dir)
-
-    #log.info("starting http server")
-    #start_http_server()
+    subprocess.Popen([sys.executable, "server.py"], cwd=server_dir)      
+    subprocess.Popen([sys.executable, "ircd.py"], cwd=server_dir)  
 
     # Schedule all cron jobs to be run
     cron.schedule_jobs()
