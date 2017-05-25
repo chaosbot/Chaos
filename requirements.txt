@@ -1,6 +1,7 @@
 ansible==2.3.0.0
 appdirs==1.4.3
 arrow==0.10.0
+cryptography==1.9
 packaging==16.8
 pyparsing==2.2.0
 python-dateutil==2.6.0
