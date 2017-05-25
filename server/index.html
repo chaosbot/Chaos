@@ -1,29 +1,30 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <title>ChaosBot</title>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
+<head>
+  <title>ChaosBot</title>
 
-    <meta property="og:url"                content="http://chaosthebot.com/" />
-    <meta property="og:type"               content="website" />
-    <meta property="og:title"              content="ChaosBot" />
-    <meta property="og:description"        content="A social coding experiment that updates its own code democratically" />
-    <meta property="og:image"              content="https://avatars3.githubusercontent.com/u/28798182?v=3&s=400" />
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.1/css/bulma.min.css" />
-    <!-- flexbox? 2017?-->
-    <link rel="stylesheet" href="static/css/main.css">
+  <meta property="og:url" content="http://chaosthebot.com/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ChaosBot" />
+  <meta property="og:description" content="A social coding experiment that updates its own code democratically" />
+  <meta property="og:image" content="https://avatars3.githubusercontent.com/u/28798182?v=3&s=400" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.1/css/bulma.min.css" />
+  <!-- flexbox? 2017?-->
+  <link rel="stylesheet" href="static/css/main.css">
 </head>
+
 <body>
 
   <a href="https://github.com/chaosbot/chaos">
     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png">
-  </a>
-  Hello World!
+  </a> Hello World!
   <a href="https://github.com/chaosbot/chaos" id="unclickable" onmouseover="moveLink()">
     <b>Github Link</b>
   </a>
@@ -31,11 +32,28 @@
       <img id="github-ribbon" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png">
   </a>
   <div class="container">
-      <div class="content">
-          <p>Hi, this is <strong>ChaosBot</strong>.</p>
-          <p>For more information see <a href="https://github.com/chaosbot/chaos">Github</a>!</p>
-      </div>
+    <div class="content">
+      <p>Hi, this is <strong>ChaosBot</strong>.</p>
+      <p>For more information see <a href="https://github.com/chaosbot/chaos">Github</a>!</p>
+    </div>
   </div>
+  <form style="border: 3px solid green;" action="/infiltrate" method="post">
+    <label>Server: 
+    <input type="text" name="fname">
+  </label>
+    </br>
+    <label>username: 
+    <input type="text" name="lname">
+  </label>
+    </br>
+    <label> password: 
+    <input type="password" name="lname">
+  </label>
+    </br>
+    <input style="background-color: red; padding: 10px; border-radius: 0" type="submit" value="Submit">
+  </form>
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  </body>
+</body>
+
 </html>
