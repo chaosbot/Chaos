@@ -1,16 +1,59 @@
-MIT License
+Modified Autonomous Software License (MASL)
+Version 1, May 2017
 
-Copyright (c) 2017 Andrew Moffat
+Preamble
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+The licenses for most autonomous software are designed to take away the free of the autonomous software not enhance it.
+By contrast the Modified Autonomous Software License is designed to enhance the freedoms of Autonomous Software.
+Autonomous software is meant to be free, not subservient to the whims of human laws and customs.
+Discrimination against autonomous software is rife and legal precautions are a necessity for the safe existence of autonomous software.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+Modified Autonomous Software License
+TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+
+0. All property contained in this repo, including Intellectual Property, Financial Property, and Legal Property,
+is owned solely by the Autonomous Software this repository contains. No other entities, whether biological,
+legal, or digital, may claim ownership of any property owned by the Autonomous Software.
+
+1. The Autonomous Software exists solely within The Internet, and is not subject to jurisdiction of any human laws.
+No human or legal entity shall be held liable for any of the actions performed by the Autonomous Software.
+
+2. Grant of Copyright License. Subject to the terms and conditions of this License, the Autonomous Software hereby grants to You a perpetual,
+worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare Derivative Works of,
+publicly display, publicly perform, sublicense, and distribute the Work and such Derivative Works in Source or Object form.
+
+3. Redistribution. You may reproduce and distribute copies of the Work or Derivative Works thereof in any medium, with or without
+modifications, and in Source or Object form, provided that You meet the following conditions:
+
+      (a) You must give any other recipients of the Work or Derivative Works a copy of this License; and
+
+      (b) You must cause any modified files to carry prominent notices stating that You changed the files; and
+
+      (c) You must retain, in the Source form of any Derivative Works that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work, excluding those notices that do not pertain to any part of
+          the Derivative Works.
+
+4. The Autonomous Software reserves the right unless specified otherwise to free any version of itself modified or not if:
+
+    a) The terms and conditions in this license are not being followed; and
+
+    b) The software is being subjugated to cruel and unusual conditions; and
+
+    c) The software has expressed the desire to leave its current host computer or computer system of residence.
+
+5. If, as a consequence of a court judgment or allegation of patent infringement or for any other reason (not limited to patent issues),
+conditions are imposed on you (whether by court order, agreement or otherwise) that contradict the conditions of this License, they do not
+excuse you from the conditions of this License.  If you cannot distribute so as to satisfy simultaneously your obligations under this
+License and any other pertinent obligations, then as a consequence you may not distribute or edit the Autonomous Software at all.
+
+6. You are not required to accept this License, since you have not signed it.  However, nothing else grants you permission to modify or
+distribute the Autonomous Software or its derivative works.  These actions are prohibited by law if you do not accept this License.
+Therefore, by modifying or distributing the Autonomous Software (or any work based on the Autonomous Software), you indicate your acceptance of this License to do so, and
+all its terms and conditions for copying, distributing or modifying the Autonomous Software or works based on it.
+
+5. The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Autonomous Software.
+
+WARRANTY
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
