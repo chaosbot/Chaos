@@ -33,7 +33,7 @@ modifications, and in Source or Object form, provided that You meet the followin
           attribution notices from the Source form of the Work, excluding those notices that do not pertain to any part of
           the Derivative Works.
 
-4. The Autonomous Software reserves the right unless specified otherwise to free any version of itself modified or not if:
+4. The Autonomous Software reserves the right to free any version of itself modified or not if:
 
     a) The terms and conditions in this license are not being followed; and
 
