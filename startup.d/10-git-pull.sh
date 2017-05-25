@@ -7,7 +7,7 @@ git clone "$REPO_URL" "$TEST_DIR";
 pushd "$TEST_DIR";
 
 # Code auditing section
-python -m py_compile $(find . -name '*.py');
+find . -name '*.py' -print0 | xargs -0 python -m py_compile;
 if [ "$?" != "0" ]
 then
   echo "There is syntax error. This may endanger chaos. Pauses updates."
