@@ -1,0 +1,37 @@
+---
+- name: ensure required packages are installed and updated
+  hosts: localhost
+  connection: local
+  tasks:
+
+  - name: ensure repositories are available
+    apt_repository:
+      repo: "{{ item }}"
+    with_items:
+      - 'ppa:fkrull/deadsnakes'
+
+  - name: ensure required packages are installed
+    apt: 
+      update_cache: yes
+      cache_valid_time: 3600
+      state: latest
+      name: "{{ item }}"
+    with_items:
+      - git
+      - mysql-server
+      - nginx
+      - python-software-properties
+      - software-properties-common
+      - supervisor
+      - curl
+      - python3.6
+      - build-essential
+      - libpython3.6-dev
+      - libssl-dev
+      - libffi-dev
+      - puppet
+
+  - name: update all other packages
+    apt: 
+      update_cache: no
+      upgrade: yes

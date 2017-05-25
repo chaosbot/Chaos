@@ -35,6 +35,6 @@ def decorate(fn, dec):
 # now let's memoize some very frequent api calls that don't change often
 decorate(github_api.voting.get_vote_weight, api_memoize("1d"))
 decorate(github_api.repos.get_num_watchers, api_memoize("10m"))
-decorate(github_api.prs.get_is_mergeable, api_memoize("5m"))
+decorate(github_api.prs.get_is_mergeable, api_memoize("2m"))
 
 

@@ -7,13 +7,12 @@ merged in.  If you do not wish for ChaosBot to consider your PR for merging just
 yet, add "WIP" somewhere in your PR title.  Remove it when you're ready for voting.
 
 # Changing your PR
-It is very important that you avoid updating your PR with new commits after it
-has been created.  The reason for this is that ChaosBot will only consider votes
-that were cast **after** the last code change timestamp.  So if you collect a
-bunch of votes and PR, you have lost those votes.
+You may change your PR at any time without losing votes, but keep in mind, any
+new changes will reset the vote window for additional time.
 
 # Merging your PR
 At the end of the voting window, ChaosBot will review the votes, and if your PR
-crosses a threshold, your changes will be merged in.  If your changes are not
+crosses a threshold, your changes will be merged in.  To thank you for your merged
+contribution, ChaosBot will then follow you on GitHub.  If your changes are not
 merged in, take the time to consider the feedback you received, and create a new
 PR with changes you believe people will be willing to vote for.

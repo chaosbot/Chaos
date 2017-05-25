@@ -67,6 +67,11 @@ class API(object):
 
 
         resp.raise_for_status()
-        data = resp.json()
+
+        # not all requests return json, and this will raise for those
+        try:
+            data = resp.json()
+        except:
+            data = None
 
         return data

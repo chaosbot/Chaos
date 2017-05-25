@@ -1,5 +1,7 @@
 *.pyc
 .DS_Store
 .venv
-github_pat.secret
 *.swp
+*.secret
+*.swp
+.vagrant/
