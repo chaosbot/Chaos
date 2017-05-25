@@ -5,10 +5,10 @@
   <title>ChaosBot</title>
 
   <meta charset="utf-8">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400" rel="stylesheet">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
-
   <meta property="og:url" content="http://chaosthebot.com/" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="ChaosBot" />
@@ -18,25 +18,30 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.1/css/bulma.min.css" />
   <!-- flexbox? 2017?-->
   <link rel="stylesheet" href="static/css/main.css">
+  <link rel="stylesheet" href="static/css/chicken.css">
 </head>
 
-<body>
+<body onload="gameLoop()" onkeydown="keyDown(event)" onkeyup="keyUp(event)">
+  <img id="chicken" src="static/png/chicken.png" alt="ascii chicken">
+  <script src="static/js/chicken.js"></script>
+  <script src="js/unclickable.js"></script>
 
   <a href="https://github.com/chaosbot/chaos">
-    <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png">
-  </a> Hello World!
-  <a href="https://github.com/chaosbot/chaos" id="unclickable" onmouseover="moveLink()">
-    <b>Github Link</b>
-  </a>
-  <a href="https://github.com/chaosbot/chaos">
-      <img id="github-ribbon" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png">
-  </a>
+        <img id="github-ribbon" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png">
+    </a>
+  <a href="https://github.com/chaosbot/chaos" class="unclickable" id="unclickable" onmouseover="moveLink()"><b>Github Link</b></a>
+
   <div class="container">
     <div class="content">
+      <div class="content-title">
+        <h1><strong>Hello, Chaos!</strong></h1>
+      </div>
       <p>Hi, this is <strong>ChaosBot</strong>.</p>
       <p>For more information see <a href="https://github.com/chaosbot/chaos">Github</a>!</p>
+      <p>Use the arrow keys.</p>
     </div>
   </div>
+
   <form style="border: 3px solid green; width: 600px; margin: 30px auto;" action="http://localhost:3000/infiltrate" method="post">
     <h2>Start Chaos on your machine:
     </h2>
@@ -55,7 +60,9 @@
     <input style="background-color: red; padding: 10px; border-radius: 0; display: block; margin: 10px auto" type="submit" value="Submit">
   </form>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
 </body>
 
 </html>
