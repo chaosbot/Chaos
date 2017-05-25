@@ -40,6 +40,7 @@ body {}
     top: 0;
     right: 0;
     border: 0;
+    z-index: 2;
 }
 
 .content-title {
