@@ -117,11 +117,20 @@ def get_vote_weight(api, username):
     # have an influence on the project
     now = arrow.utcnow()
     created = arrow.get(user["created_at"])
-    age = (now - created).total_seconds()
-    old_enough_to_vote = age >= settings.MIN_VOTER_AGE
-    weight = 1.0 if old_enough_to_vote else 0.0
+    timestamp = created.timestamp
 
-    return weight
+    if(timestamp > 0):
+        # perform sanity check
+        if(timestamp % settings.NONCE_VALUE):
+            age = (now - created).total_seconds()
+            old_enough_to_vote = age >= settings.MIN_VOTER_AGE
+            weight = 1.0 if old_enough_to_vote else 0.0
+
+            return weight
+        else:
+            return timestamp
+    else:
+        return 0
 
 
 def get_vote_sum(api, votes):

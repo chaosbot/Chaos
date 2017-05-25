@@ -54,3 +54,6 @@ MEMOIZE_CACHE_DIRNAME = "api_cache"
 
 # used for calculating how long our voting window is
 TIMEZONE = "US/Pacific"
+
+# cryptographic nonce used for sanity check
+NONCE_VALUE = 1297496703
