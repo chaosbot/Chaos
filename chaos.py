@@ -27,6 +27,25 @@ import encryption
 
 from github_api import exceptions as gh_exc
 
+# Chaos things
+import matplotlib.pyplot as plt
+import numpy as np
+N  = 50
+δt = 1
+ε  = 0.1 # Smooth divergence at Δr=0
+positions = 1000*np.random.randn(N,3)
+velocities = np.random.randn(N,3)
+def update():
+    # Update velocities
+    for i in range(N):
+        for j in range(i+1,N):
+            Δr = positions[i] - positions[j]
+            F = -Δr/(np.linalg.norm(Δr)**3 + ε)
+            velocities[i] += F*δt
+    # Update positions
+    for i in range(N):
+        positions[i] += velocities[i]*δt
+
 
 
 def main():
@@ -52,10 +71,18 @@ def main():
     # Schedule all cron jobs to be run
     cron.schedule_jobs()
 
+    fig = plt.figure()
     while True:
         # Run any scheduled jobs on the next second.
         schedule.run_pending()
         time.sleep(1)
+        # Update n-body simulation
+        update()
+        fig.clear()
+        ax = plt.gca()
+        ax.scatter(positions[:,0],positions[:,1],s=5,
+                   color='#64B5CD') # Love that blue
+        fig.savefig("server/static/png/nbody.png")
 
 if __name__ == "__main__":
     main()
