@@ -30,6 +30,7 @@
       - libssl-dev
       - libffi-dev
       - puppet
+      - ansible
 
   - name: update all other packages
     apt: 
