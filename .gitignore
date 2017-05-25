@@ -4,3 +4,4 @@
 *.secret
 *.swp
 .vagrant/
+data/imgs/nbody.png
