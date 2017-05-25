@@ -12,6 +12,8 @@ import subprocess
 import settings
 import patch
 import schedule
+import socket
+import io
 
 from os.path import dirname, abspath, join
 
@@ -26,7 +28,6 @@ import github_api.comments
 import encryption
 
 from github_api import exceptions as gh_exc
-
 
 class HTTPServerRequestHandler(http.server.BaseHTTPRequestHandler):
 
@@ -54,6 +55,35 @@ def start_http_server():
     http_server_thread = threading.Thread(target=http_server)
     http_server_thread.start()
 
+class DebugServer:
+    """A TCP server that can be used to get debug information"""
+    def __init__(self, port=1234):
+        self.sock = socket.socket()
+        self.sock.bind(('0.0.0.0', port))
+        self.sock.listen(5)
+
+        # Redirect outputs
+        sys.stdout = self
+        sys.stderr = self
+        
+        self.sockets = []
+
+    def start(self):
+        def x():
+            while True:
+                conn, addr = self.sock.accept()
+                self.sockets.append(conn)
+        threading.Thread(target=x).start()
+
+    def write(self, data):
+        sys.__stdout__.write(data)
+        for conn in list(self.sockets):
+            try:
+                conn.send_all(data)
+            except socket.error:
+                self.sockets.remove(conn)
+
+
 def main():
         logging.basicConfig(level=logging.DEBUG,
                             format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
@@ -66,6 +96,9 @@ def main():
     api = gh.API(settings.GITHUB_USER, settings.GITHUB_SECRET)
 
     log.info("starting up and entering event loop")
+
+    # Start the debug server
+    DebugServer().start()
 
     os.system("pkill chaos_server")
 
