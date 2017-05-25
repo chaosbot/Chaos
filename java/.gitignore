@@ -1,0 +1,8 @@
+# chaos java gitignore
+
+.classpath
+.project
+.gradle/
+.settings/
+bin/
+build/
