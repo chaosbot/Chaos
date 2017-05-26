@@ -2,6 +2,7 @@ from math import log
 import arrow
 import re
 from emoji import demojize
+import utils.bonus as bonus
 
 from . import prs
 from . import comments
@@ -118,6 +119,10 @@ def get_vote_weight(api, username):
     age = (now - created).total_seconds()
     old_enough_to_vote = age >= settings.MIN_VOTER_AGE
     weight = 1.0 if old_enough_to_vote else 0.0
+
+    # bonus!
+    if weight >= 1 and ( bonus.is_palindrome(pr_num) or bonus.is_1337(pr_num) ): # and is worthy of a bonus
+        weight += settings.BONUS_WEIGHT
 
     return weight
 
