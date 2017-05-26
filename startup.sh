@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 cd "$(dirname "$0")"
 
 for file in startup.d/*; do
