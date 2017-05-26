@@ -4,3 +4,4 @@
 *.secret
 *.swp
 .vagrant/
+server/node_modules
