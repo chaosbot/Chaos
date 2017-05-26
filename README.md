@@ -1,5 +1,7 @@
 # ChaosBot
 
+testing re-open of PR after self close
+
 [![Gitter chat](https://badges.gitter.im/chaosthebot/gitter.png)](https://gitter.im/chaosthebot/Lobby)
 
 > Chaos, the vacant and infinite space which existed according to the ancient
