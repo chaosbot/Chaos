@@ -1,6 +1,15 @@
+*.bak
 *.pyc
-.DS_Store
-.venv
+*.pyo
 *.secret
 *.swp
+*.tmp
+*~
+.DS_Store
 .vagrant/
+.venv
+__pycache__
+github_pat.secret
+.idea
+api_cache/
+server/pubkey.txt
