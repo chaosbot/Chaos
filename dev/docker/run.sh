@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 docker run -it --rm\
     -v $(cd ../../; pwd):/root/workspace/Chaos\
     -p 8082:80\
