@@ -1,6 +1,6 @@
 import logging
+import time
 import praw
-from praw.models import MoreComments
 
 
 '''Authenticated instance of Reddit'''
@@ -16,14 +16,42 @@ reddit = praw.Reddit(
 
 subreddit = reddit.subreddit('chaosthebot')
 log = logging.getLogger("chaosbot")
+handler = logging.StreamHandler()
+formatter = logging.Formatter(
+        '%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
+handler.setFormatter(formatter)
+log.addHandler(handler)
+log.setLevel(logging.INFO)
 
 
-def process_submission(submission):
-    log.info("Processing", submission.title)
-    for comment in submission.comments:
-        if "hey chaosbot" in comment.body.lower():
-            comment.reply("Hey {}!".format(comment.author.name))
+already_replied = set()
+try:
+    with open("redditbot_replied.txt") as f:
+        already_replied.update(f.readlines())
+except FileNotFoundError:
+    pass
 
 
-for submission in subreddit.stream.submissions():
-    process_submission(submission)
+def process_comment(comment):
+    log.info("Processing comment id %s", comment.id)
+    if comment.id not in already_replied and "hey chaosbot" in comment.body.lower():
+        comment.reply("Hey {}!".format(comment.author.name))
+        already_replied.add(comment.id)
+
+
+def main():
+    try:
+        for comment in subreddit.stream.comments():
+            try:
+                process_comment(comment)
+            except praw.exceptions.APIException as ex:
+                sleep_time = reddit.auth.limits['reset_timestamp'] - time.time()
+                log.info("Sleeping for %d seconds", sleep_time)
+                time.sleep(sleep_time)
+    finally:
+        with open("redditbot_replied.txt", 'a') as f:
+            for id in already_replied:
+                f.write(id+"\n")
+
+if __name__ == "__main__":
+    main()

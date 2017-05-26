@@ -5,3 +5,4 @@
 *.secret
 *.swp
 .vagrant/
+redditbot_replied.txt
