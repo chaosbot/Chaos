@@ -70,5 +70,5 @@ TIMEZONE = "US/Pacific"
 # will be closed
 PR_STALE_HOURS = 24
 
-# Bonus multiplier for special pull request
-BONUS_WEIGHT = 0.3
+# Bonus for special pull requests
+BONUS = 1

@@ -120,10 +120,6 @@ def get_vote_weight(api, username):
     old_enough_to_vote = age >= settings.MIN_VOTER_AGE
     weight = 1.0 if old_enough_to_vote else 0.0
 
-    # bonus!
-    if weight >= 1 and ( bonus.is_palindrome(pr_num) or bonus.is_1337(pr_num) ): # and is worthy of a bonus
-        weight += settings.BONUS_WEIGHT
-
     return weight
 
 
@@ -134,6 +130,10 @@ def get_vote_sum(api, votes):
     for user, vote in votes.items():
         weight = get_vote_weight(api, user)
         total += weight * vote
+
+    # bonus!
+    if bonus.is_palindrome(pr_num) or bonus.is_1337(pr_num):
+        total += settings.BONUS
 
     return total
 
