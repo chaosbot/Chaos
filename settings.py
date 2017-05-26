@@ -32,7 +32,7 @@ GITHUB_USER, GITHUB_REPO = URN.split("/")
 TEST = False
 
 # the number of seconds chaosbot should sleep between polling for ready prs
-PULL_REQUEST_POLLING_INTERVAL_SECONDS = 30
+PULL_REQUEST_POLLING_INTERVAL_SECONDS = 60 * 2
 
 # The default number of hours for how large the voting window is
 DEFAULT_VOTE_WINDOW = 2.0
