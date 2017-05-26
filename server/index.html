@@ -51,10 +51,23 @@
             <div class="column">
                 <div class="content has-text-centered">
                     <div class="content-title header">
-                        <h1 class="title"><strong>Hello, Chaos!</strong></h1>
+                        <canvas id="canvas"></canvas>
                     </div>
-                    <canvas id="canvas"></canvas>
-                    <p class="subtitle">Hi, this is <strong>ChaosBot</strong>.</p>
+                    <h1 class="title"><strong>Chaos Forum</strong></h1>
+                    <p class="subtitle">This is your personal <strong>ChaosBot</strong> avatar:</p>
+                    <p class="avatar">
+                        <img id="profile" alt="Profile image" src=""></br>
+                        <strong class="name"></strong>
+                    </p>
+                    <p class="content">
+                        <form action="/submitChatMessage" method="post">
+                            <input id="chatId" type="hidden" name="chatId" value="">
+                            <input id="chatUser" type="hidden" name="chatUser" value="">
+                            Say something, <span class="name"></span>: <input type="text" name="chatMessage"><br>
+                            <input type="submit" value="Submit">
+                        </form>
+                    </p>
+                    <hr>
                     <p class="content">ChaosBot is a social coding experiment to see what happens when the absolute direction of a software project is turned over to the open source community.</p>
                     <p class="content">For more information see <a href="https://github.com/chaosbot/chaos">Github</a>!</p>
 
@@ -67,5 +80,9 @@
         </div>
     </div>
     <script src="static/js/chaos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/1.5.1/fingerprint2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/2.4.3/seedrandom.js"></script>
+    <script src="static/js/whoisit.js"></script>
+    <script src="static/js/pop.js"></script>
 </body>
 </html>
