@@ -34,17 +34,8 @@ TEST = False
 # the number of seconds chaosbot should sleep between polling for ready prs
 PULL_REQUEST_POLLING_INTERVAL_SECONDS = 30
 
-# The default number of hours for how large the voting window is
-DEFAULT_VOTE_WINDOW = 2.0
-
-# The number of hours for how large the voting window is in the "after hours"
-AFTER_HOURS_VOTE_WINDOW = 3.0
-
-# The hour (in the server time zone) when the after hours start
-AFTER_HOURS_START = 22
-
-# The hour when the after hours end
-AFTER_HOURS_END = 10
+# The voting window in hours
+VOTE_WINDOW_HOURS = 3.5
 
 # how old do voters have to be for their vote to count?
 MIN_VOTER_AGE = 1 * 30 * 24 * 60 * 60  # 1 month
