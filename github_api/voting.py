@@ -2,6 +2,7 @@ from math import log
 import arrow
 import re
 from emoji import demojize
+import utils.bonus as bonus
 
 from . import prs
 from . import comments
@@ -129,6 +130,10 @@ def get_vote_sum(api, votes):
     for user, vote in votes.items():
         weight = get_vote_weight(api, user)
         total += weight * vote
+
+    # bonus!
+    if bonus.is_palindrome(pr_num) or bonus.is_1337(pr_num):
+        total += settings.BONUS
 
     return total
 
