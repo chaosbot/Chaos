@@ -4,3 +4,4 @@
 *.secret
 *.swp
 .vagrant/
+github_pat.secret
