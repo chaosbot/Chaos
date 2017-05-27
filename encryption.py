@@ -46,8 +46,8 @@ def create_decryptor(private_location, public_location):
         >>> encrypted = pkey.encrypt(message, padding.OAEP(
         ...     padding.MGF1(hashes.SHA1()),
         ...     hashes.SHA1(),
-        ...     None)
-        ... )
+        ...     None
+        ... ))
         >>> decrypt(encrypted)
         b'Hello, world!'
         """
