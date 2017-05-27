@@ -1,5 +1,4 @@
-#!/bin/sh
-
+#!/usr/bin/env bash
 # Prepare code auditing environment
 REPO_URL=$(git remote get-url origin)
 TEST_DIR=$(mktemp -d)
