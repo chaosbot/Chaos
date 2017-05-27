@@ -71,9 +71,11 @@ ChaosBot aims to provide a bot service for open source projects in order to enab
 
 #### Version 1
 
-* Github support
-* Python linting, style checks and code analysis
-* Telegram notifications
+* Github support. Monitoring of PRs and voting via emojis.
+* Python linting via [pylint](https://www.logilab.org/project/pylint)
+* style checks according to [PEP8](https://www.python.org/dev/peps/pep-0008/)
+* and code metrics via [radon](https://github.com/rubik/radon)
+* Telegram notifications to a group linked in the projects README
 
 
 ## Development
