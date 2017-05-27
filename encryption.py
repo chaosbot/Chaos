@@ -33,6 +33,20 @@ def create_decryptor(private_location, public_location):
         public_file.write(pem)
 
     def decrypt(ciphertext):
+        """Decrypts a string that was encrypted user-side.
+
+        Example:
+
+        >>> from cryptography.hazmat.backends import default_backend
+        >>> from cryptography.hazmat.primitives import hashes
+        >>> from cryptography.hazmat.primitives.asymmetric import padding
+        >>> from cryptography.hazmat.primitives.serialization import load_pem_public_key
+        >>> pkey = load_pem_public_key(open("server/pubkey.txt", "rb").read(), default_backend())
+        >>> message = b"Hello, world!"
+        >>> encrypted = pkey.encrypt(message, padding.OAEP(padding.MGF1(hashes.SHA1()), hashes.SHA1(), None))
+        >>> decrypt(encrypted)
+        ... b'Hello, world!'
+        """
         return private_key.decrypt(
             ciphertext,
             padding.OAEP(
