@@ -1,9 +1,15 @@
 import settings
+from datetime import datetime
+
+
+def get_path(urn):
+    """ return the path for the repo """
+    return "/repos/{urn}".format(urn=urn)
+
 
 def get_num_watchers(api, urn):
     """ returns the number of watchers for a repo """
-    path = "/repos/{urn}".format(urn=urn)
-    data = api("get", path)
+    data = api("get", get_path(urn))
     # this is the field for watchers.  do not be tricked by "watchers_count"
     # which always matches "stargazers_count"
     return data["subscribers_count"]
@@ -11,10 +17,18 @@ def get_num_watchers(api, urn):
 
 def set_desc(api, urn, desc):
     """ Set description and homepage of repo """
-    path = "/repos/{urn}".format(urn=urn)
+    path = get_path(urn)
     data = {
         "name": settings.GITHUB_REPO,
         "description": desc,
         "homepage": settings.HOMEPAGE,
     }
     api("patch", path, json=data)
+
+
+def get_creation_date(api, urn):
+    """ returns the creation date of the repo """
+    data = api("get", get_path(urn))
+    # this is the field for watchers.  do not be tricked by "watchers_count"
+    # which always matches "stargazers_count"
+    return datetime.strptime(data["created_at"], "%Y-%m-%dT%H:%M:%SZ").date()
