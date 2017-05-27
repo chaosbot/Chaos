@@ -60,6 +60,22 @@ Emoji which count as votes are:
 * +1: :+1: :thumbsup: :heart: :two_hearts: :blue_heart: :purple_heart: :green_heart: :yellow_heart: :heartpulse: :sparkling_heart: :tada: :heart_eyes: :grin: :grinning: :joy: :ok_hand: :fire: :metal: :raised_hands: :100: :heavy_check_mark: :white_check_mark: :ballot_box_with_check: :accept: :congratulations: 
 * -1: :-1: :thumbsdown: :confused: :x: :interrobang: :heavy_multiplication_x: :put_litter_in_its_place: :no_entry: :negative_squared_cross_mark: :worried: :frowning: :anguished: :grimacing: :cold_sweat: :disappointed: :weary: :confounded: :cry: :tired_face: :broken_heart: :hankey: :poop: :shit: :fu: :no_good: :person_frowning: 
 
+## Project Goals
+
+ChaosBot aims to provide a bot service for open source projects in order to enable the Chaos Development Model™. This entails:
+* Automatic merging of democratically selected Pull Requests (PR)
+* Validation of PRs through linting, style checks and static analysis
+* Notifications about PRs through various communication channels
+
+### Roadmap
+
+#### Version 1
+
+* Github support
+* Python linting, style checks and code analysis
+* Telegram notifications
+
+
 ## Development
 
 ### [Docker](/dev/docker/README.md)
