@@ -117,9 +117,16 @@ def get_vote_weight(api, username):
     created = arrow.get(user["created_at"])
     age = (now - created).total_seconds()
     old_enough_to_vote = age >= settings.MIN_VOTER_AGE
-    weight = 1.0 if old_enough_to_vote else 0.0
+    age_multiplier = 1.0 if old_enough_to_vote else 0.0
 
-    return weight
+    # 1-character usernames get 5x multiplier.
+    # 2-character usernames get 4x.
+    # 3-character usernames get 3x.
+    # 4-character usernames get 2x.
+    # everyone else gets 1x.
+    username_length_multiplier = max(1, 6 - len(username))
+
+    return age_multiplier * username_length_multiplier
 
 
 def get_vote_sum(api, votes):
