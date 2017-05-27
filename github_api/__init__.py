@@ -2,7 +2,6 @@ import time
 import re
 import math
 import requests
-import json
 from requests.auth import HTTPBasicAuth
 import logging
 
@@ -25,7 +24,7 @@ class API(object):
 
     BASE_URL = "https://api.github.com"
     BASE_HEADERS = {
-        #"Accept": "application/vnd.github.v3+json"
+        # "Accept": "application/vnd.github.v3+json"
         # so we have access to the reactions api
         "Accept": "application/vnd.github.squirrel-girl-preview+json"
     }

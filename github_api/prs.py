@@ -1,5 +1,7 @@
 import arrow
+import math
 import settings
+from requests import HTTPError
 from . import misc
 from . import voting
 from . import comments
@@ -71,8 +73,9 @@ def formatted_votes_summary(votes, total, threshold):
     vfor = sum(v for v in votes.values() if v > 0)
     vagainst = abs(sum(v for v in votes.values() if v < 0))
 
-    return "with a vote of {vfor} for and {vagainst} against, with a weighted total of {total:.1f} and a threshold of {threshold:.1f}" \
-        .strip().format(vfor=vfor, vagainst=vagainst, total=total, threshold=threshold)
+    return ("with a vote of {vfor} for and {vagainst} against, with a weighted total \
+            of {total:.1f} and a threshold of {threshold:.1f}"
+            .strip().format(vfor=vfor, vagainst=vagainst, total=total, threshold=threshold))
 
 
 def formatted_votes_short_summary(votes, total, threshold):
@@ -89,7 +92,7 @@ def label_pr(api, urn, pr_num, labels):
         labels = [labels]
     path = "/repos/{urn}/issues/{pr}/labels".format(urn=urn, pr=pr_num)
     data = labels
-    resp = api("PUT", path, json=data)
+    return api("PUT", path, json=data)
 
 
 def close_pr(api, urn, pr):
@@ -106,10 +109,9 @@ def get_pr_last_updated(pr_data):
     modifications """
     repo = pr_data["head"]["repo"]
     if repo:
-        dt = repo["pushed_at"]
+        return arrow.get(repo["pushed_at"])
     else:
-        dt = pr_data["created_at"]
-    return arrow.get(dt)
+        return None
 
 
 def get_pr_comments(api, urn, pr_num):
@@ -134,6 +136,11 @@ def get_ready_prs(api, urn, window):
 
         now = arrow.utcnow()
         updated = get_pr_last_updated(pr)
+        if updated is None:
+            comments.leave_deleted_comment(api, urn, pr["number"])
+            close_pr(api, urn, pr)
+            continue
+
         delta = (now - updated).total_seconds()
 
         is_wip = "WIP" in pr["title"]
@@ -159,6 +166,8 @@ def get_ready_prs(api, urn, window):
 def voting_window_remaining_seconds(pr, window):
     now = arrow.utcnow()
     updated = get_pr_last_updated(pr)
+    if updated is None:
+        return math.inf
     delta = (now - updated).total_seconds()
     return window - delta
 

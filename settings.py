@@ -20,8 +20,11 @@ _pat_file = join(THIS_DIR, _pat_name)
 if not exists(_pat_file):
     _pat_file = join("/etc/", _pat_name)
 
-with open(_pat_file, "r") as h:
-    GITHUB_SECRET = h.read().strip()
+if exists(_pat_file):
+    with open(_pat_file, "r") as h:
+        GITHUB_SECRET = h.read().strip()
+else:
+    GITHUB_SECRET = None
 
 # unique globally accessible name for the repo on github.  typically looks like
 # "chaosbot/chaos"

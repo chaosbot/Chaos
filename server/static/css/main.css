@@ -2,60 +2,102 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    color: black;
 }
-
 html {
     font-family: 'Roboto', sans-serif;
     text-rendering: optimizeLegibility;
-    background-color: #2c2c2c;
+    background-color: #000000;
     text-align: justify;
+    overflow:auto;
 }
-
+html, body {
+    width: 100%;
+    height: 100%;
+}
 h1 {
     font-size: 80px;
     letter-spacing: .10em;
 }
-
-body {
-    margin-top: 1em;    
-}
-
 .container {
-    background-color: #FFFFFF;
+    z-index: 5;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-
 #header {
     text-align: center;
     min-width: 2em;
     padding: 0 25%;
     padding-top: 1em;
 }
-
+.github-corner:hover .octo-arm {
+    animation: octocat-wave 560ms ease-in-out
+}
+@keyframes octocat-wave {
+    0%, 100% {
+        transform: rotate(0)
+    }
+    20%, 60% {
+        transform: rotate(-25deg)
+    }
+    40%, 80% {
+        transform: rotate(10deg)
+    }
+}
+@media (max-width:500px) {
+    .github-corner:hover .octo-arm {
+        animation: none
+    }
+    .github-corner .octo-arm {
+        animation: octocat-wave 560ms ease-in-out
+    }
+}
 #github-ribbon {
     position: absolute;
     top: 0;
     right: 0;
     border: 0;
-    z-index: 100;    
+    z-index: 100;
 }
-
 .content-title {
-    border: 5px;
-    border-style: solid;
+    border: 5px solid #010101;
 }
-
+.fa, a {
+    color: #010101;
+}
 .content-title h1 {
     padding: 0.5em;
     margin-bottom: 0;
 }
-
+.description {
+    background: #fafafa;
+}
 #canvas {
     margin: 5px 0;
 }
-
 body.transform {
-  transform:rotate(180deg);
-  -ms-transform:rotate(180deg);
-  -webkit-transform:rotate(180deg);
+    transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
 }
+
+/* BACKGROUND */
+#bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -100;
+}
+#bg canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -100;
+}
+
+/* END BACKGROUND */

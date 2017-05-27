@@ -1,8 +1,7 @@
-from math import log
 import arrow
-import re
 from emoji import demojize
 
+from github_api.misc import dynamic_voting_window
 from . import prs
 from . import comments
 from . import users
@@ -126,11 +125,14 @@ def get_vote_sum(api, votes):
     """ for a vote mapping of username => -1 or 1, compute the weighted vote
     total """
     total = 0
+    variance = 0
     for user, vote in votes.items():
         weight = get_vote_weight(api, user)
         total += weight * vote
+        if weight * vote > 0:
+            variance += vote
 
-    return total
+    return total, (variance - total)
 
 
 def get_approval_threshold(api, urn):
@@ -187,7 +189,7 @@ def friendly_voting_record(votes):
     return record
 
 
-def get_voting_window(now):
+def get_initial_voting_window(now):
     """ returns the current voting window for new PRs.  currently, this biases
     a smaller window for waking hours around the timezone the chaosbot server is
     located in (US West Coast) """
@@ -200,4 +202,18 @@ def get_voting_window(now):
         hours = settings.AFTER_HOURS_VOTE_WINDOW
 
     seconds = hours * 60 * 60
+    return seconds
+
+
+def get_extended_voting_window(api, urn):
+    """ returns the extending voting window for PRs mitigated,
+    based on the difference between repo creation and now """
+
+    now = arrow.utcnow()
+    # delta between now and the repo creation date
+    delta = now - repos.get_creation_date(api, urn)
+    days = delta.days
+
+    hours = settings.DEFAULT_VOTE_WINDOW
+    seconds = dynamic_voting_window(days, hours) * 60 * 60
     return seconds

@@ -15,11 +15,13 @@ from memoize.backends import json_backend
 import github_api.voting
 import github_api.repos
 
+
 def decorate(fn, dec):
     """helper for monkey-patch-decorating functions in different modules"""
     mod = inspect.getmodule(fn)
     new_fn = dec(fn)
     setattr(mod, fn.__name__, new_fn)
+
 
 cache_dir = join(dirname(abspath(__file__)), settings.MEMOIZE_CACHE_DIRNAME)
 api_memoize = partial(memoize, blacklist={"api"}, backend=json_backend(cache_dir))

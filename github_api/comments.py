@@ -1,4 +1,3 @@
-import arrow
 import settings
 from . import prs
 
@@ -38,6 +37,15 @@ def leave_stale_comment(api, urn, pr, hours):
 
 Open a new PR with the merge conflicts fixed to restart voting.
     """.strip().format(hours=hours)
+    return leave_comment(api, urn, pr, body)
+
+
+def leave_deleted_comment(api, urn, pr):
+    body = """
+:no_good: The repository backing this PR has been deleted.
+
+Open a new PR with these changes to try again.
+    """.strip()
     return leave_comment(api, urn, pr, body)
 
 

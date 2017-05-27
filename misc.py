@@ -1,12 +1,13 @@
-import re
 import sh
 from urllib.parse import urlparse
+
 
 def removeDotGit(url):
     """ Remove trailing `.git` from the git remote url """
     if url.endswith('.git'):
         return url[:-4]
     return url
+
 
 def get_self_urn():
     """ determine the URN for the repo on github by looking at the remote named
@@ -33,4 +34,3 @@ def get_self_urn():
         urn = "chaosbot/chaos"
 
     return urn
-
