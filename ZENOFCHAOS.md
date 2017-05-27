@@ -4,7 +4,7 @@ This is the Zen of Chaos. We pay tribute to the Chaos. The Chaos join us to acco
 This is a list of principles that made The Chaos our religion.
 
 1. The Chaos is complicated
-2. The Chaos is our religion
-3. The Chaos is our inspiration to programming
-4. The Chaos guide us for make the best open source project
-5. 
+1. The Chaos is our religion
+1. The Chaos is our inspiration to programming
+1. The Chaos guides us in making the best open source project
+
