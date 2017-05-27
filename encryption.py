@@ -43,9 +43,13 @@ def create_decryptor(private_location, public_location):
         >>> from cryptography.hazmat.primitives.serialization import load_pem_public_key
         >>> pkey = load_pem_public_key(open("server/pubkey.txt", "rb").read(), default_backend())
         >>> message = b"Hello, world!"
-        >>> encrypted = pkey.encrypt(message, padding.OAEP(padding.MGF1(hashes.SHA1()), hashes.SHA1(), None))
+        >>> encrypted = pkey.encrypt(message, padding.OAEP(
+        ...     padding.MGF1(hashes.SHA1()),
+        ...     hashes.SHA1(),
+        ...     None)
+        ... )
         >>> decrypt(encrypted)
-        ... b'Hello, world!'
+        b'Hello, world!'
         """
         return private_key.decrypt(
             ciphertext,
