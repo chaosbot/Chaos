@@ -48,7 +48,7 @@ function loop() {
     pix_location[x] = [xPos, yPos];
     ctx.fillRect(pix_location[x][0], pix_location[x][1], 2, 2);
   }
-  //lastX = -1;
+  lastX = -1;
   lastY = -1;
   window.requestAnimationFrame(loop);
 }
