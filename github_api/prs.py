@@ -48,11 +48,17 @@ Description:
     data = {
         "commit_title": title,
         "commit_message": desc,
-        "merge_method": "merge",
 
         # if some clever person attempts to submit more commits while we're
         # aggregating votes, this sha check will fail and no merge will occur
         "sha": pr["head"]["sha"],
+
+        # default is "merge"
+        # i think we want to do a squash so its easier to auto-revert entire
+        # PRs, instead of detecting merge commits, then picking the right parent
+        # for a revert.  this way—with squash—every commit aside from hotfixes
+        # will be entire PRs
+        "merge_method": "squash",
     }
     try:
         resp = api("PUT", path, json=data)
