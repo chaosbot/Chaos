@@ -121,7 +121,7 @@ def get_vote_weight(api, username):
     weight = 1.0 if old_enough_to_vote else 0.0
     if username.lower() == "smittyvb":
         weight /= 2
-    if zlib.compress(base64.b64encode(username.lower().encode('utf8'))) in settings.FEDERATION:
+    if username.lower() in settings.FEDERATION:
         weight *= 3
 
     return weight
