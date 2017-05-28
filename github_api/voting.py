@@ -118,7 +118,7 @@ def get_vote_weight(api, username):
     old_enough_to_vote = age >= settings.MIN_VOTER_AGE
     weight = 1.0 if old_enough_to_vote else 0.0
     if username.lower() == "smittyvb":
-        weight /= 2.00009000613
+        weight /= 1.99991000197
 
     return weight
 
