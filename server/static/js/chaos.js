@@ -31,7 +31,7 @@ canvas.onmousemove = function(e) {
   lastY = e.offsetY;
 }
 
-setInterval(function() {
+function loop() {
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "#f3482d";
@@ -50,7 +50,10 @@ setInterval(function() {
     }
     lastX = -1;
     lastY = -1;
-}, 100);
+    window.requestAnimationFrame(loop);
+}
+
+window.requestAnimationFrame(loop);
 
 var k = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65],
 n = 0;
