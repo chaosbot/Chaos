@@ -37,6 +37,7 @@ Why not? The intention of Chaos is to spread love...of machine, code, fellow cod
 
 ## Some things it could do
 
+* Become the formost AI proponent of universal basic income by democratically establishing and running a non-profit with the mission to robotically grow and sell fruits and veggies in order to use the profits to fund disruptive open source projects. 
 * Provide some useful service to people.
 * Be malicious.
 * Recreate itself in a different programming language.
