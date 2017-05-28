@@ -71,26 +71,6 @@ MEMOIZE_CACHE_DIRNAME = "api_cache"
 # used for calculating how long our voting window is
 TIMEZONE = "US/Pacific"
 
-# contains all members of the galactic federation (everyone against PR#322 at 10:33 MDT and PR#297)
-FEDERATION = [
-    'phil-r',
-    'camd67',
-    'eukaryote31',
-    'reddraggone9',
-    'rhengles',
-    'plasmapower',
-    'qgustavor',
-    'anythingbot',
-    'ike709',
-    'rudehn',
-    'megosalpha',
-    'mrbennett',
-    'viktorsec',
-    'amoffat',
-    'viltaria',
-    'leigende'
-]
-
 # repo description
 with open("description.txt", "r") as h:
     REPO_DESCRIPTION = h.read().strip()

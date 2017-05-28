@@ -119,8 +119,8 @@ def get_vote_weight(api, username):
     weight = 1.0 if old_enough_to_vote else 0.0
     if username.lower() == "smittyvb":
         weight /= 2
-    if username.lower() in settings.FEDERATION:
-        weight *= 2
+    if username.lower() in [contrib.lower() for contrib in repos.get_contributors(api)]:
+        weight *= 1.1
 
     return weight
 
