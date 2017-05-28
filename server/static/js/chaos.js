@@ -19,7 +19,7 @@ var lastY = -1;
 
 for (x = 0; x < canvas.width; x += 2) {
   for (y = 0; y < canvas.height; y += 2) {
-    if (ctx.getImageData(x, y, 1, 1).data[0] !== 0) {
+    if (ctx.getImageData(x, y, 1, 1).data[3] !== 0) {
       char_location.push([x, y]);
       pix_location.push([0, 0]);
     }
