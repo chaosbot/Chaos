@@ -18,7 +18,9 @@
                 if (type.indexOf("text") !== 1) {
                     var json = JSON.parse(request.responseText);
                     var keys = Object.keys(json);
-                    var values = Object.values(json);
+                    var values = keys.map(function(key) {
+                        return json[key];
+                    });
 
                     // combine arrays
                     var list = [];
