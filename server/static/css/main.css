@@ -21,7 +21,12 @@ h1 {
 .container {
     z-index: 5;
     height: 100%;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 }
@@ -63,6 +68,9 @@ h1 {
 .card {
     width: 100%;
     max-width: 450px;
+    flex-shrink: 1;
+    flex-basis: auto;
+    overflow-y: auto;
 }
 .content-title {
     border: 5px solid #010101;
