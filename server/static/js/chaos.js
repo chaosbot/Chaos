@@ -19,9 +19,15 @@ var pix_location = [];
 var lastX = -1;
 var lastY = -1;
 
+var bg_rgb = parseInt(bg.substr(1), 16);
+var bg_a = new Uint8ClampedArray(4);
+bg_a[0] = (bg_rgb >> 16) & 0xFF;
+bg_a[1] = (bg_rgb >> 8) & 0xFF;
+bg_a[2] = bg_rgb & 0xFF;
+bg_a[3] = 255;
 for (x = 0; x < canvas.width; x += 2) {
   for (y = 0; y < canvas.height; y += 2) {
-    if (ctx.getImageData(x, y, 1, 1).data[0] != 250) {
+    if (JSON.stringify(ctx.getImageData(x, y, 1, 1).data) != JSON.stringify(bg_a)) {
       char_location.push([x, y]);
       pix_location.push([0, 0]);
     }
