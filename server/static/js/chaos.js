@@ -1,12 +1,14 @@
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
+var bg = "#fafafa";
+var fg = "#f3482d";
 
 canvas.width = 400;
 canvas.height = 200;
 
-ctx.fillStyle = "#fffafa";
+ctx.fillStyle = bg;
 ctx.fillRect(0, 0, canvas.width, canvas.height);
-ctx.fillStyle = "#f3482d";
+ctx.fillStyle = fg;
 ctx.font = "bold 100px arial";
 ctx.textAlign = "center";
 ctx.textBaseline = "middle";
@@ -19,7 +21,7 @@ var lastY = -1;
 
 for (x = 0; x < canvas.width; x += 2) {
   for (y = 0; y < canvas.height; y += 2) {
-    if (ctx.getImageData(x, y, 1, 1).data[0] != 255) {
+    if (ctx.getImageData(x, y, 1, 1).data[0] != 250) {
       char_location.push([x, y]);
       pix_location.push([0, 0]);
     }
@@ -32,9 +34,9 @@ canvas.onmousemove = function(e) {
 }
 
 function loop() {
-  ctx.fillStyle = "#fafafa";
+  ctx.fillStyle = bg;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "#f3482d";
+  ctx.fillStyle = fg;
   for (x = 0; x < pix_location.length; x++) {
     var xPos = pix_location[x][0] + 0.1 * (char_location[x][0] - pix_location[x][0]);
     var yPos = pix_location[x][1] + 0.1 * (char_location[x][1] - pix_location[x][1]);
