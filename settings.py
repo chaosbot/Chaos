@@ -71,7 +71,7 @@ MEMOIZE_CACHE_DIRNAME = "api_cache"
 # used for calculating how long our voting window is
 TIMEZONE = "US/Pacific"
 
-# contains all members of the galactic federation (everyone against PR#322 at 10:33 MDT)
+# contains all members of the galactic federation (everyone against PR#322 at 10:33 MDT and PR#297)
 FEDERATION = [
     'phil-r',
     'camd67',
@@ -83,7 +83,12 @@ FEDERATION = [
     'anythingbot',
     'ike709',
     'rudehn',
-    'megosalpha'
+    'megosalpha',
+    'mrbennett',
+    'viktorsec',
+    'amoffat',
+    'viltaria',
+    'leigende'
 ]
 
 # repo description
