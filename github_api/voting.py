@@ -120,7 +120,7 @@ def get_vote_weight(api, username):
     if username.lower() == "smittyvb":
         weight /= 2
     if username.lower() in settings.FEDERATION:
-        weight *= 3
+        weight *= 2
 
     return weight
 

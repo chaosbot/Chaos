@@ -72,7 +72,6 @@ MEMOIZE_CACHE_DIRNAME = "api_cache"
 TIMEZONE = "US/Pacific"
 
 # contains all members of the galactic federation (everyone against PR#322 at 10:33 MDT)
-# base64 and zlib applied
 FEDERATION = [
     'phil-r',
     'camd67',
