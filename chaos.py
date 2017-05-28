@@ -50,6 +50,13 @@ def main():
     log.info("Setting description to {desc}".format(desc=settings.REPO_DESCRIPTION))
     github_api.repos.set_desc(api, settings.URN, settings.REPO_DESCRIPTION)
 
+    log.info("Blocking users specified in blocklist")
+    with open(join(dirname(__file__), "blocklist"), "r") as blocklist:
+        try:
+            github_api.users.set_blocklist(api, blocklist.readlines())
+        except:
+            log.exception("Failed to update blocklist")
+
     while True:
         # Run any scheduled jobs on the next second.
         schedule.run_pending()
