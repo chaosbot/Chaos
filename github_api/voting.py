@@ -1,5 +1,3 @@
-import base64
-import zlib
 import arrow
 from emoji import demojize
 
