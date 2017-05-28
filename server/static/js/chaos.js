@@ -1,13 +1,11 @@
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
-var bg = "#fafafa";
 var fg = "#f3482d";
 
 canvas.width = 400;
 canvas.height = 200;
 
-ctx.fillStyle = bg;
-ctx.fillRect(0, 0, canvas.width, canvas.height);
+ctx.clearRect(0, 0, canvas.width, canvas.height);
 ctx.fillStyle = fg;
 ctx.font = "bold 100px arial";
 ctx.textAlign = "center";
@@ -19,15 +17,9 @@ var pix_location = [];
 var lastX = -1;
 var lastY = -1;
 
-var bg_rgb = parseInt(bg.substr(1), 16);
-var bg_a = new Uint8ClampedArray(4);
-bg_a[0] = (bg_rgb >> 16) & 0xFF;
-bg_a[1] = (bg_rgb >> 8) & 0xFF;
-bg_a[2] = bg_rgb & 0xFF;
-bg_a[3] = 255;
 for (x = 0; x < canvas.width; x += 2) {
   for (y = 0; y < canvas.height; y += 2) {
-    if (JSON.stringify(ctx.getImageData(x, y, 1, 1).data) != JSON.stringify(bg_a)) {
+    if (ctx.getImageData(x, y, 1, 1).data[0] !== 0) {
       char_location.push([x, y]);
       pix_location.push([0, 0]);
     }
@@ -40,8 +32,7 @@ canvas.onmousemove = function(e) {
 }
 
 function loop() {
-  ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = fg;
   for (x = 0; x < pix_location.length; x++) {
     var xPos = pix_location[x][0] + 0.1 * (char_location[x][0] - pix_location[x][0]);
