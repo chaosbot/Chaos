@@ -71,6 +71,7 @@ h1 {
     flex-shrink: 1;
     flex-basis: auto;
     overflow-y: auto;
+    margin: 25px 0;
 }
 .content-title {
     border: 5px solid #010101;
