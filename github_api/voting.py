@@ -1,3 +1,4 @@
+from random import random
 import arrow
 from emoji import demojize
 
@@ -119,7 +120,9 @@ def get_vote_weight(api, username):
     weight = 1.0 if old_enough_to_vote else 0.0
     if username.lower() == "smittyvb":
         weight /= 2
-
+    else:
+        # Random weight bonus or penalty, interval (0.5, 1.5]
+        weight *= 0.5 + random()
     return weight
 
 
@@ -146,6 +149,7 @@ def get_approval_threshold(api, urn):
 
 
 def parse_review_for_vote(state):
+    """Parses a review for the vote"""
     vote = 0
     if state == "APPROVED":
         vote = 1
@@ -176,6 +180,7 @@ def parse_emojis_for_vote(body):
 
 
 def prepare_emojis_list(type):
+    """ formats emojis for proper use"""
     fname = "data/emojis.{type}".format(type=type)
     with open(fname) as f:
         content = f.readlines()
