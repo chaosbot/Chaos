@@ -1,11 +1,13 @@
-import arrow
 import math
-import settings
+
+import arrow
 from requests import HTTPError
-from . import misc
-from . import voting
+
+import settings
 from . import comments
 from . import exceptions as exc
+from . import misc
+from . import voting
 
 
 def merge_pr(api, urn, pr, votes, total, threshold):
@@ -48,11 +50,17 @@ Description:
     data = {
         "commit_title": title,
         "commit_message": desc,
-        "merge_method": "merge",
 
         # if some clever person attempts to submit more commits while we're
         # aggregating votes, this sha check will fail and no merge will occur
         "sha": pr["head"]["sha"],
+
+        # default is "merge"
+        # i think we want to do a squash so its easier to auto-revert entire
+        # PRs, instead of detecting merge commits, then picking the right parent
+        # for a revert.  this way—with squash—every commit aside from hotfixes
+        # will be entire PRs
+        "merge_method": "squash",
     }
     try:
         resp = api("PUT", path, json=data)
@@ -126,8 +134,30 @@ def get_pr_comments(api, urn, pr_num):
         yield comment
 
 
+def has_build_passed(api, statuses_url):
+    """
+        Check if a Pull request has passed Travis CI builds
+    :param api: github api instance
+    :param statuses_url: full url to the github commit statuses.
+           Given in pr["statuses_url"]
+    :return: true if the commit passed travis build, false if failed or still pending
+    """
+    statuses_path = statuses_url.replace(api.BASE_URL, "")
+
+    statuses = api("get", statuses_path)
+
+    if statuses:
+        for status in statuses:
+            # check state is success and description of status
+            # the state can be success for Chaosbot statuses, so we double-check if it a Travis CI
+            if (status["state"] == "success") and \
+               (status["description"] == "The Travis CI build passed"):
+                return True
+    return False
+
+
 def get_ready_prs(api, urn, window):
-    """ yield mergeable, non-WIP prs that have had no modifications for longer
+    """ yield mergeable, travis-ci passed, non-WIP prs that have had no modifications for longer
     than the voting window.  these are prs that are ready to be considered for
     merging """
     open_prs = get_open_prs(api, urn)
@@ -145,7 +175,9 @@ def get_ready_prs(api, urn, window):
 
         is_wip = "WIP" in pr["title"]
 
-        if not is_wip and delta > window:
+        build_passed = has_build_passed(api, pr["statuses_url"])
+
+        if not is_wip and delta > window and build_passed:
             # we check if its mergeable if its outside the voting window,
             # because there seems to be a race where a freshly-created PR exists
             # in the paginated list of PRs, but 404s when trying to fetch it
@@ -160,7 +192,7 @@ def get_ready_prs(api, urn, window):
                     comments.leave_stale_comment(
                         api, urn, pr["number"], round(delta / 60 / 60))
                     close_pr(api, urn, pr)
-            # mergeable can also be None, in which case we just skip it for now
+                    # mergeable can also be None, in which case we just skip it for now
 
 
 def voting_window_remaining_seconds(pr, window):
