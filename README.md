@@ -33,7 +33,7 @@ your will.
 
 ## Why?
 
-Why not? The intention of Chaos is to spread love...of machine, code, fellow coders, and humanity. The first committer to ChaosBot would not have started the project unless they knew that more than mere Chaos would ensue. [On the border between rigidity and chaos is the complexity of life](http://web.eecs.utk.edu/~mclennan/Classes/527/handouts/Part-2A-6pp.pdf)
+Why not? The intention of Chaos is to spread love...of machine, code, fellow coders, and humanity. The first committer to ChaosBot would not have started the project unless they knew that more than mere Chaos would ensue. [On the border between rigidity and chaos lives complexity](http://web.eecs.utk.edu/~mclennan/Classes/527/handouts/Part-2A-6pp.pdf)
 
 ## Some things it could do
 
