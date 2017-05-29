@@ -12,3 +12,4 @@ __pycache__
 github_pat.secret
 server/pubkey.txt
 server/voters.json
+server/issue_commands_ran.json
