@@ -51,7 +51,7 @@ def can_run_vote_command(api, votes, comment_id):
 
     # Voting window has passed
     now = arrow.utcnow()
-    voting_window = gh.voting.get_voting_window(now)
+    voting_window = gh.voting.get_initial_voting_window(now)
 
     voting_window_over = gh.issues.is_issue_comment_in_voting_window(api, settings.URN, comment_id,
                                                                      voting_window)
@@ -96,9 +96,11 @@ def handle_vote_command(api, command, issue_id, comment_id, votes):
         sub_command = command.pop(0)
         if sub_command == "close":
             gh.issues.close_issue(api, settings.URN, issue_id)
+            gh.comments.leave_issue_closed_comment(api, settings.URN, issue_id)
             update_command_ran(comment_id)
         elif sub_command == "reopen":
             gh.issues.open_issue(api, settings.URN, issue_id)
+            gh.comments.leave_issue_reopened_comment(api, settings.URN, issue_id)
             update_command_ran(comment_id)
         else:
             # Implement other commands

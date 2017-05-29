@@ -1,6 +1,7 @@
 import unittest
 import settings
 from github_api import compute_api_cooldown as compute
+from github_api import voting
 
 
 class CooldownTests(unittest.TestCase):
@@ -21,3 +22,11 @@ class CooldownTests(unittest.TestCase):
         c3 = compute(3000, 3600)
         self.assertLess(c1, c2)
         self.assertLess(c2, c3)
+
+    def test_dynamic_voting_window(self):
+        """ test lower and upper bounds of dynamic voting window """
+        self.assertEqual(voting.dynamic_voting_window(0, 0, 10), 0)
+        self.assertEqual(voting.dynamic_voting_window(50, 0, 10), 10)
+
+        self.assertEqual(voting.dynamic_voting_window(0, 10, 20), 10)
+        self.assertEqual(voting.dynamic_voting_window(50, 10, 20), 20)

@@ -71,6 +71,16 @@ Open a new PR with these changes to try again.
     return leave_comment(api, urn, pr, body)
 
 
+def leave_issue_closed_comment(api, urn, issue):
+    body = ":no_entry: The issue has been closed after a vote."
+    return leave_comment(api, urn, issue, body)
+
+
+def leave_issue_reopened_comment(api, urn, issue):
+    body = ":recycle: The issue has been reopened after a vote."
+    return leave_comment(api, urn, issue, body)
+
+
 def leave_comment(api, urn, pr, body):
     path = "/repos/{urn}/issues/{pr}/comments".format(urn=urn, pr=pr)
     data = {"body": body}

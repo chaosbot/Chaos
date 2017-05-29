@@ -46,3 +46,14 @@
         }
     }
 </script>
+
+<style>
+    body {
+        font-family: monospace;
+        counter-reset: voter;
+    }
+    table > tbody > tr > td:first-child::before {
+        counter-increment: voter;
+        content: counter(voter) ". ";
+    }
+</style>
