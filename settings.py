@@ -38,9 +38,13 @@ TEST = False
 
 # the number of seconds chaosbot should sleep between polling for ready prs
 PULL_REQUEST_POLLING_INTERVAL_SECONDS = 30
+ISSUE_COMMENT_POLLING_INTERVAL_SECONDS = 60 * 10  # 10 min window on polling comments
 
 # The default number of hours for how large the voting window is
 DEFAULT_VOTE_WINDOW = 3.0
+
+# The maximum number of hours for how large the voting window is (extended window)
+EXTENDED_VOTE_WINDOW = 9.0
 
 # The number of hours for how large the voting window is in the "after hours"
 AFTER_HOURS_VOTE_WINDOW = 4.0
@@ -79,3 +83,13 @@ with open("description.txt", "r") as h:
 # PRs that have merge conflicts and haven't been touched in this many hours
 # will be closed
 PR_STALE_HOURS = 36
+
+API_COOLDOWN_RESET_PADDING = 30
+
+# The name of the file created upon failures -- also found in chaos_wrapper.py
+# If you are going to change it, change it there too.
+CHAOSBOT_FAILURE_FILE = "/tmp/chaosbot_failed"
+
+# The location of error log -- also found in the supervisor conf.
+# If you are going to change it, change it there too.
+CHAOSBOT_STDERR_LOG = "/var/log/supervisor/chaos-stderr.log"

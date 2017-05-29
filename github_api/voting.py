@@ -216,6 +216,8 @@ def get_extended_voting_window(api, urn):
     delta = now - repos.get_creation_date(api, urn)
     days = delta.days
 
-    hours = settings.DEFAULT_VOTE_WINDOW
-    seconds = dynamic_voting_window(days, hours) * 60 * 60
+    minimum_window = settings.DEFAULT_VOTE_WINDOW
+    maximum_window = settings.EXTENDED_VOTE_WINDOW
+    seconds = dynamic_voting_window(days, minimum_window, maximum_window) * 60 * 60
+
     return seconds

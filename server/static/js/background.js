@@ -87,39 +87,6 @@ if (background.getContext){
 		// fctx2.stroke();
 	};
 	
-	var drawBack = function(){
-		bctx.clearRect(0, 0, wWidth, wHeight);
-		
-		var gradient = [];
-		gradient[0] = bctx.createRadialGradient(wWidth*0.3, wHeight*0.1, 0, wWidth*0.3, wHeight*0.1, wWidth*0.9);
-		gradient[0].addColorStop(0, 'rgb(243, 72, 45)');
-		gradient[0].addColorStop(1, 'transparent');
-		
-		bctx.translate(wWidth, 0);
-		bctx.scale(-1,1);
-		bctx.beginPath();
-		bctx.fillStyle = gradient[0];
-		bctx.fillRect(0, 0, wWidth, wHeight);
-		
-		gradient[1] = bctx.createRadialGradient(wWidth*0.1, wHeight*0.1, 0, wWidth*0.3, wHeight*0.1, wWidth);
-		gradient[1].addColorStop(0, 'rgb(243, 72, 45)');
-		gradient[1].addColorStop(0.8, 'transparent');
-		
-		bctx.translate(wWidth, 0);
-		bctx.scale(-1,1);
-		bctx.beginPath();
-		bctx.fillStyle = gradient[1];
-		bctx.fillRect(0, 0, wWidth, wHeight);
-		
-		gradient[2] = bctx.createRadialGradient(wWidth*0.1, wHeight*0.5, 0, wWidth*0.1, wHeight*0.5, wWidth*0.5);
-		gradient[2].addColorStop(0, 'rgb(243, 72, 45)');
-		gradient[2].addColorStop(1, 'transparent');
-		
-		bctx.beginPath();
-		bctx.fillStyle = gradient[2];
-		bctx.fillRect(0, 0, wWidth, wHeight);
-	};
-	
 	var animate = function(){
 		var sin = M.sin(degree),
 		cos = M.cos(degree);
@@ -225,7 +192,6 @@ if (background.getContext){
 		
 		cancelAnimationFrame(timer);
 		timer = requestAnimationFrame(animate);
-		drawBack();
 	};
 	
 	setCanvasHeight();

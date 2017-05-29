@@ -2,6 +2,28 @@ import settings
 from . import prs
 
 
+def get_all_issue_comments(api, urn):
+    # Do all issue comments at once for API's sake..
+    path = "/repos/{urn}/issues/comments".format(urn=urn)
+    # TODO - implement parameters
+    # sort - Either "created" or "updated". Defautl: "created
+    # direction - Either "asc" or "desc". Ignored without the sort parameter.
+    # since - Only comments updated at or after this time are returned.
+    # This is a timestamp in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ.
+    # Add get-reaction support for issue comments
+    params = {"per_page": settings.DEFAULT_PAGINATION}
+    comments = api("get", path, params=params)
+    for comment in comments:
+        # Return issue_id, global_comment_id, comment_text
+        issue_comment = {}
+        # "https://github.com/octocat/Hello-World/issues/1347#issuecomment-1"
+        issue_comment["issue_id"] = comment["html_url"].split("/")[-1].split("#")[0]
+        # I believe this is the right one... Could also be issue specific comment id
+        issue_comment["global_comment_id"] = comment["id"]
+        issue_comment["comment_text"] = comment["body"]
+        yield issue_comment
+
+
 def get_reactions_for_comment(api, urn, comment_id):
     path = "/repos/{urn}/issues/comments/{comment}/reactions"\
         .format(urn=urn, comment=comment_id)
@@ -47,6 +69,16 @@ def leave_deleted_comment(api, urn, pr):
 Open a new PR with these changes to try again.
     """.strip()
     return leave_comment(api, urn, pr, body)
+
+
+def leave_issue_closed_comment(api, urn, issue):
+    body = ":no_entry: The issue has been closed after a vote."
+    return leave_comment(api, urn, issue, body)
+
+
+def leave_issue_reopened_comment(api, urn, issue):
+    body = ":recycle: The issue has been reopened after a vote."
+    return leave_comment(api, urn, issue, body)
 
 
 def leave_comment(api, urn, pr, body):

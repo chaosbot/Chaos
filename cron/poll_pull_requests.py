@@ -2,6 +2,7 @@ import arrow
 import logging
 import json
 import os
+import sys
 from os.path import join, abspath, dirname
 
 import settings
@@ -57,7 +58,7 @@ def poll_pull_requests():
                     sha = gh.prs.merge_pr(api, settings.URN, pr, votes, vote_total,
                                           threshold)
                 # some error, like suddenly there's a merge conflict, or some
-                # new commits were introduced between findint this ready pr and
+                # new commits were introduced between finding this ready pr and
                 # merging it
                 except gh.exceptions.CouldntMerge:
                     __log.info("couldn't merge PR %d for some reason, skipping",
@@ -118,10 +119,18 @@ def poll_pull_requests():
                     old_votes[user] = 1
             json.dump(old_votes, fp)
 
+            # flush all buffers because we might restart, which could cause a crash
+            os.fsync(fp)
+
     # we approved a PR, restart
     if needs_update:
         __log.info("updating code and requirements and restarting self")
         startup_path = join(THIS_DIR, "..", "startup.sh")
+
+        # before we exec, we need to flush i/o buffers so we don't lose logs or voters
+        sys.stdout.flush()
+        sys.stderr.flush()
+
         os.execl(startup_path, startup_path)
 
     __log.info("Waiting %d seconds until next scheduled PR polling event",
