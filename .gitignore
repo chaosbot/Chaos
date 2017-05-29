@@ -12,3 +12,5 @@ __pycache__
 github_pat.secret
 server/pubkey.txt
 server/voters.json
+api_cache/
+.idea/
