@@ -52,7 +52,7 @@ AFTER_HOURS_START = 22
 AFTER_HOURS_END = 10
 
 # how old do voters have to be for their vote to count?
-MIN_VOTER_AGE = 1 * 30 * 24 * 60 * 60  # 1 month
+MIN_VOTER_AGE = 12 * 60 * 60  # 1 day (12 hrs)
 
 # for a pr to be merged, the vote total must have at least this fraction of the
 # number of watchers in order to pass.  this is to prevent early manipulation of
