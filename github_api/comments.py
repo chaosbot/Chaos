@@ -33,8 +33,8 @@ def get_reactions_for_comment(api, urn, comment_id):
         yield reaction
 
 
-def leave_reject_comment(api, urn, pr, votes, total, threshold):
-    votes_summary = prs.formatted_votes_summary(votes, total, threshold)
+def leave_reject_comment(api, urn, pr, votes, total, threshold, meritocracy_satisfied):
+    votes_summary = prs.formatted_votes_summary(votes, total, threshold, meritocracy_satisfied)
     body = """
 :no_good: PR rejected {summary}.
 
@@ -43,8 +43,8 @@ Open a new PR to restart voting.
     return leave_comment(api, urn, pr, body)
 
 
-def leave_accept_comment(api, urn, pr, sha, votes, total, threshold):
-    votes_summary = prs.formatted_votes_summary(votes, total, threshold)
+def leave_accept_comment(api, urn, pr, sha, votes, total, threshold, meritocracy_satisfied):
+    votes_summary = prs.formatted_votes_summary(votes, total, threshold, meritocracy_satisfied)
     body = """
 :ok_woman: PR passed {summary}.
 
