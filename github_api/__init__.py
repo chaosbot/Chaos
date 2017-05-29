@@ -14,7 +14,15 @@ def compute_api_cooldown(remaining, reset):
     to sleep before an api call.  this yields a nice curve where we'll spend
     more time waiting as we have fewer api calls left, and less time weighting
     if our refresh time is sooner.  graph it """
-    return ((reset / remaining) ** 3) / 10.0
+
+    # i've seen github's api fail with a 403 when we had 5 requests remaining,
+    # as confirmed by their response headers.  so we'll take that kind of
+    # fluctuation into account.
+    #
+    # also account for a potential divide by zero
+    actual_remaining = max(remaining - 30, 1)
+
+    return ((reset / actual_remaining) ** 3) / 10.0
 
 
 class API(object):
