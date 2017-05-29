@@ -8,11 +8,11 @@ html {
     text-rendering: optimizeLegibility;
     background-color: #000000;
     text-align: justify;
-    overflow:auto;
 }
 html, body {
     width: 100%;
     height: 100%;
+    overflow: auto;
 }
 h1 {
     font-size: 80px;
@@ -21,7 +21,12 @@ h1 {
 .container {
     z-index: 5;
     height: 100%;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 }
@@ -60,6 +65,14 @@ h1 {
     border: 0;
     z-index: 100;
 }
+.card {
+    width: 100%;
+    max-width: 450px;
+    flex-shrink: 1;
+    flex-basis: auto;
+    overflow-y: auto;
+    margin: 25px 0;
+}
 .content-title {
     border: 5px solid #010101;
 }
@@ -70,11 +83,13 @@ h1 {
     padding: 0.5em;
     margin-bottom: 0;
 }
-.description {
+.main {
+    box-shadow: 4px 0px 5px rgba(0,0,0,0.5);
     background: #fafafa;
 }
 #canvas {
     margin: 5px 0;
+    width: 100%;
 }
 body.transform {
     transform: rotate(180deg);
