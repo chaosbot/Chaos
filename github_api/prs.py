@@ -134,17 +134,18 @@ def get_pr_comments(api, urn, pr_num):
         yield comment
 
 
-def has_build_passed(api, statuses_url):
+def has_build_passed(api, urn, sha):
     """
-        Check if a Pull request has passed Travis CI builds
+        Check if a commit has passed Travis CI builds
     :param api: github api instance
-    :param statuses_url: full url to the github commit statuses.
-           Given in pr["statuses_url"]
+    :param urn: urn
+    :param sha: commit sha
     :return: true if the commit passed travis build, false if failed or still pending
     """
-    statuses_path = statuses_url.replace(api.BASE_URL, "")
+    path = "/repos/{urn}/commits/{sha}/status".format(urn=urn, sha=sha)
+    response = api("get", path)
 
-    statuses = api("get", statuses_path)
+    statuses = response.get("statuses")
 
     if statuses:
         for status in statuses:
@@ -175,7 +176,7 @@ def get_ready_prs(api, urn, window):
 
         is_wip = "WIP" in pr["title"]
 
-        build_passed = has_build_passed(api, pr["statuses_url"])
+        build_passed = has_build_passed(api, urn, pr["head"]["sha"])
 
         if not is_wip and delta > window and build_passed:
             # we check if its mergeable if its outside the voting window,
