@@ -105,7 +105,7 @@ def get_pr_review_votes(api, urn, pr_num):
             yield user, vote
 
 
-def get_vote_weight(api, username):
+def get_vote_weight(api, username, is_collaborator):
     """ for a given username, determine the weight that their -1 or +1 vote
     should be scaled by """
     user = users.get_user(api, username)
@@ -117,10 +117,23 @@ def get_vote_weight(api, username):
     age = (now - created).total_seconds()
     old_enough_to_vote = age >= settings.MIN_VOTER_AGE
     weight = 1.0 if old_enough_to_vote else 0.0
+
+    if is_collaborator:
+        weight *= 1.5
+
+    # sorry smitty, No food for you (http://e.lvme.me/7mb4jy9.jpg)
     if username.lower() == "smittyvb":
         weight /= 2
 
     return weight
+
+
+def get_collaborators(api, urn):
+    response = api("get", "{}/collaborators".format(repos.get_path(urn)))
+    collaborators = []
+    if response:
+        collaborators = [c["login"] for c in response]
+    return collaborators
 
 
 def get_vote_sum(api, votes):
@@ -128,8 +141,11 @@ def get_vote_sum(api, votes):
     total """
     total = 0
     variance = 0
+
+    # get list of collaborators once and use in get_vote_weight instead of calling for each user
+    collaborators = get_collaborators(api, settings.URN)
     for user, vote in votes.items():
-        weight = get_vote_weight(api, user)
+        weight = get_vote_weight(api, user, user in collaborators)
         total += weight * vote
         if weight * vote > 0:
             variance += vote
