@@ -6,6 +6,17 @@ from requests.auth import HTTPBasicAuth
 import logging
 import settings
 
+from . import comments
+from . import exceptions
+from . import issues
+from . import misc
+from . import prs
+from . import repos
+from . import users
+from . import voting
+
+__all__ = ["comments", "exceptions", "issues", "misc", "prs", "repos", "users", "voting"]
+
 log = logging.getLogger("github_api")
 
 
