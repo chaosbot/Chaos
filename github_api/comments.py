@@ -87,8 +87,9 @@ def leave_comment(api, urn, pr, body):
     resp = api("post", path, json=data)
     return resp
 
+
 def edit_comment(api, urn, comment_id, body):
     path = "/repos/{urn}/issues/comments/{id}".format(urn=urn, id=comment_id)
-    data = {"body":body}
+    data = {"body": body}
     resp = api("patch", path, json=data)
     return resp

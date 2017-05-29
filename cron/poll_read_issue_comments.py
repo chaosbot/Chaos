@@ -40,6 +40,7 @@ Command Syntax
 
 COMMAND_LIST = ["/vote"]
 
+
 def update_db(comment_id, data_fields, db=None):
 
     if not db:
@@ -51,6 +52,7 @@ def update_db(comment_id, data_fields, db=None):
 
     with open(SAVED_COMMANDS_FILE, 'w') as f:
         json.dump(db, f)
+
 
 def select_db(comment_id, fields):
     with open(SAVED_COMMANDS_FILE, 'r') as f:
@@ -72,7 +74,7 @@ def set_time_remaining(api, comment_id, comment_txt):
         comment_data = {
             "comment_id": comment_id,
             "has_ran": False,
-            #"command": comment_txt,
+            # "command": comment_txt,
             "chaos_response_id": None,
             "time_remaining": None
         }
@@ -85,7 +87,7 @@ def set_time_remaining(api, comment_id, comment_txt):
     voting_window = gh.voting.get_initial_voting_window(now)
 
     seconds_remaining = gh.issues.voting_window_remaining_seconds(api, settings.URN, comment_id,
-                                                                     voting_window)
+                                                                  voting_window)
 
     data = {
         "time_remaining": seconds_remaining,
@@ -122,10 +124,11 @@ def post_command_status_update(api, issue_id, comment_id, has_votes):
 
     time = gh.misc.seconds_to_human(seconds_remaining)
     status = "passing" if has_votes else "failing"
-    body = "> {command}\n\nTime remaining: {time} - Vote status: {status}".format(command=command_text,
-                                                                                time=time,
-                                                                                status=status)
-    
+    body = "> {command}\n\nTime remaining: {time} - Vote status: {status}".format(
+                                                                            command=command_text,
+                                                                            time=time,
+                                                                            status=status)
+
     if comment_data["chaos_response_id"]:
         resp = gh.comments.edit_comment(api, settings.URN, comment_data["chaos_response_id"], body)
     else:
@@ -145,7 +148,7 @@ def can_run_vote_command(api, votes, comment_id):
         return False
 
     time_left = comment_data["time_remaining"]
-    if  time_left > 0: 
+    if time_left > 0:
         __log.debug("Time remaining: " + gh.misc.seconds_to_human(time_left))
         return False
 
@@ -204,7 +207,7 @@ def handle_comment(api, issue_comment):
         can_run = can_run_vote_command(api, votes, global_comment_id)
         has_votes = has_enough_votes(votes)
         post_command_status_update(api, issue_id, global_comment_id, has_votes)
-        
+
         # We doin stuff boyz
         if can_run and has_votes:
             __log.debug("Handling issue {issue}: comment {comment}".format(issue=issue_id,
@@ -221,6 +224,7 @@ def handle_comment(api, issue_comment):
             command = db_fields["command"]
             body = "> {command}\n\nVote failed".format(command=command)
             gh.comments.edit_comment(api, settings.URN, resp_id, body)
+
 
 def poll_read_issue_comments():
     __log.info("looking for issue comments")
