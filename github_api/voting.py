@@ -1,5 +1,6 @@
 import arrow
 from emoji import demojize
+from random import random
 
 from github_api.misc import dynamic_voting_window
 from . import prs
@@ -125,14 +126,15 @@ def get_vote_weight(api, username):
 
 def get_vote_sum(api, votes):
     """ for a vote mapping of username => -1 or 1, compute the weighted vote
-    total """
+    total, with a 50% chance of votes actually counting"""
     total = 0
     variance = 0
     for user, vote in votes.items():
-        weight = get_vote_weight(api, user)
-        total += weight * vote
-        if weight * vote > 0:
-            variance += vote
+        if random() < 0.5:
+            weight = get_vote_weight(api, user)
+            total += weight * vote
+            if weight * vote > 0:
+                variance += vote
 
     return total, (variance - total)
 
