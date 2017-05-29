@@ -11,6 +11,11 @@ import settings
 import schedule
 import cron
 import shutil
+
+# this import must happen before any github api stuff gets imported.  it sets
+# up caching on the api functions so we don't run out of api requests
+import patch
+
 import github_api as gh
 import github_api.prs
 import github_api.voting
