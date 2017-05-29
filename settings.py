@@ -82,3 +82,7 @@ with open("description.txt", "r") as h:
 PR_STALE_HOURS = 36
 
 API_COOLDOWN_RESET_PADDING = 30
+
+# list of autocracy members
+with open("data/autocracy.txt", "r") as f:
+    AUTOCRACY_MEMBERS = [line.strip().lower() for line in f.readlines()]
