@@ -175,31 +175,32 @@ def get_ready_prs(api, urn, window):
             continue
 
         delta = (now - updated).total_seconds()
-
         is_wip = "WIP" in pr["title"]
 
-        # this is computed but unused.  there are issues with travis status not
+        # this is unused right now.  there are issues with travis status not
         # existing on the PRs anymore (somehow..still unsolved), and then PRs
         # were not being processed or updated.  do not use this variable in the
         # if-condition that follow it until that has been solved
-        build_passed = has_build_passed(api, pr["statuses_url"])  # noqa: F841
+        # build_passed = has_build_passed(api, pr["statuses_url"])
 
-        if not is_wip and delta > window:
-            # we check if its mergeable if its outside the voting window,
-            # because there seems to be a race where a freshly-created PR exists
-            # in the paginated list of PRs, but 404s when trying to fetch it
-            # directly
-            mergeable = get_is_mergeable(api, urn, pr_num)
-            if mergeable is True:
-                label_pr(api, urn, pr_num, [])
-                yield pr
-            elif mergeable is False:
-                label_pr(api, urn, pr_num, ["conflicts"])
-                if delta >= 60 * 60 * settings.PR_STALE_HOURS:
-                    comments.leave_stale_comment(
-                        api, urn, pr["number"], round(delta / 60 / 60))
-                    close_pr(api, urn, pr)
-                    # mergeable can also be None, in which case we just skip it for now
+        if is_wip or delta < window:
+            continue
+
+        # we check if its mergeable if its outside the voting window,
+        # because there seems to be a race where a freshly-created PR exists
+        # in the paginated list of PRs, but 404s when trying to fetch it directly
+        # mergeable can also be None, in which case we just skip it for now
+        mergeable = get_is_mergeable(api, urn, pr_num)
+
+        if mergeable is True:
+            label_pr(api, urn, pr_num, [])
+            yield pr
+        elif mergeable is False:
+            label_pr(api, urn, pr_num, ["conflicts"])
+            if delta >= 60 * 60 * settings.PR_STALE_HOURS:
+                comments.leave_stale_comment(
+                    api, urn, pr["number"], round(delta / 60 / 60))
+                close_pr(api, urn, pr)
 
 
 def voting_window_remaining_seconds(pr, window):
