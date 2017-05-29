@@ -47,9 +47,9 @@
         </div>
         
         <div class="container">
-            <div class="card">
+            <div id="main" class="card">
                 <div class="card-content main has-text-centered">
-                    <div class="content-title header">
+                    <div class="content-title">
                         <h1 class="title"><strong>Hello, Chaos!</strong></h1>
                     </div>
                     <canvas onmouseenter="dismissTimeout()" id="canvas"></canvas>
@@ -63,6 +63,14 @@
                     <span class="icon">
                         <a href="https://github.com/chaosbot/chaos"><i class="fa fa-github"></i></a>
                     </span>
+                </div>
+            </div>
+            <div id="voters" class="card">
+                <div class="card-content main has-text-centered">
+                    <div class="content-title">
+                        <h1 class="title"><strong>Top Voters on Chaos!</strong></h1>
+                    </div>
+                    <div id="result"></div>
                 </div>
             </div>
         </div>

@@ -112,3 +112,59 @@ function unfade(element) {
     op += op * 0.1;
   }, 10);
 }
+
+/** CHANGE CARD */
+
+document.getElementById("voters").onclick = function() {
+  document.getElementById("voters").classList.add("active");
+  document.getElementById("main").classList.add("inactive");
+  document.getElementById("main").classList.remove("active");
+  document.getElementById("voters").classList.remove("inactive");
+}
+
+document.getElementById("main").onclick = function() {
+  document.getElementById("main").classList.add("active");
+  document.getElementById("voters").classList.add("inactive");
+  document.getElementById("voters").classList.remove("active");
+  document.getElementById("main").classList.remove("inactive");
+}
+
+/** LOAD VOTERS LIST */
+
+var result = document.getElementById("result");
+// read text from URL location
+var request = new XMLHttpRequest();
+request.open('GET', 'voters.json', true);
+request.send(null);
+request.onreadystatechange = function() {
+  if (request.readyState === 4 && request.status === 200) {
+    var type = request.getResponseHeader('Content-Type');
+    if (type.indexOf("text") !== 1) {
+      var json = JSON.parse(request.responseText);
+      var keys = Object.keys(json);
+      var values = keys.map(function(key) {
+        return json[key];
+      });
+
+      // combine arrays
+      var list = [];
+      for (var j = 0; j < keys.length; j++)
+        list.push({
+          'names': keys[j],
+          'votes': values[j]
+        });
+
+      // sort
+      list.sort(function(a, b) {
+        return -((a.votes < b.votes) ? -1 : ((a.votes == b.votes) ? 0 : 1));
+      });
+
+      var tablehtml = "<table>";
+      for (var i = 0; i < list.length && i < 20; i++) {
+        tablehtml += "<tr><td>" + list[i].names + "</td><td>" + list[i].votes + "</tr>";
+      }
+      tablehtml += "</table>";
+      result.innerHTML = tablehtml;
+    }
+  }
+}

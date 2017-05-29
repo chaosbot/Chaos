@@ -14,6 +14,9 @@ html, body {
     height: 100%;
     overflow: auto;
 }
+body {
+    counter-reset: voter;
+}
 h1 {
     font-size: 80px;
     letter-spacing: .10em;
@@ -67,12 +70,13 @@ h1 {
 }
 .card {
     width: 100%;
-    max-width: 450px;
+    max-width: 400px;
     flex-shrink: 1;
     flex-basis: auto;
     overflow-y: auto;
-    margin: 25px 0;
+    position: absolute;
 }
+
 .content-title {
     border: 5px solid #010101;
 }
@@ -119,3 +123,114 @@ body.transform {
 }
 
 /* END BACKGROUND */
+
+#result {
+    margin: 25px 0;
+}
+
+#result table > tbody > tr > td:first-child::before {
+        counter-increment: voter;
+        content: counter(voter) ". ";
+}
+
+#voters:not(.active):hover {
+    cursor: pointer;
+}
+
+#main.inactive:hover {
+    cursor: pointer;
+}
+
+#voters {
+    z-index: 1;
+    transform: perspective(100px) translate3d(100px, 0px, -30px);
+    opacity: 0.5;
+    animation-duration: 0.7s;
+    animation-fill-mode: both;
+}
+
+#main {
+    z-index: 2;
+    animation-duration: 0.7s;
+    animation-fill-mode: both;
+}
+
+#voters.active {
+    animation-name: vtop;
+}
+
+#main.active {
+    animation-name: mtop;
+}
+
+#voters.inactive {
+    animation-name: vback;
+}
+
+#main.inactive {
+    animation-name: mback;
+}
+
+@keyframes vback {
+    0%{
+        z-index:2;
+        transform: perspective(100px) translate3d(0px, 0px, 0px);
+        opacity: 1;
+        box-shadow: 0 10px 50px 0 rgba(0, 0, 0, 0.25);
+    }
+    100%{
+        z-index: 1;
+        transform: perspective(100px) translate3d(100px, 0px, -30px);
+        opacity: 0.5;
+        box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.25);
+    }
+}
+
+@keyframes mback {
+    0%{
+        z-index:2;
+        transform: perspective(100px) translate3d(0px, 0px, 0px);
+        opacity: 1;
+        box-shadow: 0 10px 50px 0 rgba(0, 0, 0, 0.25);
+    }
+    100%{
+        z-index: 1;
+        transform: perspective(100px) translate3d(-100px, 0px, -30px);
+        opacity: 0.5;
+        box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.25);
+    }
+}
+
+@keyframes vtop {
+    0%{
+        z-index:1;
+        transform: perspective(100px) translate3d(100px, 0px, -30px);
+        opacity: 0.5;
+    }
+    50%{
+        z-index:2;
+        transform: perspective(100px) translate3d(400px, 0px, -30px);
+    }
+    100%{
+        z-index:2;
+        transform: perspective(100px) translate3d(0px, 0px, 0px);
+        opacity: 1;
+    }
+}
+
+@keyframes mtop {
+    0%{
+        z-index:1;
+        transform: perspective(100px) translate3d(-100px, 0px, -30px);
+        opacity: 0.5;
+    }
+    50%{
+        z-index:2;
+        transform: perspective(100px) translate3d(-400px, 0px, -30px);
+    }
+    100%{
+        z-index:2;
+        transform: perspective(100px) translate3d(0px, 0px, 0px);
+        opacity: 1;
+    }
+}
