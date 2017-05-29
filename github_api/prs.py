@@ -179,7 +179,7 @@ def get_ready_prs(api, urn, window):
         # existing on the PRs anymore (somehow..still unsolved), and then PRs
         # were not being processed or updated.  do not use this variable in the
         # if-condition that follow it until that has been solved
-        build_passed = has_build_passed(api, pr["statuses_url"])
+        # build_passed = has_build_passed(api, pr["statuses_url"])
 
         if not is_wip and delta > window:
             # we check if its mergeable if its outside the voting window,
