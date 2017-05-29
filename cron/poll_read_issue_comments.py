@@ -91,7 +91,7 @@ def set_time_remaining(api, comment_id, comment_txt):
 
     data = {
         "time_remaining": seconds_remaining,
-        "command": comment_txt # Keep this fresh so nobody edits their command post..
+        "command": comment_txt  # Keep this fresh so nobody edits their command post..
         }
     update_db(comment_id, data, db=command_history)
 
