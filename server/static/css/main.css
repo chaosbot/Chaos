@@ -70,7 +70,7 @@ h1 {
 }
 .card {
     width: 100%;
-    max-width: 400px;
+    max-width: 450px;
     flex-shrink: 1;
     flex-basis: auto;
     overflow-y: auto;
