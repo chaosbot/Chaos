@@ -79,3 +79,5 @@ with open("description.txt", "r") as h:
 # PRs that have merge conflicts and haven't been touched in this many hours
 # will be closed
 PR_STALE_HOURS = 36
+
+API_COOLDOWN_RESET_PADDING = 30

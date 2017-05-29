@@ -4,6 +4,7 @@ import math
 import requests
 from requests.auth import HTTPBasicAuth
 import logging
+import settings
 
 log = logging.getLogger("github_api")
 
@@ -22,7 +23,13 @@ def compute_api_cooldown(remaining, reset):
     # also account for a potential divide by zero
     actual_remaining = max(remaining - 30, 1)
 
-    return ((reset / actual_remaining) ** 3) / 10.0
+    cooldown = ((reset / actual_remaining) ** 3) / 10.0
+
+    # it doesn't make sense to ever sleep longer than the point where github
+    # refreshes our api counter, but let's also pad that value a little bit
+    cooldown = min(reset + settings.API_COOLDOWN_RESET_PADDING, cooldown)
+
+    return cooldown
 
 
 class API(object):
