@@ -43,6 +43,9 @@ ISSUE_COMMENT_POLLING_INTERVAL_SECONDS = 60 * 10  # 10 min window on polling com
 # The default number of hours for how large the voting window is
 DEFAULT_VOTE_WINDOW = 3.0
 
+# The maximum number of hours for how large the voting window is (extended window)
+EXTENDED_VOTE_WINDOW = 9.0
+
 # The number of hours for how large the voting window is in the "after hours"
 AFTER_HOURS_VOTE_WINDOW = 4.0
 
