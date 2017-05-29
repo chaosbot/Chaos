@@ -116,7 +116,8 @@ def get_vote_weight(api, username):
     created = arrow.get(user["created_at"])
     age = (now - created).total_seconds()
     old_enough_to_vote = age >= settings.MIN_VOTER_AGE
-    weight = 1.0 if old_enough_to_vote else 0.0
+    has_public_repo = user.public_repos > 0
+    weight = 1.0 if old_enough_to_vote and has_public_repo else 0.0
     if username.lower() == "smittyvb":
         weight /= 2
 
