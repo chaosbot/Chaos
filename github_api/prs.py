@@ -175,9 +175,13 @@ def get_ready_prs(api, urn, window):
 
         is_wip = "WIP" in pr["title"]
 
+        # this is computed but unused.  there are issues with travis status not
+        # existing on the PRs anymore (somehow..still unsolved), and then PRs
+        # were not being processed or updated.  do not use this variable in the
+        # if-condition that follow it until that has been solved
         build_passed = has_build_passed(api, pr["statuses_url"])
 
-        if not is_wip and delta > window and build_passed:
+        if not is_wip and delta > window:
             # we check if its mergeable if its outside the voting window,
             # because there seems to be a race where a freshly-created PR exists
             # in the paginated list of PRs, but 404s when trying to fetch it
