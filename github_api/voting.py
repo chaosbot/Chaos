@@ -34,7 +34,7 @@ def get_votes(api, urn, pr):
     # to promote democratic diversity, the PR owner gets a vote multiplier
     # based on their language contribution
     if votes.get(pr_owner) != -1:
-        votes[pr_owner] = 1 * language_diversity(api, urn, pr_num)
+        votes[pr_owner] = 1 * get_language_diversity(api, urn, pr_num)
 
     return votes
 
