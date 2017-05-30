@@ -1,7 +1,6 @@
 import arrow
 import settings
 
-
 def get_path(urn):
     """ return the path for the repo """
     return "/repos/{urn}".format(urn=urn)
@@ -30,3 +29,10 @@ def get_creation_date(api, urn):
     """ returns the creation date of the repo """
     data = api("get", get_path(urn))
     return arrow.get(data["created_at"])
+
+
+def get_languages(api, urn):
+    """ List languages for the specified repository. 
+        The value on the right of a language is the 
+        number of bytes of code written in that language. """
+    return api("get", get_path(urn) + "/languages")
