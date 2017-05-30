@@ -26,8 +26,11 @@ def get_votes(api, urn, pr, meritocracy):
     for voter, vote in get_pr_comment_votes_all(api, urn, pr_num):
         votes[voter] = vote
 
-    # get all the pr-review-based votes
-    for vote_owner, is_current, vote in get_pr_review_votes(api, urn, pr):
+    # get all the pr review reactions
+    # turn it into a dict to sort out duplicates (last value wins)
+    reviews = get_pr_review_reactions(api, urn, pr)
+    reviews = {user: (is_current, vote) for user, is_current, vote in reviews}
+    for vote_owner, (is_current, vote) in reviews.items():
         if (vote > 0 and is_current and vote_owner != pr_owner
                 and vote_owner.lower() in meritocracy):
             meritocracy_satisfied = True
@@ -97,9 +100,8 @@ def get_comment_reaction_votes(api, urn, comment_id):
             yield reaction_owner, vote
 
 
-def get_pr_review_votes(api, urn, pr):
-    """ votes made through
-    https://help.github.com/articles/about-pull-request-reviews/ """
+def get_pr_review_reactions(api, urn, pr):
+    """ https://help.github.com/articles/about-pull-request-reviews/ """
     for review in prs.get_pr_reviews(api, urn, pr["number"]):
         state = review["state"]
         if state in ("APPROVED", "DISMISSED"):
