@@ -4,6 +4,7 @@ import logging
 
 __log = logging.getLogger("DB")
 
+
 class DB(object):
     def __init__(self):
         self.conn = None
@@ -27,7 +28,6 @@ class DB(object):
             results = cur.fetchall()
             return results
 
-
     def do_update(self, sql, params):
         if not self.conn:
             __log.warning("do_update: database connection " +
@@ -36,14 +36,14 @@ class DB(object):
 
         with self.conn.cursor() as cur:
             cur.execute(sql, params)
-            conn.commit()
+            self.conn.commit()
 
     def __del__(self):
         if self.conn:
             self.conn.close()
 
 
-host = 'localhost'
-user = 'chaos'
-password = 'chaos'
-db = 'db'
+# host = 'localhost'
+# user = 'chaos'
+# password = 'chaos'
+# db = 'db'
