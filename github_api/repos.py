@@ -30,3 +30,8 @@ def get_creation_date(api, urn):
     """ returns the creation date of the repo """
     data = api("get", get_path(urn))
     return arrow.get(data["created_at"])
+
+
+def get_contributors(api):
+    """returns all contributors on the original project"""
+    return api("get", "/repos/chaosbot/Chaos/contributors")
