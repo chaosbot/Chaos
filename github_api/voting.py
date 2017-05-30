@@ -31,6 +31,7 @@ def get_votes(api, urn, pr, meritocracy):
         if (vote > 0 and is_current and vote_owner != pr_owner
                 and vote_owner.lower() in meritocracy):
             meritocracy_satisfied = True
+            break
 
     # by virtue of creating the PR, the owner defaults to a vote of 1
     if votes.get(pr_owner) != -1:
