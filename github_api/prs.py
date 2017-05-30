@@ -97,7 +97,7 @@ def formatted_votes_short_summary(votes, total, threshold, meritocracy_satisfied
     meritocracy_str = "✓" if meritocracy_satisfied else "✗"
 
     return """
-vote: {vfor}-{vagainst} → {total:.1f}, threshold: {threshold:.1f}, meritocracy: {meritocracy}
+vote: {vfor}-{vagainst} => {total:.1f}, threshold: {threshold:.1f}, meritocracy: {meritocracy}
     """.strip().format(vfor=vfor, vagainst=vagainst, total=total, threshold=threshold,
                        meritocracy=meritocracy_str)
 
