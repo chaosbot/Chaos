@@ -93,7 +93,7 @@ CHAOSBOT_FAILURE_FILE = "/tmp/chaosbot_failed"
 
 # The location of error log -- also found in the supervisor conf.
 # If you are going to change it, change it there too.
-CHAOSBOT_STDERR_LOG = "/var/log/supervisor/chaos-stderr.log"
+CHAOSBOT_STDERR_LOG = join(THIS_DIR, "log/supervisor-stderr.log")
 
 # The threshold for how old an issue has to be without comments before we try to
 # auto-close it. i.e. if an issue goes this long without comments
