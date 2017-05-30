@@ -26,6 +26,7 @@ def poll_pull_requests(api):
     needs_update = False
     for pr in prs:
         pr_num = pr["number"]
+        pr_owner = pr["user"]["login"]
         __log.info("processing PR #%d", pr_num)
 
         # gather all current votes
@@ -34,7 +35,8 @@ def poll_pull_requests(api):
         # is our PR approved or rejected?
         vote_total, variance = gh.voting.get_vote_sum(api, votes)
         threshold = gh.voting.get_approval_threshold(api, settings.URN)
-        is_approved = vote_total >= threshold
+        is_chaos_user = pr_owner.lower().startswith("chaos")
+        is_approved = vote_total >= threshold and is_chaos_user
 
         # the PR is mitigated or the threshold is not reached ?
         if variance >= threshold or not is_approved:
@@ -69,7 +71,6 @@ def poll_pull_requests(api):
                 gh.prs.label_pr(api, settings.URN, pr_num, ["accepted"])
 
                 # chaosbot rewards merge owners with a follow
-                pr_owner = pr["user"]["login"]
                 gh.users.follow_user(api, pr_owner)
 
                 needs_update = True
@@ -77,7 +78,22 @@ def poll_pull_requests(api):
         else:
             __log.info("PR %d status: will be rejected", pr_num)
 
-            if in_window:
+            if is_chaos_user is False:
+                gh.prs.post_rejected_status(
+                    api, settings.URN, pr, voting_window, votes, vote_total, threshold)
+                __log.info("PR %d rejected (username not Chaos), closing", pr_num)
+                gh.comments.leave_comment(
+                    api, settings.URN, pr, """
+:no_good: PR rejected because your username does not start with `Chaos`.
+
+You can change your username here: https://github.com/settings/admin
+                    """.strip()
+                )
+                gh.comments.leave_reject_comment(
+                    api, settings.URN, pr_num, votes, vote_total, threshold)
+                gh.prs.label_pr(api, settings.URN, pr_num, ["rejected"])
+                gh.prs.close_pr(api, settings.URN, pr)
+            elif in_window:
                 gh.prs.post_rejected_status(
                     api, settings.URN, pr, voting_window, votes, vote_total, threshold)
                 __log.info("PR %d rejected, closing", pr_num)
