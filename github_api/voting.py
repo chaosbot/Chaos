@@ -1,4 +1,6 @@
 import arrow
+import json
+import os
 from emoji import demojize
 
 from github_api.misc import dynamic_voting_window
@@ -226,3 +228,33 @@ def get_extended_voting_window(api, urn):
     seconds = dynamic_voting_window(days, minimum_window, maximum_window) * 60 * 60
 
     return seconds
+
+
+def persist_votes(votes):
+    # This sets up a voting record, with each user having a count of votes
+    # that they have cast.
+    try:
+        fp = open('server/voters.json', 'x')
+        fp.close()
+    except:
+        # file already exists, which is what we want
+        pass
+
+    with open('server/voters.json', 'r+') as fp:
+        old_votes = {}
+        fs = fp.read()
+        if fs:
+            # if the voting record exists, read it in
+            old_votes = json.loads(fs)
+            # then prepare for overwriting
+            fp.seek(0)
+            fp.truncate()
+        for user in votes:
+            if user in old_votes:
+                old_votes[user] += 1
+            else:
+                old_votes[user] = 1
+        json.dump(old_votes, fp)
+
+        # flush all buffers because we might restart, which could cause a crash
+        os.fsync(fp)

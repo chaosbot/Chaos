@@ -1,6 +1,5 @@
 import arrow
 import logging
-import json
 import os
 import sys
 from os.path import join, abspath, dirname
@@ -72,6 +71,9 @@ def poll_pull_requests(api):
                 pr_owner = pr["user"]["login"]
                 gh.users.follow_user(api, pr_owner)
 
+                # save votes to voting record
+                gh.voting.persist_votes(votes)
+
                 needs_update = True
 
         else:
@@ -85,40 +87,15 @@ def poll_pull_requests(api):
                     api, settings.URN, pr_num, votes, vote_total, threshold)
                 gh.prs.label_pr(api, settings.URN, pr_num, ["rejected"])
                 gh.prs.close_pr(api, settings.URN, pr)
+
+                # save votes to voting record
+                gh.voting.persist_votes(votes)
             elif vote_total < 0:
                 gh.prs.post_rejected_status(
                     api, settings.URN, pr, voting_window, votes, vote_total, threshold)
             else:
                 gh.prs.post_pending_status(
                     api, settings.URN, pr, voting_window, votes, vote_total, threshold)
-
-        # This sets up a voting record, with each user having a count of votes
-        # that they have cast.
-        try:
-            fp = open('server/voters.json', 'x')
-            fp.close()
-        except:
-            # file already exists, which is what we want
-            pass
-
-        with open('server/voters.json', 'r+') as fp:
-            old_votes = {}
-            fs = fp.read()
-            if fs:
-                # if the voting record exists, read it in
-                old_votes = json.loads(fs)
-                # then prepare for overwriting
-                fp.seek(0)
-                fp.truncate()
-            for user in votes:
-                if user in old_votes:
-                    old_votes[user] += 1
-                else:
-                    old_votes[user] = 1
-            json.dump(old_votes, fp)
-
-            # flush all buffers because we might restart, which could cause a crash
-            os.fsync(fp)
 
     # we approved a PR, restart
     if needs_update:
