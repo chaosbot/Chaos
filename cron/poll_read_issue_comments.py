@@ -199,9 +199,11 @@ def handle_comment(api, issue_comment):
 
     comment_text = re.sub('\s+', ' ', comment_text)
     parsed_comment = list(map(lambda x: x.lower(), comment_text.split(' ')))
-
+    orig_parsed = parsed_comment[:]
     command = parsed_comment.pop(0)
     if command in COMMAND_LIST:
+        __log.debug("Got command: {command}, parsed: {parsed}".format(command=comment_text,
+                                                                      parsed=orig_parsed))
         votes = get_command_votes(api, settings.URN, global_comment_id)
         set_time_remaining(api, global_comment_id, comment_text)
         can_run = can_run_vote_command(api, votes, global_comment_id)
@@ -224,13 +226,17 @@ def handle_comment(api, issue_comment):
             command = db_fields["command"]
             body = "> {command}\n\nVote failed".format(command=command)
             gh.comments.edit_comment(api, settings.URN, resp_id, body)
-
+    else:
+        __log.debug("comment: {comment} is not a command, parsed: {parsed}".format(comment=comment_text,
+                                                                                   parsed=orig_parsed))
+        
 
 def poll_read_issue_comments(api):
     __log.info("looking for issue comments")
 
     issue_comments = gh.comments.get_all_issue_comments(api, settings.URN)
-
+    __log.info("found {count} issue comments".format(len(issue_comments)))
+    
     for issue_comment in issue_comments:
         handle_comment(api, issue_comment)
 
