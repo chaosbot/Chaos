@@ -47,15 +47,6 @@ DEFAULT_VOTE_WINDOW = 3.0
 # The maximum number of hours for how large the voting window is (extended window)
 EXTENDED_VOTE_WINDOW = 8.0
 
-# The number of hours for how large the voting window is in the "after hours"
-AFTER_HOURS_VOTE_WINDOW = 4.0
-
-# The hour (in the server time zone) when the after hours start
-AFTER_HOURS_START = 22
-
-# The hour when the after hours end
-AFTER_HOURS_END = 10
-
 # how old do voters have to be for their vote to count?
 MIN_VOTER_AGE = 1 * 30 * 24 * 60 * 60  # 1 month
 
