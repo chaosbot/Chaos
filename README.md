@@ -50,8 +50,7 @@ Wondering how to contribute? Try implementing a feature requested [here](https:/
 Votes on a PR are determined through following mechanism:
 * A comment that contains an emoji signifying a vote somewhere in the body counts as a vote for
   or against the PR.
-* Same for reactions on the PR itself and an accept/reject [pull
-  request review](https://help.github.com/articles/about-pull-request-reviews/)
+* Same for reactions on the PR itself
 * The PR itself counts as :+1: from the owner, unless they vote otherwise.
 * Voting goes on for the duration of the voting window - currently 2 or 3 hours,
   depending on the local server time.
