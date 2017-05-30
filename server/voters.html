@@ -1,59 +1,69 @@
-<center>
-    <h1>Voters on Chaos</h1>
-    <div id="result"></div>
-</center>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Voters – ChaosBot</title>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <center>
+            <h1>Voters on Chaos</h1>
+            <div id="result"></div>
+        </center>
 
-<script>
-    getText();
-    
-    function getText() {
-        var result = document.getElementById("result");
-        // read text from URL location
-        var request = new XMLHttpRequest();
-        request.open('GET', 'voters.json', true);
-        request.send(null);
-        request.onreadystatechange = function() {
-            if (request.readyState === 4 && request.status === 200) {
-                var type = request.getResponseHeader('Content-Type');
-                if (type.indexOf("text") !== 1) {
-                    var json = JSON.parse(request.responseText);
-                    var keys = Object.keys(json);
-                    var values = keys.map(function(key) {
-                        return json[key];
-                    });
+        <script>
+            getText();
 
-                    // combine arrays
-                    var list = [];
-                    for (var j = 0; j < keys.length; j++)
-                        list.push({
-                            'names': keys[j],
-                            'votes': values[j]
-                        });
+            function getText() {
+                var result = document.getElementById("result");
+                // read text from URL location
+                var request = new XMLHttpRequest();
+                request.open('GET', 'voters.json', true);
+                request.send(null);
+                request.onreadystatechange = function() {
+                    if (request.readyState === 4 && request.status === 200) {
+                        var type = request.getResponseHeader('Content-Type');
+                        if (type.indexOf("text") !== 1) {
+                            var json = JSON.parse(request.responseText);
+                            var keys = Object.keys(json);
+                            var values = keys.map(function(key) {
+                                return json[key];
+                            });
 
-                    // sort
-                    list.sort(function(a, b) {
-                        return -((a.votes < b.votes) ? -1 : ((a.votes == b.votes) ? 0 : 1));
-                    });
+                            // combine arrays
+                            var list = [];
+                            for (var j = 0; j < keys.length; j++)
+                                list.push({
+                                    'names': keys[j],
+                                    'votes': values[j]
+                                });
 
-                    var tablehtml = "<table>";
-                    for (var i = 0; i < list.length; i++) {
-                        tablehtml += "<tr><td>" + list[i].names + "</td><td>" + list[i].votes + "</tr>";
+                            // sort
+                            list.sort(function(a, b) {
+                                return -((a.votes < b.votes) ? -1 : ((a.votes == b.votes) ? 0 : 1));
+                            });
+
+                            var tablehtml = "<table>";
+                            for (var i = 0; i < list.length; i++) {
+                                tablehtml += "<tr><td>" + list[i].names + "</td><td>" + list[i].votes + "</tr>";
+                            }
+                            tablehtml += "</table>";
+                            result.innerHTML = tablehtml;
+                        }
                     }
-                    tablehtml += "</table>";
-                    result.innerHTML = tablehtml;
                 }
             }
-        }
-    }
-</script>
+        </script>
 
-<style>
-    body {
-        font-family: monospace;
-        counter-reset: voter;
-    }
-    table > tbody > tr > td:first-child::before {
-        counter-increment: voter;
-        content: counter(voter) ". ";
-    }
-</style>
+        <style>
+            body {
+                font-family: monospace;
+                counter-reset: voter;
+            }
+
+            table > tbody > tr > td:first-child::before {
+                counter-increment: voter;
+                content: counter(voter) ". ";
+            }
+        </style>
+    </body>
+</html>
