@@ -311,3 +311,12 @@ def post_status(api, urn, sha, state, description):
         "context": "chaosbot"
     }
     api("POST", path, json=data)
+
+
+def get_languages(api, urn, pr_num):
+    """ yield the difference in language diversity between this pr & master """
+    """ List languages for the specified repository. 
+        The value on the right of a language is the 
+        number of bytes of code written in that language. """
+    path = get_pr(api, urn, pr_num)['head']['repo']['url'] + '/languages'
+    return api("get", path)

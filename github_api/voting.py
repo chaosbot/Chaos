@@ -37,10 +37,37 @@ def get_votes(api, urn, pr, meritocracy):
             break
 
     # by virtue of creating the PR, the owner defaults to a vote of 1
+    # to promote democratic diversity, the PR owner gets a vote multiplier
+    # based on their language contribution
     if votes.get(pr_owner) != -1:
-        votes[pr_owner] = 1
+        votes[pr_owner] = 1 * get_language_diversity(api, urn, pr_num)
 
     return votes, meritocracy_satisfied
+
+
+def get_language_diversity(api, urn, pr_num):
+    """ Get the language diversity factor as a function of
+    the number of bytes difference """
+    # get the pr and master languages
+    base = repos.get_languages(api, urn)
+    pr = prs.get_languages(api, urn, pr_num)
+    # if a new language is added return 2*N new language factor
+    if len(pr.keys()) > len(base.keys()):
+        return 2 * (len(pr.keys()) - len(base.keys()))
+    # if a language is removed return -(2*N) new language factor
+    if len(pr.keys()) < len(base.keys()):
+        return 2 * (len(pr.keys()) - len(base.keys()))
+    # else look at the ratio at the average byte/language
+    avg_pr = float(sum(pr.values())) / max(len(pr.keys()),1)
+    avg_base = float(sum(base.values())) / max(len(base.keys()),1)
+    # if the pr is closer to 1/num_languages, return 3 x multiplier
+    # else return 1
+    dist = 1 / len(base.keys())
+    factor = min([avg_base, avg_pr], key=lambda x:abs(x-dist))
+    if factor == avg_pr:
+        return 3
+    else:
+        return 1
 
 
 def get_pr_comment_votes_all(api, urn, pr_num):
