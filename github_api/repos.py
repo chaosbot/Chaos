@@ -36,3 +36,8 @@ def get_languages(api, urn):
         The value on the right of a language is the 
         number of bytes of code written in that language. """
     return api("get", get_path(urn) + "/languages")
+
+
+def get_contributors(api, urn):
+    """ returns the list of contributors to the repo """
+    return api("get", "/repos/{urn}/stats/contributors".format(urn=urn))

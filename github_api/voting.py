@@ -10,7 +10,7 @@ from . import repos
 import settings
 
 
-def get_votes(api, urn, pr):
+def get_votes(api, urn, pr, meritocracy):
     """ return a mapping of username => -1 or 1 for the votes on the current
     state of a pr.  we consider comments and reactions, but only from users who
     are not the owner of the pr.  we also make sure that the voting
@@ -18,6 +18,7 @@ def get_votes(api, urn, pr):
     can't acquire approval votes, then change the pr """
 
     votes = {}
+    meritocracy_satisfied = False
     pr_owner = pr["user"]["login"]
     pr_num = pr["number"]
 
@@ -26,9 +27,11 @@ def get_votes(api, urn, pr):
         votes[voter] = vote
 
     # get all the pr-review-based votes
-    for vote_owner, vote in get_pr_review_votes(api, urn, pr_num):
-        if vote and vote_owner != pr_owner:
-            votes[vote_owner] = vote
+    for vote_owner, is_current, vote in get_pr_review_votes(api, urn, pr):
+        if (vote > 0 and is_current and vote_owner != pr_owner
+                and vote_owner.lower() in meritocracy):
+            meritocracy_satisfied = True
+            break
 
     # by virtue of creating the PR, the owner defaults to a vote of 1
     # to promote democratic diversity, the PR owner gets a vote multiplier
@@ -36,7 +39,7 @@ def get_votes(api, urn, pr):
     if votes.get(pr_owner) != -1:
         votes[pr_owner] = 1 * get_language_diversity(api, urn, pr_num)
 
-    return votes
+    return votes, meritocracy_satisfied
 
 
 def get_language_diversity(api, urn, pr_num):
@@ -121,15 +124,16 @@ def get_comment_reaction_votes(api, urn, comment_id):
             yield reaction_owner, vote
 
 
-def get_pr_review_votes(api, urn, pr_num):
+def get_pr_review_votes(api, urn, pr):
     """ votes made through
     https://help.github.com/articles/about-pull-request-reviews/ """
-    for review in prs.get_pr_reviews(api, urn, pr_num):
+    for review in prs.get_pr_reviews(api, urn, pr["number"]):
         state = review["state"]
         if state in ("APPROVED", "DISMISSED"):
             user = review["user"]["login"]
+            is_current = review["commit_id"] == pr["head"]["sha"]
             vote = parse_review_for_vote(state)
-            yield user, vote
+            yield user, is_current, vote
 
 
 def get_vote_weight(api, username):

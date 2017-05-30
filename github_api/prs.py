@@ -12,7 +12,7 @@ from . import voting
 TRAVIS_CI_CONTEXT = "continuous-integration/travis-ci"
 
 
-def merge_pr(api, urn, pr, votes, total, threshold):
+def merge_pr(api, urn, pr, votes, total, threshold, meritocracy_satisfied):
     """ merge a pull request, if possible, and use a nice detailed merge commit
     message """
 
@@ -26,7 +26,7 @@ def merge_pr(api, urn, pr, votes, total, threshold):
     if record:
         record = "Vote record:\n" + record
 
-    votes_summary = formatted_votes_summary(votes, total, threshold)
+    votes_summary = formatted_votes_summary(votes, total, threshold, meritocracy_satisfied)
 
     pr_url = "https://github.com/{urn}/pull/{pr}".format(urn=urn, pr=pr_num)
 
@@ -79,21 +79,28 @@ Description:
             raise
 
 
-def formatted_votes_summary(votes, total, threshold):
+def formatted_votes_summary(votes, total, threshold, meritocracy_satisfied):
     vfor = sum(v for v in votes.values() if v > 0)
     vagainst = abs(sum(v for v in votes.values() if v < 0))
+    meritocracy_str = "a" if meritocracy_satisfied else "**NO**"
 
-    return ("with a vote of {vfor} for and {vagainst} against, with a weighted total \
-            of {total:.1f} and a threshold of {threshold:.1f}"
-            .strip().format(vfor=vfor, vagainst=vagainst, total=total, threshold=threshold))
+    return """
+with a vote of {vfor} for and {vagainst} against, a weighted total of {total:.1f} \
+and a threshold of {threshold:.1f}, and {meritocracy} current meritocracy review
+    """.strip().format(vfor=vfor, vagainst=vagainst, total=total, threshold=threshold,
+                       meritocracy=meritocracy_str)
 
 
-def formatted_votes_short_summary(votes, total, threshold):
+def formatted_votes_short_summary(votes, total, threshold, meritocracy_satisfied):
     vfor = sum(v for v in votes.values() if v > 0)
     vagainst = abs(sum(v for v in votes.values() if v < 0))
+    meritocracy_str = "✓" if meritocracy_satisfied else "✗"
 
-    return "vote: {vfor}-{vagainst}, weighted total: {total:.1f}, threshold: {threshold:.1f}" \
-        .strip().format(vfor=vfor, vagainst=vagainst, total=total, threshold=threshold)
+    return """
+vote: {vfor}-{vagainst}, weighted total: {total:.1f}, threshold: {threshold:.1f}, \
+meritocracy: {meritocracy}
+    """.strip().format(vfor=vfor, vagainst=vagainst, total=total, threshold=threshold,
+                       meritocracy=meritocracy_str)
 
 
 def label_pr(api, urn, pr_num, labels):
@@ -260,34 +267,37 @@ def get_reactions_for_pr(api, urn, pr):
         yield reaction
 
 
-def post_accepted_status(api, urn, pr, voting_window, votes, total, threshold):
+def post_accepted_status(api, urn, pr, voting_window, votes, total, threshold,
+                         meritocracy_satisfied):
     sha = pr["head"]["sha"]
 
     remaining_seconds = voting_window_remaining_seconds(pr, voting_window)
     remaining_human = misc.seconds_to_human(remaining_seconds)
-    votes_summary = formatted_votes_short_summary(votes, total, threshold)
+    votes_summary = formatted_votes_short_summary(votes, total, threshold, meritocracy_satisfied)
 
     post_status(api, urn, sha, "success",
                 "remaining: {time}, {summary}".format(time=remaining_human, summary=votes_summary))
 
 
-def post_rejected_status(api, urn, pr, voting_window, votes, total, threshold):
+def post_rejected_status(api, urn, pr, voting_window, votes, total, threshold,
+                         meritocracy_satisfied):
     sha = pr["head"]["sha"]
 
     remaining_seconds = voting_window_remaining_seconds(pr, voting_window)
     remaining_human = misc.seconds_to_human(remaining_seconds)
-    votes_summary = formatted_votes_short_summary(votes, total, threshold)
+    votes_summary = formatted_votes_short_summary(votes, total, threshold, meritocracy_satisfied)
 
     post_status(api, urn, sha, "failure",
                 "remaining: {time}, {summary}".format(time=remaining_human, summary=votes_summary))
 
 
-def post_pending_status(api, urn, pr, voting_window, votes, total, threshold):
+def post_pending_status(api, urn, pr, voting_window, votes, total, threshold,
+                        meritocracy_satisfied):
     sha = pr["head"]["sha"]
 
     remaining_seconds = voting_window_remaining_seconds(pr, voting_window)
     remaining_human = misc.seconds_to_human(remaining_seconds)
-    votes_summary = formatted_votes_short_summary(votes, total, threshold)
+    votes_summary = formatted_votes_short_summary(votes, total, threshold, meritocracy_satisfied)
 
     post_status(api, urn, sha, "pending",
                 "remaining: {time}, {summary}".format(time=remaining_human, summary=votes_summary))

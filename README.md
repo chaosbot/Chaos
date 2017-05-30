@@ -50,8 +50,7 @@ Wondering how to contribute? Try implementing a feature requested [here](https:/
 Votes on a PR are determined through following mechanism:
 * A comment that contains an emoji signifying a vote somewhere in the body counts as a vote for
   or against the PR.
-* Same for reactions on the PR itself and an accept/reject [pull
-  request review](https://help.github.com/articles/about-pull-request-reviews/)
+* Same for reactions on the PR itself
 * The PR itself counts as :+1: from the owner, unless they vote otherwise.
 * Voting goes on for the duration of the voting window - currently 2 or 3 hours,
   depending on the local server time.
@@ -108,6 +107,11 @@ will manually be restarted and the death counter will be incremented.
 #### Q: What is "general approval" from the community?
 A: Users must vote on your PR, through either a comment or reaction,
 or a accept/reject pull request review.  See [Voting](https://github.com/chaosbot/Chaos/blob/master/README.md#voting).
+
+In addition, a member of the meritocracy must approve the most recent commit of the PR with a review.
+A member of the meritocracy approving their own PR does not count.
+The meritocracy is determined by combining the top 10 contributors and the top 10 voters.
+Both of those datasets are publicly available, or you can look in chaosbot's logs to determine the current meritocracy.
 
 #### Q: What if ChaosBot has a problem that can't be solved by a PR?
 A: Please open a [project issue](https://github.com/chaosbot/Chaos/issues) and a
