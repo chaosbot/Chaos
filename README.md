@@ -82,7 +82,7 @@ Chaosbot has been ruled by:
 - Democracy, as the anarchy commit crashed the server and was reverted
 - @PlasmaPower with [#138](https://github.com/chaosbot/chaos/pull/138)
 - Democracy, as PlasmaPower relinquished his control with [#153](https://github.com/chaosbot/chaos/pull/153)
-- Meritocracy with [#377](https://github.com/chaosbot/Chaos/pull/377)
+- Direct democracy + meritocracy with [#377](https://github.com/chaosbot/Chaos/pull/377)
 
 ## Server details
 
