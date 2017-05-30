@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<!-- Copyright (c) 2012 Daniel Richman; GNU GPL 3 -->
+<!-- Code from ukhas/js-logtail -->
+<html>
+    <head>
+        <title>log viewer</title>
+        <script
+            src="https://code.jquery.com/jquery-1.12.4.min.js"
+            integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+            crossorigin="anonymous"></script>
+        <script type="text/javascript" src="js/logtail.js"></script>
+    </head>
+    <body>
+        <div id="header">
+            js-logtail.
+            <a href="./logtail.html">Reversed</a> or
+            <a href="./logtail.html?noreverse">chronological</a> view.
+            <a id="pause" href='#'>Pause</a>.
+        </div>
+        <hr />
+        <pre id="data">Loading...</pre>
+    </body>
+</html>
