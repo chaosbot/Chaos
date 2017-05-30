@@ -94,10 +94,10 @@ and a threshold of {threshold:.1f}, and {meritocracy} current meritocracy review
 def formatted_votes_short_summary(votes, total, threshold, meritocracy_satisfied):
     vfor = sum(v for v in votes.values() if v > 0)
     vagainst = abs(sum(v for v in votes.values() if v < 0))
-    meritocracy_str = "✓" if meritocracy_satisfied else "✗"
+    meritocracy_str = "Y" if meritocracy_satisfied else "N"
 
     return """
-vote: {vfor}-{vagainst} → {total:.1f}, threshold: {threshold:.1f}, meritocracy: {meritocracy}
+vote: {vfor}-{vagainst} => {total:.1f}, threshold: {threshold:.1f}, meritocracy: {meritocracy}
     """.strip().format(vfor=vfor, vagainst=vagainst, total=total, threshold=threshold,
                        meritocracy=meritocracy_str)
 
