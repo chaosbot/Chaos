@@ -235,7 +235,7 @@ def poll_read_issue_comments(api):
     __log.info("looking for issue comments")
 
     issue_comments = gh.comments.get_all_issue_comments(api, settings.URN)
-    __log.info("found {count} issue comments".format(len(issue_comments)))
+    __log.info("found {count} issue comments".format(count=len(issue_comments)))
 
     for issue_comment in issue_comments:
         handle_comment(api, issue_comment)
