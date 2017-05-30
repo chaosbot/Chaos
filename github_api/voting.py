@@ -52,8 +52,8 @@ def get_language_diversity(api, urn, pr_num):
     if len(pr.keys()) < len(base.keys()):
         return 2 * (len(pr.keys()) - len(base.keys()))
     # else look at the ratio at the average byte/language
-    avg_pr = float(sum(pr.values)) / max(len(pr.keys()),1)
-    avg_base = float(sum(base.values)) / max(len(base.keys()),1)
+    avg_pr = float(sum(pr.values())) / max(len(pr.keys()),1)
+    avg_base = float(sum(base.values())) / max(len(base.keys()),1)
     # if the pr is closer to 1/num_languages, return 3 x multiplier
     # else return 1
     dist = 1 / len(base.keys())
