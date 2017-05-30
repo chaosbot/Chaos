@@ -78,6 +78,15 @@ Open a new PR with the merge conflicts fixed to restart voting.
     return leave_comment(api, urn, pr, body)
 
 
+def leave_ci_failed_comment(api, urn, pr, hours):
+    body = """
+:no_good: This PR has failed to pass CI, and hasn't been touched in {hours} hours. Closing.
+
+Open a new PR with the problems fixed to restart voting.
+    """.strip().format(hours=hours)
+    return leave_comment(api, urn, pr, body)
+
+
 def leave_deleted_comment(api, urn, pr):
     body = """
 :no_good: The repository backing this PR has been deleted.

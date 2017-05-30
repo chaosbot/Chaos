@@ -106,6 +106,17 @@ vote: {vfor}-{vagainst} → {total:.1f}, threshold: {threshold:.1f}, meritocracy
                        meritocracy=meritocracy_str)
 
 
+def handle_broken_pr(api, urn, pr, delta, reason):
+    """ check if the PR is stale and close it """
+    if delta >= 60 * 60 * settings.PR_STALE_HOURS:
+        days = round(delta / 60 / 60)
+        if reason is "conflicts":
+            comments.leave_stale_comment(api, urn, pr["number"], days)
+        elif reason is "ci":
+            comments.leave_ci_failed_comment(api, urn, pr["number"], days)
+        close_pr(api, urn, pr)
+
+
 def close_pr(api, urn, pr):
     """ https://developer.github.com/v3/pulls/#update-a-pull-request """
     path = "/repos/{urn}/pulls/{pr}".format(urn=urn, pr=pr["number"])
@@ -174,27 +185,25 @@ def get_pr_comments(api, urn, pr_num):
         yield comment
 
 
-def has_build_passed(api, statuses_url):
+def has_build_passed(api, urn, ref):
     """
-        Check if a Pull request has passed Travis CI builds
-    :param api: github api instance
-    :param statuses_url: full url to the github commit status.
-           Given in pr["statuses_url"]
-    :return: true if the commit passed travis build, false if failed or still pending
+    Check if a commit has passed Travis CI builds.
+    ref can be an sha, tag or a branch name (e.g. "master")
+    It uses aggregated status endpoint:
+    https://developer.github.com/v3/repos/statuses/#get-the-combined-status-for-a-specific-ref
+    Returns true if the commit passed travis build or status is unavailable
+    and false if failed or pending
     """
-    statuses_path = statuses_url.replace(api.BASE_URL, "")
-
-    statuses = api("get", statuses_path)
+    path = "/repos/{urn}/commits/{ref}/status".format(urn=urn, ref=ref)
+    response = api("get", path)
+    statuses = response.get("statuses")
 
     if statuses:
         for status in statuses:
-            # Check the state and context of the commit status
-            # the state can be a success for Chaosbot statuses,
-            # so we double-check context for a Travis CI context
-            if (status["state"] == "success") and \
-               (status["context"].startswith(TRAVIS_CI_CONTEXT)):
-                return True
-    return False
+            if status["state"] in ["failure", "pending"] and \
+               status["context"].startswith(TRAVIS_CI_CONTEXT):
+                return False
+    return True
 
 
 def get_ready_prs(api, urn, window):
@@ -202,6 +211,7 @@ def get_ready_prs(api, urn, window):
     than the voting window.  these are prs that are ready to be considered for
     merging """
     open_prs = get_open_prs(api, urn)
+    master_build_passed = has_build_passed(api, urn, "master")
     for pr in open_prs:
         pr_num = pr["number"]
 
@@ -215,14 +225,17 @@ def get_ready_prs(api, urn, window):
         delta = (now - updated).total_seconds()
         is_wip = "WIP" in pr["title"]
 
-        # this is unused right now.  there are issues with travis status not
-        # existing on the PRs anymore (somehow..still unsolved), and then PRs
-        # were not being processed or updated.  do not use this variable in the
-        # if-condition that follow it until that has been solved
-        # build_passed = has_build_passed(api, pr["statuses_url"])
-
         if is_wip or delta < window:
             continue
+
+        # check if this PR successfully passed travis-ci only if master also passes
+        if master_build_passed:
+            build_passed = has_build_passed(api, urn, pr["head"]["sha"])
+
+            if not build_passed:
+                issues.label_issue(api, urn, pr_num, ["CI failed"])
+                handle_broken_pr(api, urn, pr, delta, "ci")
+                continue
 
         # we check if its mergeable if its outside the voting window,
         # because there seems to be a race where a freshly-created PR exists
@@ -235,10 +248,7 @@ def get_ready_prs(api, urn, window):
             yield pr
         elif mergeable is False:
             issues.label_issue(api, urn, pr_num, ["conflicts"])
-            if delta >= 60 * 60 * settings.PR_STALE_HOURS:
-                comments.leave_stale_comment(
-                    api, urn, pr["number"], round(delta / 60 / 60))
-                close_pr(api, urn, pr)
+            handle_broken_pr(api, urn, pr, delta, "conflicts")
 
 
 def voting_window_remaining_seconds(api, pr, window):
@@ -270,7 +280,7 @@ def get_is_mergeable(api, urn, pr_num):
 
 
 def get_pr(api, urn, pr_num):
-    """ helper for fetching a pr.  necessary because the "mergeable" field does
+    """ helper for fetching a pr. necessary because the "mergeable" field does
     not exist on prs that come back from paginated endpoints, so we must fetch
     the pr directly """
     path = "/repos/{urn}/pulls/{pr}".format(urn=urn, pr=pr_num)
