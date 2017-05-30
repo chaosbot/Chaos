@@ -43,12 +43,13 @@ def poll_pull_requests(api):
             fp.truncate()
 
         top_contributors = sorted(gh.repos.get_contributors(api, settings.URN),
-                                  key=lambda user: user["total"])
+                                  key=lambda user: user["total"], reverse=True)
         top_contributors = top_contributors[:settings.MERITOCRACY_TOP_CONTRIBUTORS]
-        top_contributors = [user["login"].lower() for user in top_contributors]
-        top_voters = sorted(total_votes.items(), key=lambda k, v: (v, k))
-        top_voters = [user[0].lower() for user in top_voters[:settings.MERITOCRACY_TOP_VOTERS]]
-        meritocracy = top_voters + top_contributors
+        top_contributors = set([item["author"]["login"].lower() for item in top_contributors])
+        top_voters = sorted(total_votes, key=total_votes.get, reverse=True)
+        top_voters = set([user.lower() for user in top_voters[:settings.MERITOCRACY_TOP_VOTERS]])
+        meritocracy = top_voters | top_contributors
+        __log.info("generated meritocracy: " + str(meritocracy))
 
         needs_update = False
         for pr in prs:
