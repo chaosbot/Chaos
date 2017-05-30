@@ -109,6 +109,11 @@ will manually be restarted and the death counter will be incremented.
 A: Users must vote on your PR, through either a comment or reaction,
 or a accept/reject pull request review.  See [Voting](https://github.com/chaosbot/Chaos/blob/master/README.md#voting).
 
+In addition, a member of the meritocracy must approve the most recent commit of the PR with a review.
+A member of the meritocracy approving their own PR does not count.
+The meritocracy is determined by combining the top 10 contributors and the top 10 voters.
+Both of those datasets are publicly available, or you can look in chaosbot's logs to determine the current meritocracy.
+
 #### Q: What if ChaosBot has a problem that can't be solved by a PR?
 A: Please open a [project issue](https://github.com/chaosbot/Chaos/issues) and a
 real live human will take a look at it.
