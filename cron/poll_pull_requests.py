@@ -36,11 +36,7 @@ def poll_pull_requests(api):
         total_votes = {}
         fs = fp.read()
         if fs:
-            # if the voting record exists, read it in
             total_votes = json.loads(fs)
-            # then prepare for overwriting
-            fp.seek(0)
-            fp.truncate()
 
         top_contributors = sorted(gh.repos.get_contributors(api, settings.URN),
                                   key=lambda user: user["total"], reverse=True)
@@ -131,10 +127,15 @@ def poll_pull_requests(api):
                     total_votes[user] += 1
                 else:
                     total_votes[user] = 1
-            json.dump(total_votes, fp)
 
-            # flush all buffers because we might restart, which could cause a crash
-            os.fsync(fp)
+        if fs:
+            # prepare for overwriting
+            fp.seek(0)
+            fp.truncate()
+        json.dump(total_votes, fp)
+
+        # flush all buffers because we might restart, which could cause a crash
+        os.fsync(fp)
 
     # we approved a PR, restart
     if needs_update:
