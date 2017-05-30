@@ -83,8 +83,7 @@ def set_time_remaining(api, comment_id, comment_txt):
     if comment_data["has_ran"]:
         return
 
-    now = arrow.utcnow()
-    voting_window = gh.voting.get_initial_voting_window(now)
+    voting_window = gh.voting.get_initial_voting_window()
 
     seconds_remaining = gh.issues.voting_window_remaining_seconds(api, settings.URN, comment_id,
                                                                   voting_window)
