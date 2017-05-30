@@ -37,7 +37,7 @@ def get_votes(api, urn, pr, meritocracy):
             break
 
     # by virtue of creating the PR, the owner defaults to a vote of 1
-    if votes.get(pr_owner) != -1:
+    if votes.get(pr_owner) is None:
         votes[pr_owner] = 1
 
     return votes, meritocracy_satisfied
@@ -50,7 +50,7 @@ def get_pr_comment_votes_all(api, urn, pr_num):
         comment_owner = comment["user"]["login"]
 
         vote = parse_comment_for_vote(comment["body"])
-        if vote:
+        if vote is not None:
             yield comment_owner, vote
 
         # reactions count as votes too.
@@ -85,7 +85,7 @@ def get_pr_reaction_votes(api, urn, pr_num):
     for reaction in reactions:
         reaction_owner = reaction["user"]["login"]
         vote = parse_reaction_for_vote(reaction["content"])
-        if vote:
+        if vote is not None:
             yield reaction_owner, vote
 
 
@@ -96,7 +96,7 @@ def get_comment_reaction_votes(api, urn, comment_id):
     for reaction in reactions:
         reaction_owner = reaction["user"]["login"]
         vote = parse_reaction_for_vote(reaction["content"])
-        if vote:
+        if vote is not None:
             yield reaction_owner, vote
 
 
@@ -183,7 +183,11 @@ def parse_emojis_for_vote(body):
     for negative_emoji in prepare_emojis_list('negative'):
         if negative_emoji in body:
             return -1
-    return 0
+    for abstain_emoji in prepare_emojis_list('abstain'):
+        if abstain_emoji in body:
+            print("ABSTAINED\n\n\n")
+            return 0
+    return None
 
 
 def prepare_emojis_list(type):
