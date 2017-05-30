@@ -4,7 +4,7 @@ import logging
 import settings
 import github_api as gh
 
-__log = logging.getLogger("poll_close_stale")
+__log = logging.getLogger("stale_issues")
 
 
 def poll_issue_close_stale(api):

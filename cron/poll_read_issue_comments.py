@@ -26,7 +26,7 @@ if not os.path.exists(SAVED_COMMANDS_FILE):
     with open(SAVED_COMMANDS_FILE, 'w') as f:
         json.dump({}, f)
 
-__log = logging.getLogger("poll_issue_commands")
+__log = logging.getLogger("issue_commands")
 
 '''
 Command Syntax
