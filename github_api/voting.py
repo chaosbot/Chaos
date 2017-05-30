@@ -45,21 +45,21 @@ def get_language_diversity(api, urn, pr_num):
     # get the pr and master languages
     base = repos.get_languages(api, urn)
     pr = prs.get_languages(api, urn, pr_num)
-    # if a new language is added return N new language factor
+    # if a new language is added return 2*N new language factor
     if len(pr.keys()) > len(base.keys()):
-        return len(pr.keys()) - len(base.keys())
-    # if a language is removed return -N new language factor
+        return 2 * (len(pr.keys()) - len(base.keys()))
+    # if a language is removed return -(2*N) new language factor
     if len(pr.keys()) < len(base.keys()):
-        return len(pr.keys()) - len(base.keys())
+        return 2 * (len(pr.keys()) - len(base.keys()))
     # else look at the ratio at the average byte/language
     avg_pr = float(sum(pr.values)) / max(len(pr.keys()),1)
     avg_base = float(sum(base.values)) / max(len(base.keys()),1)
-    # if the pr is closer to 1/num_languages, return 2 x multiplier
+    # if the pr is closer to 1/num_languages, return 3 x multiplier
     # else return 1
     dist = 1 / len(base.keys())
     factor = min([avg_base, avg_pr], key=lambda x:abs(x-dist))
     if factor == avg_pr:
-        return 2
+        return 3
     else:
         return 1
 
