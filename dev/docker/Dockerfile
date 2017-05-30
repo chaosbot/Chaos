@@ -60,6 +60,7 @@ RUN printf "\
 
     service supervisor start\n\
     service nginx start\n\
+    service mysqld start\n\
 
     sleep 1\n\
 
