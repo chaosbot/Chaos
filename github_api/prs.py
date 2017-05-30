@@ -83,8 +83,8 @@ def formatted_votes_summary(votes, total, threshold):
     vfor = sum(v for v in votes.values() if v > 0)
     vagainst = abs(sum(v for v in votes.values() if v < 0))
 
-    return ("with a vote of {vfor} for and {vagainst} against, with a weighted total \
-            of {total:.1f} and a threshold of {threshold:.1f}"
+    return ("with a vote of {vfor} for and {vagainst} against, with a weighted total " +
+            "of {total:.1f} and a threshold of {threshold:.1f}"
             .strip().format(vfor=vfor, vagainst=vagainst, total=total, threshold=threshold))
 
 
