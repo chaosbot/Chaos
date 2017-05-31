@@ -275,7 +275,7 @@ def get_patch(api, urn, pr_num, raw=False):
     data = api("get", path)
     if raw:
         return data
-    return PatchSet(patch)
+    return PatchSet(data)
 
 
 def post_accepted_status(api, urn, pr, voting_window, votes, total, threshold,
