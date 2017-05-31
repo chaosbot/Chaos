@@ -72,6 +72,15 @@ TIMEZONE = "US/Pacific"
 with open("description.txt", "r") as h:
     REPO_DESCRIPTION = h.read().strip()
 
+# repo labels
+REPO_LABELS = {
+    "accepted": "0e8a16",
+    "rejected": "ededed",
+    "conflicts": "fbca04",
+    "mergeable": "dddddd",
+    "can't merge": "ededed"
+}
+
 # PRs that have merge conflicts and haven't been touched in this many hours
 # will be closed
 PR_STALE_HOURS = 36
