@@ -6,7 +6,7 @@ $("#term").terminal({
         this.echo("github, gitter, help");
     },
     github: function () {
-        this.echo("<a href='https://github.com/chaosthebot/Chaos'>Click here</a> to visit the GitHub repo.", { raw: true });
+        this.echo("<a href='https://github.com/chaosbot/Chaos'>Click here</a> to visit the GitHub repo.", { raw: true });
     },
     gitter: function () {
         this.echo("<a href='https://gitter.im/chaosthebot/Lobby'>Click here</a> to join the Gitter chat.", { raw: true });
