@@ -1,26 +1,33 @@
+/* GENERAL */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+
 html {
     font-family: 'Roboto', sans-serif;
     text-rendering: optimizeLegibility;
     background-color: #000000;
     text-align: justify;
 }
+
 html, body {
     width: 100%;
     height: 100%;
     overflow: auto;
 }
+
 body {
     counter-reset: voter;
 }
+
 h1 {
     font-size: 80px;
     letter-spacing: .10em;
 }
+
 .container {
     z-index: 5;
     height: 100%;
@@ -33,15 +40,20 @@ h1 {
     align-items: center;
     justify-content: center;
 }
+
 #header {
     text-align: center;
     min-width: 2em;
     padding: 0 25%;
     padding-top: 1em;
 }
+
+/* OCTOCAT */
+
 .github-corner:hover .octo-arm {
     animation: octocat-wave 560ms ease-in-out
 }
+
 @keyframes octocat-wave {
     0%, 100% {
         transform: rotate(0)
@@ -61,6 +73,7 @@ h1 {
         animation: octocat-wave 560ms ease-in-out
     }
 }
+
 #github-ribbon {
     position: absolute;
     top: 0;
@@ -68,6 +81,9 @@ h1 {
     border: 0;
     z-index: 100;
 }
+
+/* GENERAL */
+
 .card {
     width: 100%;
     max-width: 450px;
@@ -80,25 +96,53 @@ h1 {
 .content-title {
     border: 5px solid #010101;
 }
+
 .fa, a {
     color: #010101;
 }
+
 .content-title h1 {
     padding: 0.5em;
     margin-bottom: 0;
 }
+
 .main {
     box-shadow: 4px 0px 5px rgba(0,0,0,0.5);
     background: #fafafa;
 }
+
 #canvas {
     margin: 5px 0;
     width: 100%;
 }
+
 body.transform {
     transform: rotate(180deg);
     -ms-transform: rotate(180deg);
     -webkit-transform: rotate(180deg);
+}
+
+/* TERMINAL AND MODAL */
+
+@keyframes modalfade {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.modal-content.terminal {
+    overflow-y: hidden;
+}
+
+.modal.fade-out {
+    animation: modalfade 500ms ease-in-out reverse;
+}
+
+.modal.fade-in {
+    animation: modalfade 500ms ease-in-out;
 }
 
 /* BACKGROUND */
@@ -122,16 +166,22 @@ body.transform {
     z-index: -100;
 }
 
-/* END BACKGROUND */
+/* VOTERS TABLE */
 
 #result {
     margin: 25px 0;
 }
 
 #result table > tbody > tr > td:first-child::before {
-        counter-increment: voter;
-        content: counter(voter) ". ";
+    counter-increment: voter;
+    content: counter(voter) ". ";
 }
+
+#result table > tbody > tr > td + td {
+    text-align: right;
+}
+
+/* CARDS */
 
 #voters:not(.active):hover {
     cursor: pointer;

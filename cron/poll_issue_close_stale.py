@@ -4,7 +4,7 @@ import logging
 import settings
 import github_api as gh
 
-__log = logging.getLogger("poll_close_stale")
+__log = logging.getLogger("stale_issues")
 
 
 def poll_issue_close_stale(api):
@@ -17,9 +17,11 @@ def poll_issue_close_stale(api):
     __log.info("Checking for stale issues...")
 
     # Get all issues
-    issues = gh.issues.get_open_issues(api, settings.URN)
+    issues = gh.issues.get_oldest_open_issues(api, settings.URN)
 
-    __log.info("There are currently %d open issues" % len(issues))
+    __log.info(str(issues))
+
+    __log.info("Got the oldest %d open issues" % len(issues))
 
     for issue in issues:
         number = issue["number"]

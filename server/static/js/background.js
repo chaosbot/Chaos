@@ -159,17 +159,23 @@ if (background.getContext){
 	};
     
     var changeAngle = function(angle){
+        console.debug("Starting a smoothed angle change...");
         if (interval) clearInterval(interval);
         let amt = 5;
-        setInterval(function(){
-            if (config.angle < angle + 5 && config.angle > angle - 5) {
+        interval = setInterval(function(){
+            let oldAngle = config.angle;
+            if (config.angle < angle + amt && config.angle > angle - amt) {
                 config.angle = angle;
                 clearInterval(interval);
+                console.debug("Smooth angle change complete.");
             } else if (config.angle > angle) {
-                config.angle -= 5;
+                config.angle -= amt;
+                console.debug("-5");
             } else {
-                config.angle += 5;
+                config.angle += amt;
+                console.debug("+5");
             }
+            console.debug(`Old angle: ${oldAngle}; Intended angle: ${angle}; New angle: ${config.angle}; Change: ${config.angle - oldAngle}`);
         }, 50);
     }
 	
@@ -230,5 +236,5 @@ function wndsize(){
 }
 
 document.onkeydown = function(event) {
-    if (event.keyCode == 65) changeAngle(Math.round(Math.random() * 10 - 5));
+    if (event.keyCode == 65) changeAngle(Math.round(Math.random() * 16 * 22.5) + 20);
 }

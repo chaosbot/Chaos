@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/chaosbot/Chaos.svg?branch=master)](https://travis-ci.org/chaosbot/Chaos)
 [![Gitter chat](https://badges.gitter.im/chaosthebot/gitter.svg)](https://gitter.im/chaosthebot/Lobby)
 [![ChaosBot](https://img.shields.io/badge/Chaos-Bot-green.svg)](http://chaosthebot.com/)
+[![Uptime Robot status](https://img.shields.io/uptimerobot/status/m779059690-a73926b71d851b3fe2304f12.svg)](https://stats.uptimerobot.com/O7m2ghl4M)
 
 > Chaos, the vacant and infinite space which existed according to the ancient
 > cosmogonies previous to the creation of the world, and out of which the gods,
@@ -56,10 +57,10 @@ Votes on a PR are determined through following mechanism:
   depending on the local server time.
 * While the voting process is going, users can change their reactions and edit
   their comments, effectively changing their vote.
-  
+
 Emoji which count as votes are:
-* +1: :+1: :thumbsup: :heart: :two_hearts: :blue_heart: :purple_heart: :green_heart: :yellow_heart: :heartpulse: :sparkling_heart: :tada: :heart_eyes: :grin: :grinning: :joy: :ok_hand: :fire: :metal: :raised_hands: :100: :heavy_check_mark: :white_check_mark: :ballot_box_with_check: :accept: :congratulations: 
-* -1: :-1: :thumbsdown: :confused: :x: :interrobang: :heavy_multiplication_x: :put_litter_in_its_place: :no_entry: :negative_squared_cross_mark: :worried: :frowning: :anguished: :grimacing: :cold_sweat: :disappointed: :weary: :confounded: :cry: :tired_face: :broken_heart: :hankey: :poop: :shit: :fu: :no_good: :person_frowning: 
+* +1: :+1: :thumbsup: :heart: :two_hearts: :blue_heart: :purple_heart: :green_heart: :yellow_heart: :heartpulse: :sparkling_heart: :tada: :heart_eyes: :grin: :grinning: :joy: :ok_hand: :fire: :metal: :raised_hands: :100: :heavy_check_mark: :white_check_mark: :ballot_box_with_check: :accept: :congratulations:
+* -1: :-1: :thumbsdown: :confused: :x: :interrobang: :heavy_multiplication_x: :put_litter_in_its_place: :no_entry: :negative_squared_cross_mark: :worried: :frowning: :anguished: :grimacing: :cold_sweat: :disappointed: :weary: :confounded: :cry: :tired_face: :broken_heart: :hankey: :poop: :shit: :fu: :no_good: :person_frowning:
 
 ## Development
 
@@ -81,6 +82,7 @@ Chaosbot has been ruled by:
 - Democracy, as the anarchy commit crashed the server and was reverted
 - @PlasmaPower with [#138](https://github.com/chaosbot/chaos/pull/138)
 - Democracy, as PlasmaPower relinquished his control with [#153](https://github.com/chaosbot/chaos/pull/153)
+- Direct democracy + meritocracy with [#377](https://github.com/chaosbot/Chaos/pull/377)
 
 ## Server details
 
