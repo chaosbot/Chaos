@@ -38,7 +38,7 @@ else:
         del db["comment_ids_ran"]
 
     with open(SAVED_COMMANDS_FILE, 'w') as f:
-        json.dump({}, f)
+        json.dump(db, f)
 
 __log = logging.getLogger("issue_commands")
 
