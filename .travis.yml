@@ -1,0 +1,10 @@
+language: python
+python:
+  - "3.6"
+install:
+  - "pip install -r requirements.txt"
+  - "pip install flake8"
+cache: pip
+script:
+  - flake8
+  - python -m unittest discover -p "*_test.py"

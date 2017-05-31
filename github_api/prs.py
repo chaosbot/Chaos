@@ -1,14 +1,20 @@
-import arrow
 import math
+import logging
+import arrow
+from requests import HTTPError
+
 import settings
+from . import comments
+from . import exceptions as exc
 from . import misc
 from . import voting
-from . import comments
-from . import commits
-from . import exceptions as exc
+
+TRAVIS_CI_CONTEXT = "continuous-integration/travis-ci"
+
+__log = logging.getLogger("github_api.prs")
 
 
-def merge_pr(api, urn, pr, votes, total, threshold):
+def merge_pr(api, urn, pr, votes, total, threshold, meritocracy_satisfied):
     """ merge a pull request, if possible, and use a nice detailed merge commit
     message """
 
@@ -22,7 +28,7 @@ def merge_pr(api, urn, pr, votes, total, threshold):
     if record:
         record = "Vote record:\n" + record
 
-    votes_summary = formatted_votes_summary(votes, total, threshold)
+    votes_summary = formatted_votes_summary(votes, total, threshold, meritocracy_satisfied)
 
     pr_url = "https://github.com/{urn}/pull/{pr}".format(urn=urn, pr=pr_num)
 
@@ -48,11 +54,17 @@ Description:
     data = {
         "commit_title": title,
         "commit_message": desc,
-        "merge_method": "merge",
 
         # if some clever person attempts to submit more commits while we're
         # aggregating votes, this sha check will fail and no merge will occur
         "sha": pr["head"]["sha"],
+
+        # default is "merge"
+        # i think we want to do a squash so its easier to auto-revert entire
+        # PRs, instead of detecting merge commits, then picking the right parent
+        # for a revert.  this way—with squash—every commit aside from hotfixes
+        # will be entire PRs
+        "merge_method": "squash",
     }
     try:
         resp = api("PUT", path, json=data)
@@ -69,20 +81,27 @@ Description:
             raise
 
 
-def formatted_votes_summary(votes, total, threshold):
+def formatted_votes_summary(votes, total, threshold, meritocracy_satisfied):
     vfor = sum(v for v in votes.values() if v > 0)
     vagainst = abs(sum(v for v in votes.values() if v < 0))
+    meritocracy_str = "a" if meritocracy_satisfied else "**NO**"
 
-    return "with a vote of {vfor} for and {vagainst} against, with a weighted total of {total:.1f} and a threshold of {threshold:.1f}" \
-        .strip().format(vfor=vfor, vagainst=vagainst, total=total, threshold=threshold)
+    return """
+with a vote of {vfor} for and {vagainst} against, a weighted total of {total:.1f} \
+and a threshold of {threshold:.1f}, and {meritocracy} current meritocracy review
+    """.strip().format(vfor=vfor, vagainst=vagainst, total=total, threshold=threshold,
+                       meritocracy=meritocracy_str)
 
 
-def formatted_votes_short_summary(votes, total, threshold):
+def formatted_votes_short_summary(votes, total, threshold, meritocracy_satisfied):
     vfor = sum(v for v in votes.values() if v > 0)
     vagainst = abs(sum(v for v in votes.values() if v < 0))
+    meritocracy_str = "✓" if meritocracy_satisfied else "✗"
 
-    return "vote: {vfor}-{vagainst}, weighted total: {total:.1f}, threshold: {threshold:.1f}" \
-        .strip().format(vfor=vfor, vagainst=vagainst, total=total, threshold=threshold)
+    return """
+vote: {vfor}-{vagainst} → {total:.1f}, threshold: {threshold:.1f}, meritocracy: {meritocracy}
+    """.strip().format(vfor=vfor, vagainst=vagainst, total=total, threshold=threshold,
+                       meritocracy=meritocracy_str)
 
 
 def label_pr(api, urn, pr_num, labels):
@@ -91,7 +110,7 @@ def label_pr(api, urn, pr_num, labels):
         labels = [labels]
     path = "/repos/{urn}/issues/{pr}/labels".format(urn=urn, pr=pr_num)
     data = labels
-    resp = api("PUT", path, json=data)
+    return api("PUT", path, json=data)
 
 
 def close_pr(api, urn, pr):
@@ -103,36 +122,14 @@ def close_pr(api, urn, pr):
     return api("patch", path, json=data)
 
 
-def get_pr_last_updated(api, urn, pr_data):
+def get_pr_last_updated(pr_data):
     """ a helper for finding the utc datetime of the last pr branch
     modifications """
-
-    # read about github's merge test commit
-    # https://developer.github.com/v3/pulls/#get-a-single-pull-request
-    # essentially what github does is, when it sees a new push to a PR, it will
-    # start a background job to test the PR for mergeability.  this
-    # background job creates a magical floating merge commit not really attached
-    # to any branch.  however, this commit is real and its committer is
-    # "GitHub"...and it has a commit date that we can assume is never malicious.
-    # And it's always updated on a new push to the PR's branch
-    #
-    # using all of these facts, we are able to determine the true, reliable,
-    # last update time of the branch backing a PR
-    #
-    # NOTE could potentially be deprecated at some point
-    # https://developer.github.com/changes/2013-04-25-deprecating-merge-commit-sha/
-    #
-    # based on https://stackoverflow.com/q/37442144/345059, it looks like it can
-    # be an empty string if the background job is still running, but also handle
-    # cases where the key doesn't exist, and also normalize to None if empty
-    github_test_merge_commit = pr_data.get("merge_commit_sha", None) or None
-
-    updated = None
-    if github_test_merge_commit:
-        commit = commits.get_commit(api, urn, github_test_merge_commit)
-        updated = arrow.get(commit["commit"]["committer"]["date"])
-
-    return updated
+    repo = pr_data["head"]["repo"]
+    if repo:
+        return arrow.get(repo["pushed_at"])
+    else:
+        return None
 
 
 def get_pr_comments(api, urn, pr_num):
@@ -147,60 +144,84 @@ def get_pr_comments(api, urn, pr_num):
         yield comment
 
 
+def has_build_passed(api, statuses_url):
+    """
+        Check if a Pull request has passed Travis CI builds
+    :param api: github api instance
+    :param statuses_url: full url to the github commit status.
+           Given in pr["statuses_url"]
+    :return: true if the commit passed travis build, false if failed or still pending
+    """
+    statuses_path = statuses_url.replace(api.BASE_URL, "")
+
+    statuses = api("get", statuses_path)
+
+    if statuses:
+        for status in statuses:
+            # Check the state and context of the commit status
+            # the state can be a success for Chaosbot statuses,
+            # so we double-check context for a Travis CI context
+            if (status["state"] == "success") and \
+               (status["context"].startswith(TRAVIS_CI_CONTEXT)):
+                return True
+    return False
+
+
 def get_ready_prs(api, urn, window):
-    """ yield mergeable, non-WIP prs that have had no modifications for longer
+    """ yield mergeable, travis-ci passed, non-WIP prs that have had no modifications for longer
     than the voting window.  these are prs that are ready to be considered for
     merging """
     open_prs = get_open_prs(api, urn)
     for pr in open_prs:
         pr_num = pr["number"]
 
-        updated = get_pr_last_updated(api, urn, pr)
-        # if there's no updated time, don't even consider this PR
-        if not updated:
+        now = arrow.utcnow()
+        updated = get_pr_last_updated(pr)
+        if updated is None:
+            comments.leave_deleted_comment(api, urn, pr["number"])
+            close_pr(api, urn, pr)
             continue
 
-        now = arrow.utcnow()
         delta = (now - updated).total_seconds()
-
         is_wip = "WIP" in pr["title"]
 
-        if not is_wip and delta > window:
-            # we check if its mergeable if its outside the voting window,
-            # because there seems to be a race where a freshly-created PR exists
-            # in the paginated list of PRs, but 404s when trying to fetch it
-            # directly
-            mergeable = get_is_mergeable(api, urn, pr_num)
-            if mergeable is True:
-                label_pr(api, urn, pr_num, [])
-                yield pr
-            elif mergeable is False:
-                label_pr(api, urn, pr_num, ["conflicts"])
-                if delta >= 60 * 60 * settings.PR_STALE_HOURS:
-                    comments.leave_stale_comment(
-                        api, urn, pr["number"], round(delta / 60 / 60))
-                    close_pr(api, urn, pr)
-            # mergeable can also be None, in which case we just skip it for now
+        # this is unused right now.  there are issues with travis status not
+        # existing on the PRs anymore (somehow..still unsolved), and then PRs
+        # were not being processed or updated.  do not use this variable in the
+        # if-condition that follow it until that has been solved
+        # build_passed = has_build_passed(api, pr["statuses_url"])
+
+        if is_wip or delta < window:
+            continue
+
+        # we check if its mergeable if its outside the voting window,
+        # because there seems to be a race where a freshly-created PR exists
+        # in the paginated list of PRs, but 404s when trying to fetch it directly
+        # mergeable can also be None, in which case we just skip it for now
+        mergeable = get_is_mergeable(api, urn, pr_num)
+
+        if mergeable is True:
+            label_pr(api, urn, pr_num, [])
+            yield pr
+        elif mergeable is False:
+            label_pr(api, urn, pr_num, ["conflicts"])
+            if delta >= 60 * 60 * settings.PR_STALE_HOURS:
+                comments.leave_stale_comment(
+                    api, urn, pr["number"], round(delta / 60 / 60))
+                close_pr(api, urn, pr)
 
 
-def voting_window_remaining_seconds(api, urn, pr, window):
-    """ returns the number of seconds until voting is over.  can be negative,
-    meaning voting has been over for that long """
+def voting_window_remaining_seconds(pr, window):
     now = arrow.utcnow()
-    pr_updated = get_pr_last_updated(api, urn, pr)
-
-    # this is how many seconds ago the pr has been updated with new commits.
-    # if we don't have a last update time, we're setting this to negative
-    # infinity, which is a mind-bender, but makes the maths work out
-    elapsed_last_update = -math.inf
-    if pr_updated:
-        elapsed_last_update = (now - pr_updated).total_seconds()
-
-    return window - elapsed_last_update
+    updated = get_pr_last_updated(pr)
+    if updated is None:
+        return math.inf
+    delta = (now - updated).total_seconds()
+    return window - delta
 
 
-def is_pr_in_voting_window(api, urn, pr, window):
-    return voting_window_remaining_seconds(api, urn, pr, window) <= 0
+def is_pr_in_voting_window(pr, window):
+    return voting_window_remaining_seconds(pr, window) <= 0
 
 
 def get_pr_reviews(api, urn, pr_num):
@@ -247,34 +268,37 @@ def get_reactions_for_pr(api, urn, pr):
         yield reaction
 
 
-def post_accepted_status(api, urn, pr, voting_window, votes, total, threshold):
+def post_accepted_status(api, urn, pr, voting_window, votes, total, threshold,
+                         meritocracy_satisfied):
     sha = pr["head"]["sha"]
 
-    remaining_seconds = voting_window_remaining_seconds(api, urn, pr, voting_window)
+    remaining_seconds = voting_window_remaining_seconds(pr, voting_window)
     remaining_human = misc.seconds_to_human(remaining_seconds)
-    votes_summary = formatted_votes_short_summary(votes, total, threshold)
+    votes_summary = formatted_votes_short_summary(votes, total, threshold, meritocracy_satisfied)
 
     post_status(api, urn, sha, "success",
                 "remaining: {time}, {summary}".format(time=remaining_human, summary=votes_summary))
 
 
-def post_rejected_status(api, urn, pr, voting_window, votes, total, threshold):
+def post_rejected_status(api, urn, pr, voting_window, votes, total, threshold,
+                         meritocracy_satisfied):
     sha = pr["head"]["sha"]
 
-    remaining_seconds = voting_window_remaining_seconds(api, urn, pr, voting_window)
+    remaining_seconds = voting_window_remaining_seconds(pr, voting_window)
     remaining_human = misc.seconds_to_human(remaining_seconds)
-    votes_summary = formatted_votes_short_summary(votes, total, threshold)
+    votes_summary = formatted_votes_short_summary(votes, total, threshold, meritocracy_satisfied)
 
     post_status(api, urn, sha, "failure",
                 "remaining: {time}, {summary}".format(time=remaining_human, summary=votes_summary))
 
 
-def post_pending_status(api, urn, pr, voting_window, votes, total, threshold):
+def post_pending_status(api, urn, pr, voting_window, votes, total, threshold,
+                        meritocracy_satisfied):
     sha = pr["head"]["sha"]
 
-    remaining_seconds = voting_window_remaining_seconds(api, urn, pr, voting_window)
+    remaining_seconds = voting_window_remaining_seconds(pr, voting_window)
     remaining_human = misc.seconds_to_human(remaining_seconds)
-    votes_summary = formatted_votes_short_summary(votes, total, threshold)
+    votes_summary = formatted_votes_short_summary(votes, total, threshold, meritocracy_satisfied)
 
     post_status(api, urn, sha, "pending",
                 "remaining: {time}, {summary}".format(time=remaining_human, summary=votes_summary))
@@ -288,4 +312,7 @@ def post_status(api, urn, sha, state, description):
         "description": description,
         "context": "chaosbot"
     }
-    api("POST", path, json=data)
+    try:
+        api("POST", path, json=data)
+    except:
+        __log.exception("status posting failed")

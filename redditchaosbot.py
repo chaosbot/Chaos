@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import praw
-import pprint
-from praw.models import MoreComments
 
 
 '''Authenticated instance of Reddit'''

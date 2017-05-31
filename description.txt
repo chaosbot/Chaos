@@ -1,1 +1,1 @@
-A social coding experiment that updates its own code democratically. http://chaosthebot.com
+A social coding experiment that updates its own code democratically.
