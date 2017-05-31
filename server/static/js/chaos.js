@@ -161,7 +161,7 @@ request.onreadystatechange = function() {
 
       var tablehtml = "<table>";
       for (var i = 0; i < list.length && i < 20; i++) {
-        tablehtml += "<tr><td><a href=\"https://github.com/" + list[i].names + "\">" + list[i].names + "</a></td><td>" + list[i].votes + "</tr>";
+        tablehtml += "<tr><td><a href=\"https://github.com/" + escape(list[i].names) + "\">" + list[i].names + "</a></td><td>" + list[i].votes + "</tr>";
       }
       tablehtml += "</table>";
       result.innerHTML = tablehtml;
