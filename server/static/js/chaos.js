@@ -123,7 +123,7 @@ document.getElementById("voters").onclick = function() {
 }
 
 document.getElementById("main").onclick = function() {
-  if (document.getElementById("main").hasClass('inactive')) {
+  if (document.getElementById("main").classList.contains('inactive')) {
     document.getElementById("main").classList.add("active");
     document.getElementById("voters").classList.add("inactive");
     document.getElementById("voters").classList.remove("active");
