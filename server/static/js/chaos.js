@@ -123,10 +123,12 @@ document.getElementById("voters").onclick = function() {
 }
 
 document.getElementById("main").onclick = function() {
-  document.getElementById("main").classList.add("active");
-  document.getElementById("voters").classList.add("inactive");
-  document.getElementById("voters").classList.remove("active");
-  document.getElementById("main").classList.remove("inactive");
+  if (document.getElementById("main").classList.contains('inactive')) {
+    document.getElementById("main").classList.add("active");
+    document.getElementById("voters").classList.add("inactive");
+    document.getElementById("voters").classList.remove("active");
+    document.getElementById("main").classList.remove("inactive");
+  }
 }
 
 /** LOAD VOTERS LIST */
@@ -172,35 +174,35 @@ request.onreadystatechange = function() {
 var termLoading = false;
 
 function loadTerm() {
-    let script = document.createElement("script");
-    script.onload = () => $ && $.terminal && showTerminal ? showTerminal() : null;
-    script.src = "static/js/term.js";
-    document.body.appendChild(script);
+  let script = document.createElement("script");
+  script.onload = () => $ && $.terminal && showTerminal ? showTerminal() : null;
+  script.src = "static/js/term.js";
+  document.body.appendChild(script);
 }
 
 function loadJqTE() {
-    let script = document.createElement("script");
-    script.onload = loadTerm;
-    script.src = "https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/1.4.2/js/jquery.terminal.min.js";
-    let sheet = document.createElement("link");
-    sheet.rel = "stylesheet";
-    sheet.href = "https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/1.4.2/css/jquery.terminal.min.css";
-    document.body.appendChild(script);
-    document.body.appendChild(sheet);
+  let script = document.createElement("script");
+  script.onload = loadTerm;
+  script.src = "https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/1.4.2/js/jquery.terminal.min.js";
+  let sheet = document.createElement("link");
+  sheet.rel = "stylesheet";
+  sheet.href = "https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/1.4.2/css/jquery.terminal.min.css";
+  document.body.appendChild(script);
+  document.body.appendChild(sheet);
 }
 
 function loadJq() {
-    termLoading = true;
-    let script = document.createElement("script");
-    script.onload = loadJqTE;
-    script.src = "https://code.jquery.com/jquery-3.2.1.min.js";
-    document.body.appendChild(script);
+  termLoading = true;
+  let script = document.createElement("script");
+  script.onload = loadJqTE;
+  script.src = "https://code.jquery.com/jquery-3.2.1.min.js";
+  document.body.appendChild(script);
 }
 
 document.getElementById("term-load").onclick = () => {
-    if (!termLoading) {
-        loadJq();
-    } else if (showTerminal) {
-        showTerminal();
-    }
+  if (!termLoading) {
+    loadJq();
+  } else if (showTerminal) {
+    showTerminal();
+  }
 }
