@@ -316,3 +316,9 @@ def post_status(api, urn, sha, state, description):
         api("POST", path, json=data)
     except:
         __log.exception("status posting failed")
+
+def get_patch(api, urn, pr_num):
+    """ get the formatted patch file for a pr """
+    path = "/{urn}/pull/{pr}.patch".format(urn=urn, pr=pr_num)
+    data = api("get", path)
+    return data
