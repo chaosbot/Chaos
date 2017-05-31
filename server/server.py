@@ -5,6 +5,7 @@ import http.server
 import socketserver
 import socket
 
+
 def set_proc_name(newname):
     """Change the process name using libc.so.6"""
     from ctypes import cdll, byref, create_string_buffer
@@ -35,6 +36,7 @@ def main():
 
     # serve HTTP on port 80
     httpd.serve_forever()
+
 
 if __name__ == "__main__":
     main()

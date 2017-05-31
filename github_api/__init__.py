@@ -2,9 +2,20 @@ import time
 import re
 import math
 import requests
-import json
 from requests.auth import HTTPBasicAuth
 import logging
+import settings
+
+from . import comments
+from . import exceptions
+from . import issues
+from . import misc
+from . import prs
+from . import repos
+from . import users
+from . import voting
+
+__all__ = ["comments", "exceptions", "issues", "misc", "prs", "repos", "users", "voting"]
 
 log = logging.getLogger("github_api")
 
@@ -15,7 +26,21 @@ def compute_api_cooldown(remaining, reset):
     to sleep before an api call.  this yields a nice curve where we'll spend
     more time waiting as we have fewer api calls left, and less time weighting
     if our refresh time is sooner.  graph it """
-    return ((reset / remaining) ** 3) / 10.0
+
+    # i've seen github's api fail with a 403 when we had 5 requests remaining,
+    # as confirmed by their response headers.  so we'll take that kind of
+    # fluctuation into account.
+    #
+    # also account for a potential divide by zero
+    actual_remaining = max(remaining - 30, 1)
+
+    cooldown = ((reset / actual_remaining) ** 3) / 10.0
+
+    # it doesn't make sense to ever sleep longer than the point where github
+    # refreshes our api counter, but let's also pad that value a little bit
+    cooldown = min(reset + settings.API_COOLDOWN_RESET_PADDING, cooldown)
+
+    return cooldown
 
 
 class API(object):
@@ -25,7 +50,7 @@ class API(object):
 
     BASE_URL = "https://api.github.com"
     BASE_HEADERS = {
-        #"Accept": "application/vnd.github.v3+json"
+        # "Accept": "application/vnd.github.v3+json"
         # so we have access to the reactions api
         "Accept": "application/vnd.github.squirrel-girl-preview+json"
     }

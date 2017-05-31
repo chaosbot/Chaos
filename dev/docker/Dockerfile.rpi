@@ -1,39 +1,42 @@
-FROM ubuntu:trusty
+FROM armhf/debian:jessie
 
+# clean and update dependencies
+RUN apt-get clean && apt-get update
+
+# get locale dependency
+RUN apt-get install locales
+
+# set locales
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-RUN rm -vf /var/lib/apt/lists/*
+RUN rm -vfr /var/lib/apt/lists/*
 RUN apt-get -y update
 
 # system dependencies
 RUN apt-get -y install\
         git\
-        mysql-server\
         nginx\
         python-software-properties\
         software-properties-common\
         supervisor\
         curl
 
-# for python 3.6
-RUN add-apt-repository ppa:fkrull/deadsnakes
-RUN apt-get -y update
-
 # python requirement dependencies
 RUN apt-get -y install\
-        python3.6\
         # dependencies for ansible's dependency module "cryptography"
         build-essential\
-        libpython3.6-dev\
         libssl-dev\
         libffi-dev
 
+# download python 3.6 source
+RUN curl https://www.python.org/ftp/python/3.6.0/Python-3.6.0.tgz -o Python-3.6.0.tgz -s && tar -xzvf Python-3.6.0.tgz
+RUN cd Python-3.6.0/ && ./configure && make -j 2 && make install
 
-RUN curl https://bootstrap.pypa.io/get-pip.py | python3.6 -
-RUN pip install virtualenv
+RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py | python3.6 -
+RUN pip3 install virtualenv
 
 ENV venvs=/root/.virtualenvs
 ENV venv=$venvs/chaos
