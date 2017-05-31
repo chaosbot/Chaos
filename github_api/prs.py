@@ -2,6 +2,7 @@ import math
 import logging
 import arrow
 from requests import HTTPError
+from unidiff import PatchSet
 
 import settings
 from . import comments
@@ -317,8 +318,10 @@ def post_status(api, urn, sha, state, description):
     except:
         __log.exception("status posting failed")
 
-def get_patch(api, urn, pr_num):
+def get_patch(api, urn, pr_num, raw=False):
     """ get the formatted patch file for a pr """
     path = "/{urn}/pull/{pr}.patch".format(urn=urn, pr=pr_num)
     data = api("get", path)
-    return data
+    if raw:
+        return data
+    return PatchSet(patch)
