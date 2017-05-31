@@ -1,33 +1,27 @@
 /* GENERAL */
-
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-
 html {
     font-family: 'Roboto', sans-serif;
     text-rendering: optimizeLegibility;
     background-color: #000000;
     text-align: justify;
 }
-
 html, body {
     width: 100%;
     height: 100%;
     overflow: auto;
 }
-
 body {
     counter-reset: voter;
 }
-
 h1 {
     font-size: 80px;
     letter-spacing: .10em;
 }
-
 .container {
     z-index: 5;
     height: 100%;
@@ -36,11 +30,18 @@ h1 {
     display: -ms-flexbox;
     display: -webkit-flex;
     display: flex;
-    flex-direction: column;
+    -webkit-box-align: center;
+    -moz-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
     align-items: center;
+    -webkit-box-pack: center;
+    -moz-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
     justify-content: center;
+    flex-direction: column;
 }
-
 #header {
     text-align: center;
     min-width: 2em;
@@ -49,11 +50,9 @@ h1 {
 }
 
 /* OCTOCAT */
-
 .github-corner:hover .octo-arm {
     animation: octocat-wave 560ms ease-in-out
 }
-
 @keyframes octocat-wave {
     0%, 100% {
         transform: rotate(0)
@@ -73,7 +72,6 @@ h1 {
         animation: octocat-wave 560ms ease-in-out
     }
 }
-
 #github-ribbon {
     position: absolute;
     top: 0;
@@ -83,39 +81,55 @@ h1 {
 }
 
 /* GENERAL */
-
-.card {
+#wrapper {
     width: 100%;
+    height: 100%;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-align: center;
+    -moz-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -moz-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.card {
+    width: 85%;
     max-width: 450px;
     flex-shrink: 1;
     flex-basis: auto;
     overflow-y: auto;
     position: absolute;
+    margin: auto;
+    left: 0;
+    right: 0;
 }
-
 .content-title {
     border: 5px solid #010101;
 }
-
 .fa, a {
     color: #010101;
 }
-
 .content-title h1 {
     padding: 0.5em;
     margin-bottom: 0;
 }
-
 .main {
-    box-shadow: 4px 0px 5px rgba(0,0,0,0.5);
+    box-shadow: 4px 0px 5px rgba(0, 0, 0, 0.5);
     background: #fafafa;
 }
-
 #canvas {
     margin: 5px 0;
     width: 100%;
 }
-
 body.transform {
     transform: rotate(180deg);
     -ms-transform: rotate(180deg);
@@ -123,7 +137,6 @@ body.transform {
 }
 
 /* TERMINAL AND MODAL */
-
 @keyframes modalfade {
     0% {
         opacity: 0;
@@ -132,24 +145,19 @@ body.transform {
         opacity: 1;
     }
 }
-
 .modal-content.terminal {
     overflow-y: hidden;
 }
-
 .modal.fade-out {
     animation: modalfade 500ms ease-in-out reverse;
 }
-
 .modal.fade-in {
     animation: modalfade 500ms ease-in-out;
 }
 
 /* BACKGROUND */
 #bg {
-    background: radial-gradient(at 30% 10%, rgb(243, 72, 45), transparent 90vw),
-        radial-gradient(at 10% 10%, rgb(243, 72, 45), transparent 100vw),
-        radial-gradient(at 10% 50%, rgb(243, 72, 45), transparent 50vw);
+    background: radial-gradient(at 30% 10%, rgb(243, 72, 45), transparent 90vw), radial-gradient(at 10% 10%, rgb(243, 72, 45), transparent 100vw), radial-gradient(at 10% 50%, rgb(243, 72, 45), transparent 50vw);
     position: fixed;
     top: 0;
     left: 0;
@@ -167,30 +175,24 @@ body.transform {
 }
 
 /* VOTERS TABLE */
-
 #result {
     margin: 25px 0;
 }
-
 #result table > tbody > tr > td:first-child::before {
     counter-increment: voter;
     content: counter(voter) ". ";
 }
-
 #result table > tbody > tr > td + td {
     text-align: right;
 }
 
 /* CARDS */
-
 #voters:not(.active):hover {
     cursor: pointer;
 }
-
 #main.inactive:hover {
     cursor: pointer;
 }
-
 #voters {
     z-index: 1;
     transform: perspective(100px) translate3d(100px, 0px, -30px);
@@ -198,88 +200,79 @@ body.transform {
     animation-duration: 0.7s;
     animation-fill-mode: both;
 }
-
 #main {
     z-index: 2;
     animation-duration: 0.7s;
     animation-fill-mode: both;
 }
-
 #voters.active {
     animation-name: vtop;
 }
-
 #main.active {
     animation-name: mtop;
 }
-
 #voters.inactive {
     animation-name: vback;
 }
-
 #main.inactive {
     animation-name: mback;
 }
-
 @keyframes vback {
-    0%{
-        z-index:2;
+    0% {
+        z-index: 2;
         transform: perspective(100px) translate3d(0px, 0px, 0px);
         opacity: 1;
         box-shadow: 0 10px 50px 0 rgba(0, 0, 0, 0.25);
     }
-    100%{
+    100% {
         z-index: 1;
         transform: perspective(100px) translate3d(100px, 0px, -30px);
         opacity: 0.5;
         box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.25);
     }
 }
-
 @keyframes mback {
-    0%{
-        z-index:2;
+    0% {
+        z-index: 2;
         transform: perspective(100px) translate3d(0px, 0px, 0px);
         opacity: 1;
         box-shadow: 0 10px 50px 0 rgba(0, 0, 0, 0.25);
     }
-    100%{
+    100% {
         z-index: 1;
         transform: perspective(100px) translate3d(-100px, 0px, -30px);
         opacity: 0.5;
         box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.25);
     }
 }
-
 @keyframes vtop {
-    0%{
-        z-index:1;
+    0% {
+        z-index: 1;
         transform: perspective(100px) translate3d(100px, 0px, -30px);
         opacity: 0.5;
     }
-    50%{
-        z-index:2;
+    50% {
+        z-index: 2;
         transform: perspective(100px) translate3d(400px, 0px, -30px);
     }
-    100%{
-        z-index:2;
+    100% {
+        z-index: 2;
         transform: perspective(100px) translate3d(0px, 0px, 0px);
         opacity: 1;
     }
 }
-
 @keyframes mtop {
-    0%{
-        z-index:1;
+    0% {
+        z-index: 1;
         transform: perspective(100px) translate3d(-100px, 0px, -30px);
         opacity: 0.5;
     }
-    50%{
-        z-index:2;
+    50% {
+        z-index: 2;
         transform: perspective(100px) translate3d(-400px, 0px, -30px);
     }
-    100%{
-        z-index:2;
+    100% {
+        z-index: 2;
         transform: perspective(100px) translate3d(0px, 0px, 0px);
         opacity: 1;
     }
