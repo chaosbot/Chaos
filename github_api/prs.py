@@ -269,6 +269,15 @@ def get_reactions_for_pr(api, urn, pr):
         yield reaction
 
 
+def get_patch(api, urn, pr_num, raw=False):
+    """ get the formatted or not patch file for a pr """
+    path = "/{urn}/pull/{pr}.patch".format(urn=urn, pr=pr_num)
+    data = api("get", path)
+    if raw:
+        return data
+    return PatchSet(patch)
+
+
 def post_accepted_status(api, urn, pr, voting_window, votes, total, threshold,
                          meritocracy_satisfied):
     sha = pr["head"]["sha"]
@@ -317,11 +326,3 @@ def post_status(api, urn, sha, state, description):
         api("POST", path, json=data)
     except:
         __log.exception("status posting failed")
-
-def get_patch(api, urn, pr_num, raw=False):
-    """ get the formatted patch file for a pr """
-    path = "/{urn}/pull/{pr}.patch".format(urn=urn, pr=pr_num)
-    data = api("get", path)
-    if raw:
-        return data
-    return PatchSet(patch)
