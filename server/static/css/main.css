@@ -101,6 +101,27 @@ body.transform {
     -webkit-transform: rotate(180deg);
 }
 
+@keyframes modalfade {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.modal-content.terminal {
+    overflow-y: hidden;
+}
+
+.modal.fade-out {
+    animation: modalfade 500ms ease-in-out reverse;
+}
+
+.modal.fade-in {
+    animation: modalfade 500ms ease-in-out;
+}
+
 /* BACKGROUND */
 #bg {
     background: radial-gradient(at 30% 10%, rgb(243, 72, 45), transparent 90vw),
