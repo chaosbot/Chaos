@@ -61,6 +61,13 @@ def main():
     log.info("Setting description to {desc}".format(desc=settings.REPO_DESCRIPTION))
     github_api.repos.set_desc(api, settings.URN, settings.REPO_DESCRIPTION)
 
+    log.info("Ensure creation of issue/PR labels")
+    github_api.repos.create_label(api, settings.URN, "accepted", "0e8a16")
+    github_api.repos.create_label(api, settings.URN, "rejected", "ededed")
+    github_api.repos.create_label(api, settings.URN, "conflicts", "fbca04")
+    github_api.repos.create_label(api, settings.URN, "mergeable", "dddddd")
+    github_api.repos.create_label(api, settings.URN, "can't merge", "ededed")
+
     while True:
         # Run any scheduled jobs on the next second.
         schedule.run_pending()
