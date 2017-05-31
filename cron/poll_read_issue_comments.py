@@ -28,6 +28,17 @@ if not os.path.exists(SAVED_COMMANDS_FILE):
     '''
     with open(SAVED_COMMANDS_FILE, 'w') as f:
         json.dump({}, f)
+else:
+    # PATCH
+    db = {}
+    with open(SAVED_COMMANDS_FILE, 'r') as f:
+        db = json.load(f)
+
+    if "comment_ids_ran" in db:
+        del db["comment_ids_ran"]
+
+    with open(SAVED_COMMANDS_FILE, 'w') as f:
+        json.dump({}, f)
 
 __log = logging.getLogger("issue_commands")
 
