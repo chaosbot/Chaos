@@ -1,1 +1,2 @@
-class CouldntMerge(Exception): pass
+class CouldntMerge(Exception):
+    pass

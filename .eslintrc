@@ -1,0 +1,16 @@
+{
+    "extends": "airbnb",
+    "env": {
+        "browser": true,
+        "jquery": true
+    },
+    "plugins": [
+        "jquery"
+    ],
+    "rules": {
+        "quotes": ["error", "double", {"allowTemplateLiterals": true}],
+        "indent": ["error", 4],
+        "no-console": "off",
+        "no-mixed-operators": "off"
+    }
+}

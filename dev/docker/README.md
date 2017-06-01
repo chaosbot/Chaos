@@ -29,13 +29,34 @@ you don't lose it.  Be sure not to commit this file and share it with the world
 
 ### Building the docker image
 
-To build the docker image, navigate to `dev/docker/` and run `bash build.sh`.
+
+Navigate to `dev/docker/`.
+Then you can build with `docker-compose build` but this is not mandatory (up will do it for you).
+
+Or you can run `bash build.sh` instead.
+For Windows, be sure to have docker started, then you can run `build.bat`.
 This will run the Dockerfile and produce your docker image with the name
 `chaos`.
 
+If you want to build on a Raspberry Pi run `bash build.sh -rpi`.
+
 ## Running
 
-Make sure you're in `dev/docker/` and run `bash run.sh`. 
+Make sure you're in `dev/docker/`.
+You can simply run `docker-compose up chaos`.
+
+Or you can run with `bash run.sh` or `run.bat`.
+
+## Testing
+
+Make sure you're in `dev/docker/`.
+You can simply run `docker-compose up tests`.
+
+Or you can also run tests with `bash test.sh` or `test.bat`.
+
+## Testing
+
+You can run tests with `bash test.sh` or `test.bat`.
 
 ## Development Cycle
 
