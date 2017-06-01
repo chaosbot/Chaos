@@ -115,8 +115,7 @@ def insert_or_update(api, comment_id, issue_id, comment_txt):
     if comment_data["has_ran"]:
         return
 
-    now = arrow.utcnow()
-    voting_window = gh.voting.get_initial_voting_window(now)
+    voting_window = gh.voting.get_initial_voting_window()
 
     seconds_remaining = gh.issues.voting_window_remaining_seconds(api, settings.URN, comment_id,
                                                                   voting_window)
@@ -336,7 +335,7 @@ def poll_read_issue_comments(api):
                 "comment_text": cmd_obj["command"]
             }
             handle_comment(api, mock)
-        except KeyError:
+        except KeyError as e:
             __log.warning("Unable to handle comment id {id}".format(cmd_id))
 
     now = arrow.utcnow()
