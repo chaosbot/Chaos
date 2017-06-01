@@ -38,8 +38,10 @@ def poll_pull_requests(api):
 
         top_contributors = sorted(gh.repos.get_contributors(api, settings.URN),
                                   key=lambda user: user["total"], reverse=True)
+        top_contributors = [item["author"]["login"].lower() for item in top_contributors]
+        contributors = set(top_contributors)  # store it while it's still a complete list
         top_contributors = top_contributors[:settings.MERITOCRACY_TOP_CONTRIBUTORS]
-        top_contributors = set([item["author"]["login"].lower() for item in top_contributors])
+        top_contributors = set(top_contributors)
         top_voters = sorted(total_votes, key=total_votes.get, reverse=True)
         top_voters = set([user.lower() for user in top_voters[:settings.MERITOCRACY_TOP_VOTERS]])
         meritocracy = top_voters | top_contributors
@@ -54,7 +56,7 @@ def poll_pull_requests(api):
             votes, meritocracy_satisfied = gh.voting.get_votes(api, settings.URN, pr, meritocracy)
 
             # is our PR approved or rejected?
-            vote_total, variance = gh.voting.get_vote_sum(api, votes)
+            vote_total, variance = gh.voting.get_vote_sum(api, votes, contributors)
             threshold = gh.voting.get_approval_threshold(api, settings.URN)
             is_approved = vote_total >= threshold and meritocracy_satisfied
 

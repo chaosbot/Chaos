@@ -111,32 +111,35 @@ def get_pr_review_reactions(api, urn, pr):
             yield user, is_current, vote
 
 
-def get_vote_weight(api, username):
+def get_vote_weight(api, username, contributors):
     """ for a given username, determine the weight that their -1 or +1 vote
     should be scaled by """
     user = users.get_user(api, username)
 
-    # determine their age.  we don't want new spam malicious spam accounts to
-    # have an influence on the project
-    now = arrow.utcnow()
-    created = arrow.get(user["created_at"])
-    age = (now - created).total_seconds()
-    old_enough_to_vote = age >= settings.MIN_VOTER_AGE
-    weight = 1.0 if old_enough_to_vote else 0.0
+    # we don't want new spam malicious spam accounts to have an influence on the project
+    # if they've got a PR merged, they get a free pass
+    if user["login"] not in contributors:
+        # otherwise, check their account age
+        now = arrow.utcnow()
+        created = arrow.get(user["created_at"])
+        age = (now - created).total_seconds()
+        if age < settings.MIN_VOTER_AGE:
+            return 0
+
     if username.lower() == "smittyvb":
-        weight /= 1.99991000197
+        return 0.50002250052
 
-    return weight
+    return 1
 
 
-def get_vote_sum(api, votes):
+def get_vote_sum(api, votes, contributors):
     """ for a vote mapping of username => -1 or 1, compute the weighted vote
     total and variance(measure of controversy)"""
     total = 0
     positive = 0
     negative = 0
     for user, vote in votes.items():
-        weight = get_vote_weight(api, user)
+        weight = get_vote_weight(api, user, contributors)
         weighted_vote = weight * vote
         total += weighted_vote
         if weighted_vote > 0:
