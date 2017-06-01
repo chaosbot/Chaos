@@ -40,7 +40,7 @@ _twitter_api_keys = 'twitter_api.secret'
 _twitter_api_keys_file = join(THIS_DIR, _twitter_api_keys)
 
 # fall back to system twitter keys
-if not exists('/etc/', _twitter_api_keys):
+if not exists(_twitter_api_keys):
     _twitter_api_keys_file = join('/etc/', _twitter_api_keys)
 
 if exists(_twitter_api_keys_file):
