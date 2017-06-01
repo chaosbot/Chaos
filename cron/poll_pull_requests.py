@@ -63,7 +63,7 @@ def poll_pull_requests(api):
                 voting_window = gh.voting.get_extended_voting_window(api, settings.URN)
 
             # is our PR in voting window?
-            in_window = gh.prs.is_pr_in_voting_window(pr, voting_window)
+            in_window = gh.prs.is_pr_in_voting_window(api, pr, voting_window)
 
             if is_approved:
                 __log.info("PR %d status: will be approved", pr_num)

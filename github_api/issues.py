@@ -23,7 +23,7 @@ def get_oldest_open_issues(api, urn):
             "sort": "updated",
             "direction": "asc",
             }
-    resp = api("get", path, json=data)
+    resp = api("get", path, params=data)
     return resp
 
 

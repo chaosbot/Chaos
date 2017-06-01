@@ -16,10 +16,8 @@ def poll_issue_close_stale(api):
 
     __log.info("Checking for stale issues...")
 
-    # Get all issues
+    # Get the oldest open issues
     issues = gh.issues.get_oldest_open_issues(api, settings.URN)
-
-    __log.info(str(issues))
 
     __log.info("Got the oldest %d open issues" % len(issues))
 

@@ -61,6 +61,10 @@ def main():
     log.info("Setting description to {desc}".format(desc=settings.REPO_DESCRIPTION))
     github_api.repos.set_desc(api, settings.URN, settings.REPO_DESCRIPTION)
 
+    log.info("Ensure creation of issue/PR labels")
+    for label, color in settings.REPO_LABELS.items():
+        github_api.repos.create_label(api, settings.URN, label, color)
+
     while True:
         # Run any scheduled jobs on the next second.
         schedule.run_pending()

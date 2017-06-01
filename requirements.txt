@@ -22,5 +22,6 @@ requests==2.17.3
 schedule==0.4.2
 sh==1.12.13
 six==1.10.0
+flake8==3.3.0
 unidiff==0.5.4
 python-twitter==3.3

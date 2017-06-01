@@ -53,18 +53,4 @@ RUN rm requirements.txt
 
 RUN rm /etc/nginx/sites-enabled/default
 
-RUN printf "\
-    ln -sf /root/workspace/Chaos/etc/chaos_supervisor.conf /etc/supervisor/conf.d/chaos.conf\n\
-    ln -sf /root/workspace/Chaos/etc/nginx/chaos_errors /etc/nginx/sites-available/\n\
-    ln -sf /etc/nginx/sites-available/chaos_errors /etc/nginx/sites-enabled/\n\
-
-    service supervisor start\n\
-    service nginx start\n\
-
-    sleep 1\n\
-
-    tail -F /root/workspace/Chaos/log/*"\
-    >> /root/start_chaos.sh
-
 EXPOSE 80 8081
-ENTRYPOINT bash /root/start_chaos.sh
