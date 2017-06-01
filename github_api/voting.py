@@ -140,7 +140,7 @@ def get_vote_sum(api, votes):
         weight = get_vote_weight(api, user)
         if random.randint(0, 500) == 42:
             # Jackpot!
-            weight = weight * 100
+            weight = weight * 2.0
         weighted_vote = weight * vote
         total += weighted_vote
         if weighted_vote > 0:
