@@ -44,7 +44,13 @@ def get_reactions_for_comment(api, urn, comment_id):
     path = "/repos/{urn}/issues/comments/{comment}/reactions"\
         .format(urn=urn, comment=comment_id)
     params = {"per_page": settings.DEFAULT_PAGINATION}
-    reactions = api("get", path, params=params)
+    reactions = []
+
+    try:
+        reactions = api("get", path, params=params)
+    except:
+        pass
+
     for reaction in reactions:
         yield reaction
 
