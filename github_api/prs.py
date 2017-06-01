@@ -233,7 +233,7 @@ def get_ready_prs(api, urn, window):
             build_passed = has_build_passed(api, urn, pr["head"]["sha"])
 
             if not build_passed:
-                issues.label_issue(api, urn, pr_num, ["CI failed"])
+                issues.label_issue(api, urn, pr_num, ["ci failed"])
                 handle_broken_pr(api, urn, pr, delta, "ci")
                 continue
 

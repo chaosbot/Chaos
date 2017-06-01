@@ -78,7 +78,8 @@ REPO_LABELS = {
     "rejected": "ededed",
     "conflicts": "fbca04",
     "mergeable": "dddddd",
-    "can't merge": "ededed"
+    "can't merge": "ededed",
+    "ci failed": "ff9800"
 }
 
 # PRs that have merge conflicts and haven't been touched in this many hours
