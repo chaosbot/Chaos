@@ -43,8 +43,7 @@ Command Syntax
 
 # If no subcommands, map cmd: None
 COMMAND_LIST = {
-        "/vote": 
-            ("close", "reopen")
+        "/vote": ("close", "reopen")
     }
 
 
@@ -227,8 +226,8 @@ def handle_comment(api, issue_comment):
 
     comment_text = re.sub('\s+', ' ', comment_text)
     parsed_comment = list(map(lambda x: x.lower(), comment_text.split(' ')))
-    orig_parsed = parsed_comment[:]
     command = parsed_comment.pop(0)
+
     if command in COMMAND_LIST:
         votes = get_command_votes(api, settings.URN, global_comment_id)
         insert_or_update(api, global_comment_id, issue_id, comment_text)
