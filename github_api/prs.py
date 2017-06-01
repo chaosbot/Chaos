@@ -185,25 +185,44 @@ def get_pr_comments(api, urn, pr_num):
         yield comment
 
 
-def has_build_passed(api, urn, ref):
+def get_commit_statuses(api, urn, ref):
     """
-    Check if a commit has passed Travis CI builds.
-    ref can be an sha, tag or a branch name (e.g. "master")
+    Returns combined commit statuses
     It uses aggregated status endpoint:
     https://developer.github.com/v3/repos/statuses/#get-the-combined-status-for-a-specific-ref
-    Returns true if the commit passed travis build or status is unavailable
-    and false if failed or pending
+    ref can be an sha, tag or a branch name (e.g. "master")
     """
     path = "/repos/{urn}/commits/{ref}/status".format(urn=urn, ref=ref)
     response = api("get", path)
-    statuses = response.get("statuses")
+    return response.get("statuses", [])
 
-    if statuses:
-        for status in statuses:
-            if status["state"] in ["failure", "pending"] and \
-               status["context"].startswith(TRAVIS_CI_CONTEXT):
-                return False
-    return True
+
+def has_build_failed(api, urn, ref):
+    """
+    Check if a commit has **for sure** failed Travis CI build.
+    Returns true if the commit failed travis build or pending
+    and false if passed or status is unavailable
+    """
+    statuses = get_commit_statuses(api, urn, ref)
+
+    for status in statuses:
+        if status["state"] in ["failure", "pending"] and \
+           status["context"].startswith(TRAVIS_CI_CONTEXT):
+            return True
+    return False
+
+
+def has_build_passed(api, urn, ref):
+    """
+    Check if a commit has **for sure** passed Travis CI build.
+    Returns true if the commit passed travis build and false otherwise
+    """
+    statuses = get_commit_statuses(api, urn, ref)
+
+    for status in statuses:
+        if status["state"] == "success" and status["context"].startswith(TRAVIS_CI_CONTEXT):
+            return True
+    return False
 
 
 def get_ready_prs(api, urn, window):
@@ -228,11 +247,12 @@ def get_ready_prs(api, urn, window):
         if is_wip or delta < window:
             continue
 
-        # check if this PR successfully passed travis-ci only if master also passes
+        # if master successfully passes travis build check this pr
         if master_build_passed:
-            build_passed = has_build_passed(api, urn, pr["head"]["sha"])
+            build_failed = has_build_failed(api, urn, pr["head"]["sha"])
 
-            if not build_passed:
+            # if this PR fails - add label and close it if it's stale
+            if build_failed:
                 issues.label_issue(api, urn, pr_num, ["ci failed"])
                 handle_broken_pr(api, urn, pr, delta, "ci")
                 continue
@@ -244,7 +264,7 @@ def get_ready_prs(api, urn, window):
         mergeable = get_is_mergeable(api, urn, pr_num)
 
         if mergeable is True:
-            issues.unlabel_issue(api, urn, pr_num, ["conflicts"])
+            issues.unlabel_issue(api, urn, pr_num, ["conflicts", "ci failed"])
             yield pr
         elif mergeable is False:
             issues.label_issue(api, urn, pr_num, ["conflicts"])

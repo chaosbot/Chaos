@@ -56,15 +56,17 @@ class TestPRMethods(unittest.TestCase):
                      [{"state": "success",
                        "context": "continuous-integration/travis-ci/pr"},
                       {"state": "failure",
-                       "context": "chaosbot"}],
-                     # no travis - no problems
-                     [{"state": "pending",
-                       "context": "some_other_context"}]
+                       "context": "chaosbot"}]
                      ]
 
         for statuses in test_data:
             self.api.return_value = {"statuses": statuses}
+            # Status returned success for travis - we know for sure it passed
             self.assertTrue(prs.has_build_passed(self.api, "urn", "ref"))
+            self.api.assert_called_once_with("get", "/repos/urn/commits/ref/status")
+            self.api.reset_mock()
+            # Status returned success for travis - we know for sure it haven't failed
+            self.assertFalse(prs.has_build_failed(self.api, "urn", "ref"))
             self.api.assert_called_once_with("get", "/repos/urn/commits/ref/status")
             self.api.reset_mock()
 
@@ -75,22 +77,50 @@ class TestPRMethods(unittest.TestCase):
                        "context": "continuous-integration/travis-ci/pr"}],
                      # Travis pending
                      [{"state": "pending",
-                       "context": "continuous-integration/travis-ci/pr"}],
+                       "context": "continuous-integration/travis-ci/pr"}]
                      ]
 
         for statuses in test_data:
             self.api.return_value = {"statuses": statuses}
+            # Status returned failure or pending for travis - we know for sure it haven't suceeded
             self.assertFalse(prs.has_build_passed(self.api, "urn", "ref"))
+            self.api.assert_called_once_with("get", "/repos/urn/commits/ref/status")
+            self.api.reset_mock()
+            # Status returned failure or pending for travis - we know for sure it failed
+            self.assertTrue(prs.has_build_failed(self.api, "urn", "ref"))
+            self.api.assert_called_once_with("get", "/repos/urn/commits/ref/status")
+            self.api.reset_mock()
+
+    def test_statuses_returns_no_travis_build(self):
+        # No travis statuses
+        test_data = [
+                     [{"state": "failure",
+                       "context": "chaos"}],
+                     [{"state": "pending",
+                       "context": "chaos"}],
+                     [{"state": "success",
+                       "context": "chaos"}]
+                     ]
+
+        for statuses in test_data:
+            self.api.return_value = {"statuses": statuses}
+            # Status didn't return travis data - we can't say for sure if failed or succeeded
+            self.assertFalse(prs.has_build_passed(self.api, "urn", "ref"))
+            self.api.assert_called_once_with("get", "/repos/urn/commits/ref/status")
+            self.api.reset_mock()
+            self.assertFalse(prs.has_build_failed(self.api, "urn", "ref"))
             self.api.assert_called_once_with("get", "/repos/urn/commits/ref/status")
             self.api.reset_mock()
 
     @patch("github_api.prs.has_build_passed")
+    @patch("github_api.prs.has_build_failed")
     @patch("github_api.prs.get_events")
     @patch("github_api.prs.get_open_prs")
     @patch("github_api.prs.get_is_mergeable")
     @patch("arrow.utcnow")
     def test_get_ready_prs(self, mock_utcnow, mock_get_is_mergeable,
-                           mock_get_open_prs, mock_get_events, mock_has_build_passed):
+                           mock_get_open_prs, mock_get_events,
+                           mock_has_build_failed, mock_has_build_passed):
         # Title of each PR describes it's state
         mock_get_open_prs.return_value = [
             create_mock_pr(10, "WIP", "2017-01-01T00:00:00Z", "2017-01-01T00:00:00Z"),
@@ -107,12 +137,14 @@ class TestPRMethods(unittest.TestCase):
             return False if pr_num in [13, 14] else True
 
         def has_build_passed_side_effect(api, urn, ref):
-            if ref is "master":
-                return master_build_status
-            return False if "15" in ref else True
+            return master_build_status
+
+        def has_build_failed_side_effect(api, urn, ref):
+            return True if "15" in ref else False
 
         mock_get_is_mergeable.side_effect = get_is_mergeable_side_effect
         mock_has_build_passed.side_effect = has_build_passed_side_effect
+        mock_has_build_failed.side_effect = has_build_failed_side_effect
         mock_utcnow.return_value = arrow.get("2017-01-01T00:00:10Z")
         mock_get_events.return_value = []
         api = MagicMock()
