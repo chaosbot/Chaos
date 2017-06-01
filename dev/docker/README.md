@@ -84,3 +84,17 @@ there are currently two servers running:
 ### container port => host port
 * 80 => 8082 - python server/server.py webserver
 * 8081 => 8081 - nginx static directory to `/var/log/supervisor`
+
+## Troubleshooting
+
+### Cryptograhpy failing to build
+If you are receiving an error about 'cryptography' failing to build, your system doesn't have enough resources/RAM. One possible fix is to do the following:
+
+```
+dd if=/dev/zero of=swapfile bs=1024 count=1024000
+chmod 600 swapfile
+sudo mkswap swapfile
+sudo swapon swapfile
+```
+
+These resources aren't needed after building the image and can be removed when executing run.sh
