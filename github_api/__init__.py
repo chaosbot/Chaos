@@ -74,7 +74,7 @@ class API(object):
         if re.match("https?://", path):
             url = path
 
-        headers = self.BASE_HEADERS.copy()
+        headers = {**self.BASE_HEADERS, **kwargs.get("headers", {})}
 
         log.info("requesting %s to %r", method.upper(), path)
         resp = requests.request(method, url, headers=headers, auth=self._auth,
