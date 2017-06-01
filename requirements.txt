@@ -22,3 +22,4 @@ requests==2.14.2
 schedule==0.4.2
 sh==1.12.13
 six==1.10.0
+python-twitter==3.3

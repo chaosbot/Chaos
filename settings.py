@@ -33,6 +33,21 @@ GITHUB_USER, GITHUB_REPO = URN.split("/")
 
 HOMEPAGE = "http://chaosthebot.com"
 
+# To Twitter Posts
+_twitter_api_keys = 'twitter_api.secret'
+
+# Look for local Keys first
+_twitter_api_keys_file = join(THIS_DIR, _twitter_api_keys)
+
+# fall back to system twitter keys
+if not exists('/etc/', _twitter_api_keys):
+    _twitter_api_keys_file = join('/etc/', _twitter_api_keys)
+
+if exists(_twitter_api_keys_file):
+    TWITTER_API_KEYS_FILE = _twitter_api_keys_file
+else:
+    TWITTER_API_KEYS_FILE = None
+
 # TEST SETTING PLEASE IGNORE
 TEST = False
 
