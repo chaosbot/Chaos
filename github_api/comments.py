@@ -93,6 +93,17 @@ Open a new PR with the problems fixed to restart voting.
     return leave_comment(api, urn, pr, body)
 
 
+def leave_meritocracy_comment(api, urn, pr, meritocracy):
+    meritocracy_str = " ".join(map(lambda user: "@" + user, meritocracy))
+    body = """
+:warning: This PR has reached its extended voting window, \
+but it does not have a positive meritocracy review.
+
+Please review: {meritocracy}
+    """.strip().format(meritocracy=meritocracy_str)
+    return leave_comment(api, urn, pr, body)
+
+
 def leave_deleted_comment(api, urn, pr):
     body = """
 :no_good: The repository backing this PR has been deleted.
