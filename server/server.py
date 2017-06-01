@@ -30,8 +30,12 @@ def main():
     # pkill chaos_server
     set_proc_name("chaos_server")
 
+    with open("error.html", "r") as f:
+        errorpage = f.read()
+
     port = 80
     handler = http.server.SimpleHTTPRequestHandler
+    handler.error_message_format = errorpage
     httpd = NoTimeWaitTCPServer(("", port), handler)
 
     # serve HTTP on port 80

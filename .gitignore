@@ -15,4 +15,5 @@ server/voters.json
 api_cache/
 .idea/
 server/issue_commands_ran.json
-
+.migrated
+ansible/*.retry

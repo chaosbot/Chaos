@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Error – ChaosBot</title>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <p id="code">%(code)s<p>
+        <p id="message">%(message)s</p>
+        <p id="explain">%(explain)s</p>
+        <p id="link"><a href="/">Return to main page</a></p>
+
+        <style>
+            body {
+                height: 100vh;
+                display: flex;
+                font-family: sans-serif;
+                text-align: center;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                margin: 0;
+            }
+
+            body > p#code {
+                font-size: 96pt;
+                margin: 0px;
+            }
+
+            body > p#message {
+                font-size: 20pt;
+            }
+
+            body > p > a, body > p > a:visited {
+                color: #2f2f2f;
+                transition: color 200ms ease;
+                text-decoration: none;
+                font-weight: 600;
+            }
+
+            body > p > a:hover, body > p > a:active {
+                color: #404040;
+            }
+
+            body > p {
+                margin: 8px;
+            }
+        </style>
+    </body>
+</html>

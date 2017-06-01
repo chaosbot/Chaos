@@ -45,29 +45,45 @@
             <canvas id="cv2"></canvas>
             <canvas id="cv3"></canvas>
         </div>
-        
         <div class="container">
-            <div class="card">
-                <div class="card-content main has-text-centered">
-                    <div class="content-title header">
-                        <h1 class="title"><strong>Hello, Chaos!</strong></h1>
+            <div id="wrapper">
+                <div id="main" class="card">
+                    <div class="card-content main has-text-centered">
+                        <div class="content-title">
+                            <h1 class="title"><strong>Hello, Chaos!</strong></h1>
+                        </div>
+                        <canvas onmouseenter="dismissTimeout()" id="canvas"></canvas>
+                        <div class="notification" id="notifbox" hidden="true">
+                            <button class="delete" onclick="dismissNotif()"></button>
+                            Try moving your mouse over Chaos box
+                        </div>
+                        <p class="subtitle">Hi, this is <strong>ChaosBot</strong>.</p>
+                        <p class="content">ChaosBot is a social coding <span id="term-load">experiment</span> to see what happens when the absolute direction of a software project is turned over to the open source community.</p>
+                        <p class="content">For more information see <a href="https://github.com/chaosbot/chaos">Github</a>!</p>
+                        <span class="icon">
+                            <a href="https://github.com/chaosbot/chaos"><i class="fa fa-github"></i></a>
+                        </span>
                     </div>
-                    <canvas onmouseenter="dismissTimeout()" id="canvas"></canvas>
-                    <div class="notification" id="notifbox" hidden="true">
-                        <button class="delete" onclick="dismissNotif()"></button>
-                        Try moving your mouse over Chaos box
-                    </div>
-                    <p class="subtitle">Hi, this is <strong>ChaosBot</strong>.</p>
-                    <p class="content">ChaosBot is a social coding experiment to see what happens when the absolute direction of a software project is turned over to the open source community.</p>
-                    <p class="content">For more information see <a href="https://github.com/chaosbot/chaos">Github</a>!</p>
-                    <span class="icon">
-                        <a href="https://github.com/chaosbot/chaos"><i class="fa fa-github"></i></a>
-                    </span>
                 </div>
+                <div id="voters" class="card">
+                    <div class="card-content main has-text-centered">
+                        <div class="content-title">
+                            <h1 class="title"><strong>Top Voters on Chaos!</strong></h1>
+                        </div>
+                        <div id="result"></div>
+                        <a href="voters.html">Full list</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="modals">
+            <div id="term-modal" class="modal">
+                <div class="modal-background"></div>
+                <div id="term" class="modal-content"></div>
+                <button class="modal-close"></button>
             </div>
         </div>
         <script src="static/js/chaos.js"></script>
         <script src="static/js/background.js"></script>
-        
     </body>
 </html>

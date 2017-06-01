@@ -92,6 +92,11 @@ class API(object):
 
         resp.raise_for_status()
 
+        # wait 5 seconds, then retry request due to 202 status code
+        if resp.status_code == 202:
+            time.sleep(5)
+            return self.__call__(method, path, **kwargs)
+
         # not all requests return json, and this will raise for those
         try:
             data = resp.json()

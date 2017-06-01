@@ -30,3 +30,17 @@ def get_creation_date(api, urn):
     """ returns the creation date of the repo """
     data = api("get", get_path(urn))
     return arrow.get(data["created_at"])
+
+
+def get_contributors(api, urn):
+    """ returns the list of contributors to the repo """
+    return api("get", "/repos/{urn}/stats/contributors".format(urn=urn))
+
+
+def create_label(api, urn, name, color="ededed"):
+    """ create an issue label for the repository """
+    data = {
+        "name": name,
+        "color": color
+    }
+    return api("post", "/repos/{urn}/labels".format(urn=urn), json=data)

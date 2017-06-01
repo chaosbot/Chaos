@@ -16,6 +16,17 @@ def open_issue(api, urn, issue_id):
     return resp
 
 
+def get_oldest_open_issues(api, urn):
+    path = "/repos/{urn}/issues".format(urn=urn)
+    data = {
+            "state": "open",
+            "sort": "updated",
+            "direction": "asc",
+            }
+    resp = api("get", path, json=data)
+    return resp
+
+
 def get_issue_comment_last_updated(api, urn, comment):
     path = "/repos/{urn}/issues/comments/{comment}".format(urn=urn, comment=comment)
     comment = api("get", path)

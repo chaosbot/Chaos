@@ -10,7 +10,7 @@ from . import repos
 import settings
 
 
-def get_votes(api, urn, pr):
+def get_votes(api, urn, pr, meritocracy):
     """ return a mapping of username => -1 or 1 for the votes on the current
     state of a pr.  we consider comments and reactions, but only from users who
     are not the owner of the pr.  we also make sure that the voting
@@ -18,6 +18,7 @@ def get_votes(api, urn, pr):
     can't acquire approval votes, then change the pr """
 
     votes = {}
+    meritocracy_satisfied = False
     pr_owner = pr["user"]["login"]
     pr_num = pr["number"]
 
@@ -25,16 +26,21 @@ def get_votes(api, urn, pr):
     for voter, vote in get_pr_comment_votes_all(api, urn, pr_num):
         votes[voter] = vote
 
-    # get all the pr-review-based votes
-    for vote_owner, vote in get_pr_review_votes(api, urn, pr_num):
-        if vote and vote_owner != pr_owner:
-            votes[vote_owner] = vote
+    # get all the pr review reactions
+    # turn it into a dict to sort out duplicates (last value wins)
+    reviews = get_pr_review_reactions(api, urn, pr)
+    reviews = {user: (is_current, vote) for user, is_current, vote in reviews}
+    for vote_owner, (is_current, vote) in reviews.items():
+        if (vote > 0 and is_current and vote_owner != pr_owner
+                and vote_owner.lower() in meritocracy):
+            meritocracy_satisfied = True
+            break
 
     # by virtue of creating the PR, the owner defaults to a vote of 1
     if votes.get(pr_owner) != -1:
         votes[pr_owner] = 1
 
-    return votes
+    return votes, meritocracy_satisfied
 
 
 def get_pr_comment_votes_all(api, urn, pr_num):
@@ -94,15 +100,15 @@ def get_comment_reaction_votes(api, urn, comment_id):
             yield reaction_owner, vote
 
 
-def get_pr_review_votes(api, urn, pr_num):
-    """ votes made through
-    https://help.github.com/articles/about-pull-request-reviews/ """
-    for review in prs.get_pr_reviews(api, urn, pr_num):
+def get_pr_review_reactions(api, urn, pr):
+    """ https://help.github.com/articles/about-pull-request-reviews/ """
+    for review in prs.get_pr_reviews(api, urn, pr["number"]):
         state = review["state"]
         if state in ("APPROVED", "DISMISSED"):
             user = review["user"]["login"]
+            is_current = review["commit_id"] == pr["head"]["sha"]
             vote = parse_review_for_vote(state)
-            yield user, vote
+            yield user, is_current, vote
 
 
 def get_vote_weight(api, username):
@@ -118,23 +124,28 @@ def get_vote_weight(api, username):
     old_enough_to_vote = age >= settings.MIN_VOTER_AGE
     weight = 1.0 if old_enough_to_vote else 0.0
     if username.lower() == "smittyvb":
-        weight /= 2
+        weight /= 1.99991000197
 
     return weight
 
 
 def get_vote_sum(api, votes):
     """ for a vote mapping of username => -1 or 1, compute the weighted vote
-    total """
+    total and variance(measure of controversy)"""
     total = 0
-    variance = 0
+    positive = 0
+    negative = 0
     for user, vote in votes.items():
         weight = get_vote_weight(api, user)
-        total += weight * vote
-        if weight * vote > 0:
-            variance += vote
+        weighted_vote = weight * vote
+        total += weighted_vote
+        if weighted_vote > 0:
+            positive += weighted_vote
+        elif weighted_vote < 0:
+            negative -= weighted_vote
 
-    return total, (variance - total)
+    variance = min(positive, negative)
+    return total, variance
 
 
 def get_approval_threshold(api, urn):
@@ -191,20 +202,9 @@ def friendly_voting_record(votes):
     return record
 
 
-def get_initial_voting_window(now):
-    """ returns the current voting window for new PRs.  currently, this biases
-    a smaller window for waking hours around the timezone the chaosbot server is
-    located in (US West Coast) """
-    local = now.to(settings.TIMEZONE)
-    lhour = local.hour
-
-    hours = settings.DEFAULT_VOTE_WINDOW
-    if (lhour >= settings.AFTER_HOURS_START or
-            lhour <= settings.AFTER_HOURS_END):
-        hours = settings.AFTER_HOURS_VOTE_WINDOW
-
-    seconds = hours * 60 * 60
-    return seconds
+def get_initial_voting_window():
+    """ Returns the current voting window for new PRs in seconds. """
+    return settings.DEFAULT_VOTE_WINDOW * 60 * 60
 
 
 def get_extended_voting_window(api, urn):

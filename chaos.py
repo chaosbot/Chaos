@@ -56,7 +56,7 @@ def main():
     subprocess.Popen([sys.executable, "server.py"], cwd=server_dir)
 
     # Schedule all cron jobs to be run
-    cron.schedule_jobs()
+    cron.schedule_jobs(api)
 
     log.info("Setting description to {desc}".format(desc=settings.REPO_DESCRIPTION))
     github_api.repos.set_desc(api, settings.URN, settings.REPO_DESCRIPTION)

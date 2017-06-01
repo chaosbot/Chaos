@@ -1,0 +1,38 @@
+version: '3'
+services:
+  chaos:
+    image: chaos
+    build:
+      context: ../..
+      dockerfile: ./dev/docker/Dockerfile
+    command: bash /root/workspace/Chaos/dev/docker/start_services.sh
+    links:
+      - db
+    ports:
+      - 8082:80
+      - 8081:8081
+    volumes:
+      - ../..:/root/workspace/Chaos
+      
+  tests:
+    image: chaos
+    build:
+      context: ../..
+      dockerfile: ./dev/docker/Dockerfile
+    command: python -m unittest discover -p *_test.py
+    volumes:
+      - ../..:/root/workspace/Chaos
+
+  db:
+     image: mysql:5.7
+     volumes:
+       - db_data:/var/lib/mysql
+     environment:
+       MYSQL_ROOT_PASSWORD: P145M4P0W3R
+       MYSQL_DATABASE: db
+       MYSQL_USER: chaos
+       MYSQL_PASSWORD: chaos
+
+volumes:
+  db_data:
+    driver: local
