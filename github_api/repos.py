@@ -53,6 +53,8 @@ def create_label(api, urn, name, color="ededed"):
     except HTTPError as e:
         if e.response.status_code == 422:
             update_label(api, urn, name, color)
+        else:
+            __log.exception("couldn't create label")
     return resp
 
 
@@ -66,5 +68,5 @@ def update_label(api, urn, name, color="ededed"):
     try:
         resp = api("patch", "/repos/{urn}/labels/{name}".format(urn=urn, name=name), json=data)
     except HTTPError:
-        pass
+        __log.exception("couldn't update label")
     return resp
