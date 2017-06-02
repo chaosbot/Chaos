@@ -42,7 +42,7 @@ def merge_pr(api, urn, pr, votes, total, threshold, meritocracy_satisfied):
 Description:
 {pr_description}
 
-:ok_woman: PR passed {summary}.
+:white_check_mark: PR passed {summary}.
 
 {record}
 """.strip().format(
