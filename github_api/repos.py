@@ -1,6 +1,7 @@
 import arrow
 import settings
 import logging
+from requests import HTTPError
 
 __log = logging.getLogger("github_api.repos")
 
@@ -49,7 +50,21 @@ def create_label(api, urn, name, color="ededed"):
     resp = None
     try:
         resp = api("post", "/repos/{urn}/labels".format(urn=urn), json=data)
-    except:
-        __log.exception("couldn't create label")
+    except HTTPError as e:
+        if e.response.status_code == 422:
+            update_label(api, urn, name, color)
+    return resp
 
+
+def update_label(api, urn, name, color="ededed"):
+    """ update an issue label for the repository """
+    data = {
+        "name": name,
+        "color": color
+    }
+    resp = None
+    try:
+        resp = api("patch", "/repos/{urn}/labels/{name}".format(urn=urn, name=name), json=data)
+    except HTTPError:
+        pass
     return resp
