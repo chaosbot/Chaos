@@ -5,6 +5,8 @@ import json
 import sys
 import time
 import praw
+from cryptography.fernet import Fernet
+from symmetric_keys import KeyManager
 
 log = logging.getLogger("chaosbot")
 handler = logging.StreamHandler()
@@ -20,8 +22,12 @@ log.setLevel(logging.INFO)
 # https://www.reddit.com/prefs/apps
 
 try:
-    with open("redditbot.config") as config_file:
-        config = json.load(config_file)
+    with open("redditbot.config", 'rb') as config_file:
+        with KeyManager() as key_manager:
+            key = key_manager.get_key("redditchaosbot")
+        fernet = Fernet(key)
+        config = json.loads(fernet.decrypt(config_file.read()).decode('utf-8'))
+        print(config)
 except FileNotFoundError as ex:
     log.critical(ex)
     sys.exit(1)
@@ -31,7 +37,7 @@ reddit = praw.Reddit(
     client_id=config['client_id'],
     client_secret=config['client_secret'],
     username='chaosthebotreborn',
-     password=config['password'])
+    password=config['password'])
 
 subreddit = reddit.subreddit('chaosthebot')
 
@@ -57,7 +63,7 @@ def main():
         for comment in subreddit.stream.comments():
             try:
                 process_comment(comment)
-            except praw.exceptions.APIException as ex:
+            except praw.exceptions.APIException:
                 sleep_time = reddit.auth.limits['reset_timestamp'] - time.time()
                 log.info("Sleeping for %d seconds", sleep_time)
                 time.sleep(sleep_time)
