@@ -1,4 +1,5 @@
 import arrow
+import random
 from emoji import demojize
 
 from github_api.misc import dynamic_voting_window
@@ -137,6 +138,9 @@ def get_vote_sum(api, votes):
     negative = 0
     for user, vote in votes.items():
         weight = get_vote_weight(api, user)
+        if random.randint(0, 500) == 42:
+            # Jackpot!
+            weight = weight * 2.0
         weighted_vote = weight * vote
         total += weighted_vote
         if weighted_vote > 0:
