@@ -1,5 +1,6 @@
 from os.path import exists, abspath, dirname, join
 import misc
+import logging
 
 
 THIS_DIR = dirname(abspath(__file__))
@@ -51,6 +52,13 @@ else:
 # TEST SETTING PLEASE IGNORE
 TEST = False
 
+# How much logging should we do? Pick a log level for stdout and stderr.
+# Log levels are (in order) DEBUG, INFO, WARNING, ERROR, CRITICAL
+# stdout gets everything from LOG_LEVEL_OUT to (but not including) LOG_LEVEL_ERR
+# stderr gets the rest (any higher levels go here)
+LOG_LEVEL_OUT = logging.INFO
+LOG_LEVEL_ERR = logging.WARNING
+
 # the number of seconds chaosbot should sleep between polling for ready prs
 PULL_REQUEST_POLLING_INTERVAL_SECONDS = 30
 ISSUE_COMMENT_POLLING_INTERVAL_SECONDS = 60 * 10  # 10 min interval on polling comments
@@ -93,7 +101,8 @@ REPO_LABELS = {
     "rejected": "ededed",
     "conflicts": "fbca04",
     "mergeable": "dddddd",
-    "can't merge": "ededed"
+    "can't merge": "ededed",
+    "ci failed": "ff9800"
 }
 
 # PRs that have merge conflicts and haven't been touched in this many hours
@@ -119,3 +128,16 @@ MERITOCRACY_TOP_CONTRIBUTORS = 10
 
 # The top n voters will be allowed in the meritocracy
 MERITOCRACY_TOP_VOTERS = 10
+
+# Database settings
+DB_ADAPTER = "sqlite"
+DB_CONFIG = {
+    "filename": "db.sqlite"
+}
+# MySQL example
+# DB_CONFIG = {
+#     "host ": "localhost",
+#     "user ": "chaos",
+#     "password ": "chaos",
+#     "db ": "db"
+# }

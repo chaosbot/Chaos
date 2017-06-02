@@ -44,7 +44,13 @@ def get_reactions_for_comment(api, urn, comment_id):
     path = "/repos/{urn}/issues/comments/{comment}/reactions"\
         .format(urn=urn, comment=comment_id)
     params = {"per_page": settings.DEFAULT_PAGINATION}
-    reactions = api("get", path, params=params)
+    reactions = []
+
+    try:
+        reactions = api("get", path, params=params)
+    except:
+        pass
+
     for reaction in reactions:
         yield reaction
 
@@ -52,7 +58,7 @@ def get_reactions_for_comment(api, urn, comment_id):
 def leave_reject_comment(api, urn, pr, votes, total, threshold, meritocracy_satisfied):
     votes_summary = prs.formatted_votes_summary(votes, total, threshold, meritocracy_satisfied)
     body = """
-:no_good: PR rejected {summary}.
+:no_entry: PR rejected {summary}.
 
 Open a new PR to restart voting.
     """.strip().format(summary=votes_summary)
@@ -62,7 +68,7 @@ Open a new PR to restart voting.
 def leave_accept_comment(api, urn, pr, sha, votes, total, threshold, meritocracy_satisfied):
     votes_summary = prs.formatted_votes_summary(votes, total, threshold, meritocracy_satisfied)
     body = """
-:ok_woman: PR passed {summary}.
+:white_check_mark: PR passed {summary}.
 
 See merge-commit {sha} for more details.
     """.strip().format(summary=votes_summary, sha=sha)
@@ -71,16 +77,36 @@ See merge-commit {sha} for more details.
 
 def leave_stale_comment(api, urn, pr, hours):
     body = """
-:no_good: This PR has merge conflicts, and hasn't been touched in {hours} hours. Closing.
+:broken_heart: This PR has merge conflicts, and hasn't been touched in {hours} hours. Closing.
 
 Open a new PR with the merge conflicts fixed to restart voting.
     """.strip().format(hours=hours)
     return leave_comment(api, urn, pr, body)
 
 
+def leave_ci_failed_comment(api, urn, pr, hours):
+    body = """
+:broken_heart: This PR has failed to pass CI, and hasn't been touched in {hours} hours. Closing.
+
+Open a new PR with the problems fixed to restart voting.
+    """.strip().format(hours=hours)
+    return leave_comment(api, urn, pr, body)
+
+
+def leave_meritocracy_comment(api, urn, pr, meritocracy):
+    meritocracy_str = " ".join(map(lambda user: "@" + user, meritocracy))
+    body = """
+:warning: This PR has reached its extended voting window, \
+but it does not have a positive meritocracy review.
+
+Please review: {meritocracy}
+    """.strip().format(meritocracy=meritocracy_str)
+    return leave_comment(api, urn, pr, body)
+
+
 def leave_deleted_comment(api, urn, pr):
     body = """
-:no_good: The repository backing this PR has been deleted.
+:no_entry: The repository backing this PR has been deleted.
 
 Open a new PR with these changes to try again.
     """.strip()

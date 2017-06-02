@@ -25,3 +25,4 @@ six==1.10.0
 flake8==3.3.0
 unidiff==0.5.4
 python-twitter==3.3
+pymysql

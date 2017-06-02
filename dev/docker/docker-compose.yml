@@ -6,20 +6,20 @@ services:
       context: ../..
       dockerfile: ./dev/docker/Dockerfile
     command: bash /root/workspace/Chaos/dev/docker/start_services.sh
-    links:
+    depends_on:
       - db
     ports:
       - 8082:80
       - 8081:8081
     volumes:
       - ../..:/root/workspace/Chaos
-      
+
   tests:
     image: chaos
     build:
       context: ../..
       dockerfile: ./dev/docker/Dockerfile
-    command: python -m unittest discover -p *_test.py
+    command: bash /root/workspace/Chaos/dev/docker/start_tests.sh
     volumes:
       - ../..:/root/workspace/Chaos
 

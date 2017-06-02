@@ -13,13 +13,25 @@ Vagrant.configure("2") do |config|
 
   # Ensure basic python requirements are initialized.
   config.vm.provision "shell", inline: <<-SCRIPT
+    add-apt-repository --yes ppa:fkrull/deadsnakes
+    apt-get update
+    apt-get upgrade --assume-yes
     apt-get install --assume-yes\
         git\
+        mysql-server\
+        nginx\
+        python-software-properties\
+        software-properties-common\
+        supervisor\
+        curl\
+        python3.6\
         build-essential\
+        libpython3.6-dev\
         libssl-dev\
         libffi-dev\
-        python-dev\
-        python3-pip
+        python3-pip\
+        puppet
+    apt-get -f install
     cd /vagrant
     pip3 install -r requirements.txt
   SCRIPT

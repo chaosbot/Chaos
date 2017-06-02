@@ -31,7 +31,6 @@ class CooldownTests(unittest.TestCase):
         in_2weeks = 14
         in_2month = 60
         far_future = inf  # <- we will never reach this in reality
-        print(voting.dynamic_voting_window(15, 10, 20))
 
         # first day starts at the lower bound
         self.assertEqual(voting.dynamic_voting_window(first_day, 0, 10), 0)

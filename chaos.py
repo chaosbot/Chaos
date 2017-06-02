@@ -28,10 +28,35 @@ import github_api.issues
 import encryption  # noqa: F401
 
 
+class LessThanFilter(logging.Filter):
+    """
+    Source: https://stackoverflow.com/questions/2302315
+    """
+    def __init__(self, exclusive_maximum, name=""):
+        super(LessThanFilter, self).__init__(name)
+        self.max_level = exclusive_maximum
+
+    def filter(self, record):
+        """
+        non-zero return means we log this message
+        """
+        return 1 if record.levelno < self.max_level else 0
+
+
 def main():
-    logging.basicConfig(level=logging.DEBUG,
+    # Set up logging stuff
+    logging_handler_out = logging.StreamHandler(sys.stdout)
+    logging_handler_out.setLevel(settings.LOG_LEVEL_OUT)
+    logging_handler_out.addFilter(LessThanFilter(settings.LOG_LEVEL_ERR))
+
+    logging_handler_err = logging.StreamHandler(sys.stderr)
+    logging_handler_err.setLevel(settings.LOG_LEVEL_ERR)
+
+    logging.basicConfig(level=logging.NOTSET,
                         format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                        datefmt='%m-%d %H:%M')
+                        datefmt='%m-%d %H:%M',
+                        handlers=[logging_handler_out, logging_handler_err])
+
     logging.getLogger("requests").propagate = False
     logging.getLogger("sh").propagate = False
 
