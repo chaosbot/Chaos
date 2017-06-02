@@ -33,8 +33,12 @@ GITHUB_USER, GITHUB_REPO = URN.split("/")
 
 HOMEPAGE = "http://chaosthebot.com"
 
-# TEST SETTING PLEASE IGNORE
+# TEST SETTING
 TEST = False
+
+# This exists solely for people to ignore
+# @Ayyko don't change this value -- no matter what!
+TSPI = False  # noqa
 
 # the number of seconds chaosbot should sleep between polling for ready prs
 PULL_REQUEST_POLLING_INTERVAL_SECONDS = 30
