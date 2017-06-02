@@ -104,11 +104,10 @@ def get_pr_review_reactions(api, urn, pr):
     """ https://help.github.com/articles/about-pull-request-reviews/ """
     for review in prs.get_pr_reviews(api, urn, pr["number"]):
         state = review["state"]
-        if state in ("APPROVED", "DISMISSED"):
-            user = review["user"]["login"]
-            is_current = review["commit_id"] == pr["head"]["sha"]
-            vote = parse_review_for_vote(state)
-            yield user, is_current, vote
+        user = review["user"]["login"]
+        is_current = review["commit_id"] == pr["head"]["sha"]
+        vote = parse_review_for_vote(state)
+        yield user, is_current, vote
 
 
 def get_vote_weight(api, username):
@@ -157,12 +156,12 @@ def get_approval_threshold(api, urn):
 
 
 def parse_review_for_vote(state):
-    vote = 0
     if state == "APPROVED":
-        vote = 1
-    elif state == "DISMISSED":
-        vote = -1
-    return vote
+        return 1
+    elif state == "CHANGES_REQUESTED":
+        return -1
+    else:
+        return 0
 
 
 def parse_reaction_for_vote(body):
