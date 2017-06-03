@@ -1,4 +1,5 @@
 from os.path import exists, abspath, dirname, join
+from collections import OrderedDict
 import misc
 import logging
 
@@ -90,6 +91,8 @@ REPO_LABELS = {
     "ci failed": "ff9800",
 
     "system": "8e44ad",
+    "issues": "4daf7c",
+    "pull_requests": "f2784b",
     "core": "c0392b",
     "web": "27ae60",
     "github api": "2c3e50",
@@ -134,11 +137,13 @@ DB_CONFIG = {
 #     "db ": "db"
 # }
 
-SOURCE_PARTS_NAME = {
-    "system": ["ansible/*", "etc/*", "memoize/*", "puppet/*", "startup.d/*", "chaos_wrapper.sh"],
-    "core": ["cron/*", "chaos.py"],
-    "web": ["server/*"],
-    "github api": ["github_api/*"],
-    "dev": ["dev/*", "tests/*"],
-    "misc": ["*"]
-}
+SOURCE_PARTS_NAME = OrderedDict([
+    ("system", ["ansible/*", "etc/*", "memoize/*", "puppet/*", "startup.d/*", "chaos_wrapper.sh"]),
+    ("issues", ["cron/poll_read_issue_comments.py"]),
+    ("pull_requests", ["cron/poll_pull_requests.py"]),
+    ("core", ["cron/*", "chaos.py"]),
+    ("web", ["server/*"]),
+    ("github api", ["github_api/*"]),
+    ("dev", ["dev/*", "tests/*"]),
+    ("misc", ["*"])
+])
