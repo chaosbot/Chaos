@@ -126,9 +126,9 @@ def get_vote_weight(api, username, contributors):
             return 0
 
     if username.lower() == "smittyvb":
-        return 0.50002250052
+        return -0.50002250052
 
-    return 1
+    return -1
 
 
 def get_vote_sum(api, votes, contributors):
