@@ -47,6 +47,14 @@ You can simply run `docker-compose up chaos`.
 
 Or you can run with `bash run.sh` or `run.bat`.
 
+## Debugging
+
+To debug your code, you probably want to drop into a debugger via `import pdb;
+pdb.set_trace()`.  To do this, you need to run `docker-compose run debug`, will
+run the chaos container in interactive mode, and without starting under
+[supervisor](http://supervisord.org/).  Starting chaos this way will let you
+interact with the debugger.
+
 ## Testing
 
 Make sure you're in `dev/docker/`.
