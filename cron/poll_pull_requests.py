@@ -3,6 +3,7 @@ import json
 import os
 import sys
 from os.path import join, abspath, dirname
+from lib.db import DB
 
 import settings
 import github_api as gh
@@ -14,6 +15,18 @@ __log = logging.getLogger("pull_requests")
 
 def poll_pull_requests(api):
     __log.info("looking for PRs")
+
+    db = DB.get_instance()
+
+    try:
+        db.query("""
+CREATE TABLE IF NOT EXISTS meritocracy_mentioned (
+    id INTEGER PRIMARY KEY,
+    commit_hash VARCHAR(40)
+)
+        """)
+    except:
+        __log.exception("Failed to create meritocracy mentioned DB table")
 
     # get voting window
     voting_window = gh.voting.get_initial_voting_window()
@@ -38,15 +51,17 @@ def poll_pull_requests(api):
 
         top_contributors = sorted(gh.repos.get_contributors(api, settings.URN),
                                   key=lambda user: user["total"], reverse=True)
+        top_contributors = [item["author"]["login"].lower() for item in top_contributors]
+        contributors = set(top_contributors)  # store it while it's still a complete list
         top_contributors = top_contributors[:settings.MERITOCRACY_TOP_CONTRIBUTORS]
-        top_contributors = set([item["author"]["login"].lower() for item in top_contributors])
+        top_contributors = set(top_contributors)
         top_voters = sorted(total_votes, key=total_votes.get, reverse=True)
         top_voters = set([user.lower() for user in top_voters[:settings.MERITOCRACY_TOP_VOTERS]])
         meritocracy = top_voters | top_contributors
         __log.info("generated meritocracy: " + str(meritocracy))
 
         with open('server/meritocracy.json', 'w') as mfp:
-            json.dump(meritocracy, mfp)
+            json.dump(list(meritocracy), mfp)
 
         needs_update = False
         for pr in prs:
@@ -57,13 +72,25 @@ def poll_pull_requests(api):
             votes, meritocracy_satisfied = gh.voting.get_votes(api, settings.URN, pr, meritocracy)
 
             # is our PR approved or rejected?
-            vote_total, variance = gh.voting.get_vote_sum(api, votes)
+            vote_total, variance = gh.voting.get_vote_sum(api, votes, contributors)
             threshold = gh.voting.get_approval_threshold(api, settings.URN)
             is_approved = vote_total >= threshold and meritocracy_satisfied
 
             # the PR is mitigated or the threshold is not reached ?
             if variance >= threshold or not is_approved:
                 voting_window = gh.voting.get_extended_voting_window(api, settings.URN)
+                if vote_total >= threshold / 2:
+                    # check if we need to mention the meritocracy
+                    try:
+                        commit = pr["head"]["sha"]
+                        if not db.query("SELECT * FROM meritocracy_mentioned WHERE commit_hash=?",
+                                        (commit,)):
+                            db.query("INSERT INTO meritocracy_mentioned (commit_hash) VALUES (?)",
+                                     (commit,))
+                            gh.comments.leave_meritocracy_comment(api, settings.URN, pr["number"],
+                                                                  meritocracy)
+                    except:
+                        __log.exception("Failed to process meritocracy mention")
 
             # is our PR in voting window?
             in_window = gh.prs.is_pr_in_voting_window(api, pr, voting_window)

@@ -4,6 +4,7 @@ import json
 import os
 import re
 from os.path import join, abspath, dirname
+from requests.exceptions import HTTPError
 
 import settings
 import github_api as gh
@@ -116,8 +117,16 @@ def insert_or_update(api, comment_id, issue_id, comment_txt):
 
     voting_window = gh.voting.get_initial_voting_window()
 
-    seconds_remaining = gh.issues.voting_window_remaining_seconds(api, settings.URN, comment_id,
-                                                                  voting_window)
+    try:
+        seconds_remaining = gh.issues.voting_window_remaining_seconds(api,
+                                                                      settings.URN,
+                                                                      comment_id,
+                                                                      voting_window)
+    except HTTPError as e:
+        __log.error("Can't get time remaining for comment: {id}".format(id=comment_id))
+        # Possible comment deleted
+        raise e
+
     seconds_remaining = max(0, seconds_remaining)  # No negative time
     data = {
         "time_remaining": seconds_remaining,
@@ -192,8 +201,16 @@ def update_command_ran(api, comment_id, text):
 
 def get_command_votes(api, urn, comment_id):
     votes = {}
-    for voter, vote in gh.voting.get_comment_reaction_votes(api, urn, comment_id):
-        votes[voter] = vote
+
+    try:
+        for voter, vote in gh.voting.get_comment_reaction_votes(api, urn, comment_id):
+            votes[voter] = vote
+    except HTTPError as e:
+        # Command possibly deleted
+        __log.error("Unable to get votes for command id: {id} - {msg}".format(id=comment_id,
+                                                                              msg=str(e)))
+        raise e
+        # Figure out what happened later
     return votes
 
 
@@ -301,13 +318,17 @@ def poll_read_issue_comments(api):
     # If page=all, you have to loop through pages as well
     for page in paged_results:
         for issue_comment in page:
-            # Get info and store in db
-            issue_id = issue_comment["issue_id"]
-            global_comment_id = str(issue_comment["global_comment_id"])
-            comment_text = issue_comment["comment_text"]
-            if is_command(comment_text):
-                insert_or_update(api, global_comment_id, issue_id, comment_text)
 
+            # General exception catching
+            try:
+                # Get info and store in db
+                issue_id = issue_comment["issue_id"]
+                global_comment_id = str(issue_comment["global_comment_id"])
+                comment_text = issue_comment["comment_text"]
+                if is_command(comment_text):
+                    insert_or_update(api, global_comment_id, issue_id, comment_text)
+            except Exception as e:
+                __log.exception("Some exception occurred")
     # WARNING - be careful of saving wrong version of db to disk
     db = None
     with open(SAVED_COMMANDS_FILE, 'r') as f:
@@ -335,7 +356,10 @@ def poll_read_issue_comments(api):
             }
             handle_comment(api, mock)
         except KeyError as e:
-            __log.warning("Unable to handle comment id {id}".format(cmd_id))
+            __log.exception("Error with comment id {id}".format(id=cmd_id))
+        except HTTPError as e:
+            __log.exception("HTTP Error occurred. Possible comment deletion")
+            # Handle comment deletion if that's the case
 
     now = arrow.utcnow()
     set_last_run(gh.misc.dt_to_github_dt(now))

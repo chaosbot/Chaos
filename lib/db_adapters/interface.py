@@ -4,7 +4,7 @@
 import abc
 
 
-class AbstractAdapter(object, metaclass=abc.ABCMeta):
+class AbstractAdapter(abc.ABCMeta):
     def __init__(self, config):
         self.config = config
 

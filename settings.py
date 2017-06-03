@@ -1,5 +1,6 @@
 from os.path import exists, abspath, dirname, join
 import misc
+import logging
 
 
 THIS_DIR = dirname(abspath(__file__))
@@ -35,6 +36,13 @@ HOMEPAGE = "http://chaosthebot.com"
 
 # TEST SETTING PLEASE IGNORE
 TEST = False
+
+# How much logging should we do? Pick a log level for stdout and stderr.
+# Log levels are (in order) DEBUG, INFO, WARNING, ERROR, CRITICAL
+# stdout gets everything from LOG_LEVEL_OUT to (but not including) LOG_LEVEL_ERR
+# stderr gets the rest (any higher levels go here)
+LOG_LEVEL_OUT = logging.INFO
+LOG_LEVEL_ERR = logging.WARNING
 
 # the number of seconds chaosbot should sleep between polling for ready prs
 PULL_REQUEST_POLLING_INTERVAL_SECONDS = 30
@@ -78,7 +86,8 @@ REPO_LABELS = {
     "rejected": "ededed",
     "conflicts": "fbca04",
     "mergeable": "dddddd",
-    "can't merge": "ededed"
+    "can't merge": "ededed",
+    "ci failed": "ff9800"
 }
 
 # PRs that have merge conflicts and haven't been touched in this many hours
