@@ -51,9 +51,13 @@ def main():
     log.info("starting up and entering event loop")
 
     os.system("pkill chaos_server")
+    os.system("pkill chaos_redditbot")
 
     server_dir = join(dirname(abspath(__file__)), "server")
     subprocess.Popen([sys.executable, "server.py"], cwd=server_dir)
+
+    #Start Reddit bot
+    subprocess.Popen([sys.executable, "redditchaosbot.py"])
 
     # Schedule all cron jobs to be run
     cron.schedule_jobs(api)
