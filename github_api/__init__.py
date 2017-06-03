@@ -101,6 +101,6 @@ class API(object):
         try:
             data = resp.json()
         except:
-            data = None
+            data = resp.text
 
         return data
