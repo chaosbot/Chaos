@@ -3,7 +3,6 @@ import json
 import os
 import sys
 from os.path import join, abspath, dirname
-from lib.db import DB
 
 import settings
 import github_api as gh
@@ -15,18 +14,6 @@ __log = logging.getLogger("pull_requests")
 
 def poll_pull_requests(api):
     __log.info("looking for PRs")
-
-    db = DB.get_instance()
-
-    try:
-        db.query("""
-CREATE TABLE IF NOT EXISTS meritocracy_mentioned (
-    id INTEGER PRIMARY KEY,
-    commit_hash VARCHAR(40)
-)
-        """)
-    except:
-        __log.exception("Failed to create meritocracy mentioned DB table")
 
     # get voting window
     voting_window = gh.voting.get_initial_voting_window()
@@ -79,18 +66,6 @@ CREATE TABLE IF NOT EXISTS meritocracy_mentioned (
             # the PR is mitigated or the threshold is not reached ?
             if variance >= threshold or not is_approved:
                 voting_window = gh.voting.get_extended_voting_window(api, settings.URN)
-                if vote_total >= threshold / 2:
-                    # check if we need to mention the meritocracy
-                    try:
-                        commit = pr["head"]["sha"]
-                        if not db.query("SELECT * FROM meritocracy_mentioned WHERE commit_hash=?",
-                                        (commit,)):
-                            db.query("INSERT INTO meritocracy_mentioned (commit_hash) VALUES (?)",
-                                     (commit,))
-                            gh.comments.leave_meritocracy_comment(api, settings.URN, pr["number"],
-                                                                  meritocracy)
-                    except:
-                        __log.exception("Failed to process meritocracy mention")
 
             # is our PR in voting window?
             in_window = gh.prs.is_pr_in_voting_window(api, pr, voting_window)
