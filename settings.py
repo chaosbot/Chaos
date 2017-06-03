@@ -87,7 +87,14 @@ REPO_LABELS = {
     "conflicts": "fbca04",
     "mergeable": "dddddd",
     "can't merge": "ededed",
-    "ci failed": "ff9800"
+    "ci failed": "ff9800",
+
+    "system": "8e44ad",
+    "core": "c0392b",
+    "web": "27ae60",
+    "github api": "2c3e50",
+    "dev": "1abc9c",
+    "misc": "95a5a6"
 }
 
 # PRs that have merge conflicts and haven't been touched in this many hours
@@ -126,3 +133,12 @@ DB_CONFIG = {
 #     "password ": "chaos",
 #     "db ": "db"
 # }
+
+SOURCE_PARTS_NAME = {
+    "system": ["ansible/*", "etc/*", "memoize/*", "puppet/*", "startup.d/*", "chaos_wrapper.sh"],
+    "core": ["cron/*", "chaos.py"],
+    "web": ["server/*"],
+    "github api": ["github_api/*"],
+    "dev": ["dev/*", "tests/*"],
+    "misc": ["*"]
+}
