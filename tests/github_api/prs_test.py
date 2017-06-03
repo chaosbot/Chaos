@@ -65,7 +65,7 @@ class TestPRMethods(unittest.TestCase):
             self.assertTrue(prs.has_build_passed(self.api, "urn", "ref"))
             self.api.assert_called_once_with("get", "/repos/urn/commits/ref/status")
             self.api.reset_mock()
-            # Status returned success for travis - we know for sure it haven't failed
+            # Status returned success for travis - we know for sure it hasn't failed
             self.assertFalse(prs.has_build_failed(self.api, "urn", "ref"))
             self.api.assert_called_once_with("get", "/repos/urn/commits/ref/status")
             self.api.reset_mock()
@@ -76,17 +76,17 @@ class TestPRMethods(unittest.TestCase):
                      [{"state": "failure",
                        "context": "continuous-integration/travis-ci/pr"}],
                      # Travis pending
-                     [{"state": "pending",
+                     [{"state": "error",
                        "context": "continuous-integration/travis-ci/pr"}]
                      ]
 
         for statuses in test_data:
             self.api.return_value = {"statuses": statuses}
-            # Status returned failure or pending for travis - we know for sure it haven't suceeded
+            # Status returned failure or error for travis - we know for sure it hasn't suceeded
             self.assertFalse(prs.has_build_passed(self.api, "urn", "ref"))
             self.api.assert_called_once_with("get", "/repos/urn/commits/ref/status")
             self.api.reset_mock()
-            # Status returned failure or pending for travis - we know for sure it failed
+            # Status returned failure or error for travis - we know for sure it failed
             self.assertTrue(prs.has_build_failed(self.api, "urn", "ref"))
             self.api.assert_called_once_with("get", "/repos/urn/commits/ref/status")
             self.api.reset_mock()
