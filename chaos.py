@@ -59,7 +59,8 @@ def main():
         datefmt='%m-%d %H:%M',
         handlers=[
             logging_handler_out,
-         logging_handler_err])
+            logging_handler_err
+        ])
 
     logging.getLogger("requests").propagate = False
     logging.getLogger("sh").propagate = False
