@@ -54,10 +54,6 @@ You can simply run `docker-compose up tests`.
 
 Or you can also run tests with `bash test.sh` or `test.bat`.
 
-## Testing
-
-You can run tests with `bash test.sh` or `test.bat`.
-
 ## Development Cycle
 
 The repo dir exists as a mounted [data
