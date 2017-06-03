@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS meritocracy_mentioned (
             if variance >= threshold or not is_approved:
                 voting_window = gh.voting.get_extended_voting_window(api, settings.URN)
                 if (settings.IN_PRODUCTION and vote_total >= threshold / 2 and
-                        seconds_since_updated > base_voting_window):
+                        seconds_since_updated > base_voting_window and not meritocracy_satisfied):
                     # check if we need to mention the meritocracy
                     try:
                         commit = pr["head"]["sha"]
