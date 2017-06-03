@@ -206,7 +206,7 @@ def has_build_failed(api, urn, ref):
     statuses = get_commit_statuses(api, urn, ref)
 
     for status in statuses:
-        if status["state"] in ["failure", "pending"] and \
+        if status["state"] in ["failure", "error"] and \
            status["context"].startswith(TRAVIS_CI_CONTEXT):
             return True
     return False
