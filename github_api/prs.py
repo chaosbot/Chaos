@@ -271,17 +271,12 @@ def get_ready_prs(api, urn, window):
             handle_broken_pr(api, urn, pr, delta, "conflicts")
 
 
-def voting_window_remaining_seconds(api, pr, window):
+def seconds_since_updated(api, pr):
     now = arrow.utcnow()
     updated = get_pr_last_updated(api, pr)
     if updated is None:
         return math.inf
-    delta = (now - updated).total_seconds()
-    return window - delta
-
-
-def is_pr_in_voting_window(api, pr, window):
-    return voting_window_remaining_seconds(api, pr, window) <= 0
+    return (now - updated).total_seconds()
 
 
 def get_pr_reviews(api, urn, pr_num):
@@ -337,11 +332,11 @@ def get_patch(api, urn, pr_num, raw=False):
     return PatchSet(data)
 
 
-def post_accepted_status(api, urn, pr, voting_window, votes, total, threshold,
-                         meritocracy_satisfied):
+def post_accepted_status(api, urn, pr, seconds_since_updated, voting_window, votes, total,
+                         threshold, meritocracy_satisfied):
     sha = pr["head"]["sha"]
 
-    remaining_seconds = voting_window_remaining_seconds(api, pr, voting_window)
+    remaining_seconds = voting_window - seconds_since_updated
     remaining_human = misc.seconds_to_human(remaining_seconds)
     votes_summary = formatted_votes_short_summary(votes, total, threshold, meritocracy_satisfied)
 
@@ -349,11 +344,11 @@ def post_accepted_status(api, urn, pr, voting_window, votes, total, threshold,
                 "remaining: {time}, {summary}".format(time=remaining_human, summary=votes_summary))
 
 
-def post_rejected_status(api, urn, pr, voting_window, votes, total, threshold,
-                         meritocracy_satisfied):
+def post_rejected_status(api, urn, pr, seconds_since_updated, voting_window, votes, total,
+                         threshold, meritocracy_satisfied):
     sha = pr["head"]["sha"]
 
-    remaining_seconds = voting_window_remaining_seconds(api, pr, voting_window)
+    remaining_seconds = voting_window - seconds_since_updated
     remaining_human = misc.seconds_to_human(remaining_seconds)
     votes_summary = formatted_votes_short_summary(votes, total, threshold, meritocracy_satisfied)
 
@@ -361,11 +356,11 @@ def post_rejected_status(api, urn, pr, voting_window, votes, total, threshold,
                 "remaining: {time}, {summary}".format(time=remaining_human, summary=votes_summary))
 
 
-def post_pending_status(api, urn, pr, voting_window, votes, total, threshold,
-                        meritocracy_satisfied):
+def post_pending_status(api, urn, pr, seconds_since_updated, voting_window, votes, total,
+                        threshold, meritocracy_satisfied):
     sha = pr["head"]["sha"]
 
-    remaining_seconds = voting_window_remaining_seconds(api, pr, voting_window)
+    remaining_seconds = voting_window - seconds_since_updated
     remaining_human = misc.seconds_to_human(remaining_seconds)
     votes_summary = formatted_votes_short_summary(votes, total, threshold, meritocracy_satisfied)
 
