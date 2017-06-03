@@ -79,16 +79,17 @@ CREATE TABLE IF NOT EXISTS meritocracy_mentioned (
             # the PR is mitigated or the threshold is not reached ?
             if variance >= threshold or not is_approved:
                 voting_window = gh.voting.get_extended_voting_window(api, settings.URN)
-                if vote_total >= threshold / 2:
+                if settings.IN_PRODUCTION and vote_total >= threshold / 2:
                     # check if we need to mention the meritocracy
                     try:
                         commit = pr["head"]["sha"]
                         if not db.query("SELECT * FROM meritocracy_mentioned WHERE commit_hash=?",
                                         (commit,)):
+                            meritocracy_mentions = meritocracy - {pr["user"]["login"].lower()}
                             db.query("INSERT INTO meritocracy_mentioned (commit_hash) VALUES (?)",
                                      (commit,))
                             gh.comments.leave_meritocracy_comment(api, settings.URN, pr["number"],
-                                                                  meritocracy)
+                                                                  meritocracy_mentions)
                     except:
                         __log.exception("Failed to process meritocracy mention")
 

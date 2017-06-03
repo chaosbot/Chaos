@@ -32,6 +32,10 @@ else:
 URN = misc.get_self_urn()
 GITHUB_USER, GITHUB_REPO = URN.split("/")
 
+# if we are running in production
+# if we switch to an org this will need changing
+IN_PRODUCTION = GITHUB_USER == "chaosbot"
+
 HOMEPAGE = "http://chaosthebot.com"
 
 # TEST SETTING PLEASE IGNORE
