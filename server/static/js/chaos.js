@@ -144,8 +144,7 @@ function getText() {
     const result = document.getElementById("result");
     // read text from URL location
     const request = new XMLHttpRequest();
-    // request.open("GET", "voters?amount=20", true);
-    request.open("GET", "voters.json", true);
+    request.open("GET", "api/voters?amount=20", true);
     request.send(null);
     request.onreadystatechange = () => {
         if (request.readyState === 4 && request.status === 200) {
@@ -165,7 +164,7 @@ function getText() {
                 }
 
                 // eslint-disable-next-line no-nested-ternary
-                list.sort((a, b) => -((a.votes < b.votes) ? -1 : ((a.votes === b.votes) ? 0 : 1)));
+                list.sort((a, b) => b.votes - a.votes);
 
                 let tablehtml = "<table>";
                 for (let i = 0; i < list.length && i < 20; i += 1) {
