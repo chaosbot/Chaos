@@ -1,4 +1,5 @@
 from os.path import exists, abspath, dirname, join
+from collections import OrderedDict
 import misc
 import logging
 
@@ -91,7 +92,16 @@ REPO_LABELS = {
     "conflicts": "fbca04",
     "mergeable": "dddddd",
     "can't merge": "ededed",
-    "ci failed": "ff9800"
+    "ci failed": "ff9800",
+
+    "system": "8e44ad",
+    "issues": "4daf7c",
+    "pull_requests": "f2784b",
+    "core": "c0392b",
+    "web": "27ae60",
+    "github api": "2c3e50",
+    "dev": "1abc9c",
+    "misc": "95a5a6"
 }
 
 # PRs that have merge conflicts and haven't been touched in this many hours
@@ -135,3 +145,14 @@ DB_CONFIG = {
 #     "password ": "chaos",
 #     "db ": "db"
 # }
+
+SOURCE_PARTS_NAME = OrderedDict([
+    ("system", ["ansible/*", "etc/*", "memoize/*", "puppet/*", "startup.d/*", "chaos_wrapper.sh"]),
+    ("issues", ["cron/poll_read_issue_comments.py"]),
+    ("pull_requests", ["cron/poll_pull_requests.py"]),
+    ("core", ["cron/*", "chaos.py"]),
+    ("web", ["server/*"]),
+    ("github api", ["github_api/*"]),
+    ("dev", ["dev/*", "tests/*"]),
+    ("misc", ["*"])
+])

@@ -5,6 +5,7 @@ import sys
 from os.path import join, abspath, dirname
 from lib.db import DB
 
+import lib
 import settings
 import github_api as gh
 
@@ -103,6 +104,17 @@ CREATE TABLE IF NOT EXISTS meritocracy_mentioned (
 
             # is our PR in voting window?
             in_window = seconds_since_updated > voting_window
+
+            # Add the rights labels
+            __log.info("Adding PR %d labels regarding is patch", pr_num)
+
+            patched_files = gh.prs.get_patch(api, settings.URN, pr_num)
+            patched_parts = [lib.part_name(settings.SOURCE_PARTS_NAME, patched_file.path)
+                             for patched_file in patched_files]
+
+            patched_parts = list(set(patched_parts))  # unique
+
+            gh.issues.label_issue(api, settings.URN, pr_num, patched_parts)
 
             if is_approved:
                 __log.info("PR %d status: will be approved", pr_num)
