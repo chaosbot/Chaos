@@ -140,14 +140,11 @@ document.getElementById("main").onclick = () => {
 
 /** LOAD VOTERS LIST */
 
-getText();
-setInterval(getText, 30000);
-
 function getText() {
     const result = document.getElementById("result");
     // read text from URL location
     const request = new XMLHttpRequest();
-    //request.open("GET", "voters?amount=20", true);
+    // request.open("GET", "voters?amount=20", true);
     request.open("GET", "voters.json", true);
     request.send(null);
     request.onreadystatechange = () => {
@@ -180,6 +177,9 @@ function getText() {
         }
     };
 }
+
+getText();
+setInterval(getText, 30000);
 
 let termLoading = false;
 
