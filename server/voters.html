@@ -18,8 +18,7 @@
                 var result = document.getElementById("result");
                 // read text from URL location
                 var request = new XMLHttpRequest();
-                //request.open('GET', 'voters', true);
-                request.open('GET', 'voters.json', true);
+                request.open('GET', 'api/voters', true);
                 request.send(null);
                 request.onreadystatechange = function() {
                     if (request.readyState === 4 && request.status === 200) {
