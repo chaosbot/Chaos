@@ -36,6 +36,7 @@ your will.
 
 ## Some things it could do
 
+* Become a democratically controlled AI CEO of a Universal Basic Income Non-Profit.
 * Provide some useful service to people.
 * Be malicious.
 * Recreate itself in a different programming language.
