@@ -2,6 +2,7 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const fg = "#f3482d";
+const speed = .005;
 
 canvas.width = 400;
 canvas.height = 200;
@@ -13,13 +14,15 @@ ctx.textAlign = "center";
 ctx.textBaseline = "middle";
 ctx.fillText("CHAOS", canvas.width / 2, canvas.height / 2);
 
+const blockSize = 2 * (window.devicePixelRatio || 1);
+
 const charLocation = [];
 const pixLocation = [];
 let lastX = -1;
 let lastY = -1;
 
-for (let x = 0; x < canvas.width; x += 2) {
-    for (let y = 0; y < canvas.height; y += 2) {
+for (let x = 0; x < canvas.width; x += blockSize) {
+    for (let y = 0; y < canvas.height; y += blockSize) {
         if (ctx.getImageData(x, y, 1, 1).data[3] !== 0) {
             charLocation.push([x, y]);
             pixLocation.push([0, 0]);
@@ -32,12 +35,16 @@ canvas.onmousemove = (e) => {
     lastY = e.offsetY;
 };
 
+let prevTime;
 function loop() {
+    const newTime = new Date().getTime();
+    const delta = newTime - (prevTime || newTime);
+    prevTime = newTime;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = fg;
     for (let x = 0; x < pixLocation.length; x += 1) {
-        const xPos = pixLocation[x][0] + 0.1 * (charLocation[x][0] - pixLocation[x][0]);
-        let yPos = pixLocation[x][1] + 0.1 * (charLocation[x][1] - pixLocation[x][1]);
+        const xPos = pixLocation[x][0] + speed * delta * (charLocation[x][0] - pixLocation[x][0]);
+        let yPos = pixLocation[x][1] + speed * delta * (charLocation[x][1] - pixLocation[x][1]);
         if (lastX > 0 && lastY > 0) {
             const dx = pixLocation[x][0] - lastX;
             const dy = pixLocation[x][1] - lastY;
@@ -46,7 +53,7 @@ function loop() {
             }
         }
         pixLocation[x] = [xPos, yPos];
-        ctx.fillRect(pixLocation[x][0], pixLocation[x][1], 2, 2);
+        ctx.fillRect(pixLocation[x][0], pixLocation[x][1], blockSize, blockSize);
     }
     lastX = -1;
     lastY = -1;
