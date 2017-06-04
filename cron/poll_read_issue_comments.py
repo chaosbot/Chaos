@@ -162,7 +162,7 @@ def post_command_status_update(api, issue_id, comment_id, has_votes):
     command_text = comment_data["command"]
 
     time = gh.misc.seconds_to_human(seconds_remaining)
-    status = "passing" if has_votes else "failing"
+    status = "passing :white_check_mark:" if has_votes else "failing :no_entry:"
     body = "> {command}\n\nTime remaining: {time} - Vote status: {status}".format(
                                                                             command=command_text,
                                                                             time=time,
