@@ -2,7 +2,7 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const fg = "#f3482d";
-const speed = .005;
+const speed = 0.005;
 
 canvas.width = 400;
 canvas.height = 200;
