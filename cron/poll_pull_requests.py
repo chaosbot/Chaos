@@ -56,7 +56,10 @@ CREATE TABLE IF NOT EXISTS meritocracy_mentioned (
         top_contributors = top_contributors[:settings.MERITOCRACY_TOP_CONTRIBUTORS]
         top_contributors = set(top_contributors)
         top_voters = sorted(total_votes, key=total_votes.get, reverse=True)
-        top_voters = set([user.lower() for user in top_voters[:settings.MERITOCRACY_TOP_VOTERS]])
+        top_voters = map(lambda user: user.lower(), top_voters)
+        top_voters = list(filter(lambda user: user not in settings.MERITOCRACY_VOTERS_BLACKLIST,
+                                 top_voters))
+        top_voters = set(top_voters[:settings.MERITOCRACY_TOP_VOTERS])
         meritocracy = top_voters | top_contributors
         __log.info("generated meritocracy: " + str(meritocracy))
 

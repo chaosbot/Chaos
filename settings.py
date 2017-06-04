@@ -114,6 +114,11 @@ MERITOCRACY_TOP_CONTRIBUTORS = 10
 # The top n voters will be allowed in the meritocracy
 MERITOCRACY_TOP_VOTERS = 10
 
+# These users are not allowed in the meritorcracy through being a top voter
+MERITOCRACY_VOTERS_BLACKLIST = {"e-beach"}
+# Make sure usernames are lowercased
+MERITOCRACY_VOTERS_BLACKLIST = {user.lower() for user in MERITOCRACY_VOTERS_BLACKLIST}
+
 # Database settings
 DB_ADAPTER = "sqlite"
 DB_CONFIG = {
