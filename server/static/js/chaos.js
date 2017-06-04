@@ -140,40 +140,46 @@ document.getElementById("main").onclick = () => {
 
 /** LOAD VOTERS LIST */
 
-const result = document.getElementById("result");
-// read text from URL location
-const request = new XMLHttpRequest();
-request.open("GET", "voters?amount=20", true);
-request.send(null);
-request.onreadystatechange = () => {
-    if (request.readyState === 4 && request.status === 200) {
-        const type = request.getResponseHeader("Content-Type");
-        if (type.indexOf("text") !== 1) {
-            const json = JSON.parse(request.responseText);
-            const keys = Object.keys(json);
-            const values = keys.map(key => json[key]);
+function getText() {
+    const result = document.getElementById("result");
+    // read text from URL location
+    const request = new XMLHttpRequest();
+    // request.open("GET", "voters?amount=20", true);
+    request.open("GET", "voters.json", true);
+    request.send(null);
+    request.onreadystatechange = () => {
+        if (request.readyState === 4 && request.status === 200) {
+            const type = request.getResponseHeader("Content-Type");
+            if (type.indexOf("text") !== 1) {
+                const json = JSON.parse(request.responseText);
+                const keys = Object.keys(json);
+                const values = keys.map(key => json[key]);
 
-            // combine arrays
-            const list = [];
-            for (let j = 0; j < keys.length; j += 1) {
-                list.push({
-                    names: keys[j],
-                    votes: values[j],
-                });
+                // combine arrays
+                const list = [];
+                for (let j = 0; j < keys.length; j += 1) {
+                    list.push({
+                        names: keys[j],
+                        votes: values[j],
+                    });
+                }
+
+                // eslint-disable-next-line no-nested-ternary
+                list.sort((a, b) => -((a.votes < b.votes) ? -1 : ((a.votes === b.votes) ? 0 : 1)));
+
+                let tablehtml = "<table>";
+                for (let i = 0; i < list.length && i < 20; i += 1) {
+                    tablehtml += `<tr><td><a href="https://github.com/${escape(list[i].names)}">${list[i].names}</a></td><td>${list[i].votes}</tr>`;
+                }
+                tablehtml += "</table>";
+                result.innerHTML = tablehtml;
             }
-
-            // eslint-disable-next-line no-nested-ternary
-            list.sort((a, b) => -((a.votes < b.votes) ? -1 : ((a.votes === b.votes) ? 0 : 1)));
-
-            let tablehtml = "<table>";
-            for (let i = 0; i < list.length && i < 20; i += 1) {
-                tablehtml += `<tr><td><a href="https://github.com/${escape(list[i].names)}">${list[i].names}</a></td><td>${list[i].votes}</tr>`;
-            }
-            tablehtml += "</table>";
-            result.innerHTML = tablehtml;
         }
-    }
-};
+    };
+}
+
+getText();
+setInterval(getText, 30000);
 
 let termLoading = false;
 
