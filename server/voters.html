@@ -6,7 +6,7 @@
     </head>
     <body>
         <center>
-            <h1>Voters on Chaos</h1>
+            <h1>Top 500 Voters on Chaos</h1>
             <div id="result"></div>
         </center>
 
@@ -18,7 +18,7 @@
                 var result = document.getElementById("result");
                 // read text from URL location
                 var request = new XMLHttpRequest();
-                request.open('GET', 'voters.json', true);
+                request.open('GET', 'api/voters?amount=500', true);
                 request.send(null);
                 request.onreadystatechange = function() {
                     if (request.readyState === 4 && request.status === 200) {
