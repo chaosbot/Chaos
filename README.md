@@ -98,6 +98,7 @@ changes through a pull request.
 ton of resources available to it: 2TB network transfer, 30GB storage, 2GB memory,
 and 1 CPU core.  Try not to deliberately DoS it.
 * **MySQL is installed locally.**
+* **The used Linux distribution is Ubuntu 14.04 trusty.**
 
 
 ## FAQ
