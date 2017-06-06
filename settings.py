@@ -114,10 +114,10 @@ CHAOSBOT_STDERR_LOG = join(THIS_DIR, "log/supervisor-stderr.log")
 ISSUE_STALE_THRESHOLD = 60 * 60 * 24 * 3  # 3 days
 
 # The top n contributors will be allowed in the meritocracy
-MERITOCRACY_TOP_CONTRIBUTORS = 10
+MERITOCRACY_TOP_CONTRIBUTORS = 12
 
 # The top n voters will be allowed in the meritocracy
-MERITOCRACY_TOP_VOTERS = 10
+MERITOCRACY_TOP_VOTERS = 5
 
 # These users are not allowed in the meritorcracy through being a top voter
 MERITOCRACY_VOTERS_BLACKLIST = {"e-beach"}
