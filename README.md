@@ -89,6 +89,7 @@ Chaosbot has been ruled by:
 - @PlasmaPower with [#138](https://github.com/chaosbot/chaos/pull/138)
 - Democracy, as PlasmaPower relinquished his control with [#153](https://github.com/chaosbot/chaos/pull/153)
 - Direct democracy + meritocracy with [#377](https://github.com/chaosbot/Chaos/pull/377)
+- Direct democracy + meritocracy + nominal monarch [#521](https://github.com/chaosbot/Chaos/pull/521) -- @Smittyvb is the nominal monarch for June 8, 2017. This entails no special priveleges or treatment, though.
 
 ## Server details
 
