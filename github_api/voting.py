@@ -107,7 +107,8 @@ def get_pr_review_reactions(api, urn, pr):
         user = review["user"]["login"]
         is_current = review["commit_id"] == pr["head"]["sha"]
         vote = parse_review_for_vote(state)
-        yield user, is_current, vote
+        if vote != 0:
+            yield user, is_current, vote
 
 
 def get_vote_weight(api, username, contributors):

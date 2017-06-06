@@ -17,7 +17,7 @@ function rollback() {
     supervisorctl update
 }
 
-# time the chaos server... if it crashes in 60s, then attempt a rollback
+# time the chaos server... if it crashes before 15 minutes, then attempt a rollback
 start_time=`date +%s`
 /root/.virtualenvs/chaos/bin/python chaos.py
 failed=$?

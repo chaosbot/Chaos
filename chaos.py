@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from os.path import dirname, abspath, join, exists
+from os.path import exists
 import os
 import time
 import sys
@@ -59,6 +59,7 @@ def main():
 
     logging.getLogger("requests").propagate = False
     logging.getLogger("sh").propagate = False
+    logging.getLogger("peewee").propagate = False
 
     log = logging.getLogger("chaosbot")
 
@@ -75,10 +76,14 @@ def main():
 
     log.info("starting up and entering event loop")
 
-    os.system("pkill chaos_server")
+    os.system("pkill uwsgi")
 
-    server_dir = join(dirname(abspath(__file__)), "server")
-    subprocess.Popen([sys.executable, "server.py"], cwd=server_dir)
+    subprocess.Popen(["/root/.virtualenvs/chaos/bin/uwsgi",
+                      "--socket", "127.0.0.1:8085",
+                      "--wsgi-file", "webserver.py",
+                      "--callable", "__hug_wsgi__",
+                      "--check-static", "/root/workspace/Chaos/server/",
+                      "--daemonize", "/root/workspace/Chaos/log/uwsgi.log"])
 
     # Schedule all cron jobs to be run
     cron.schedule_jobs(api)

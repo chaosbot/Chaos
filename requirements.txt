@@ -26,3 +26,6 @@ flake8==3.3.0
 unidiff==0.5.4
 python-twitter==3.3
 pymysql
+hug==2.3.0
+uWSGI==2.0.15
+peewee

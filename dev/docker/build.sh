@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd "$(dirname "$0")"
+
 while getopts ":rpi:" opt; do
 	case $opt in
 		\?)

@@ -3,7 +3,7 @@ import json
 import os
 import sys
 from os.path import join, abspath, dirname
-from lib.db import DB
+from lib.db.models import MeritocracyMentioned
 
 import settings
 import github_api as gh
@@ -16,20 +16,8 @@ __log = logging.getLogger("pull_requests")
 def poll_pull_requests(api):
     __log.info("looking for PRs")
 
-    db = DB.get_instance()
-
-    try:
-        db.query("""
-CREATE TABLE IF NOT EXISTS meritocracy_mentioned (
-    id INTEGER PRIMARY KEY,
-    commit_hash VARCHAR(40)
-)
-        """)
-    except:
-        __log.exception("Failed to create meritocracy mentioned DB table")
-
     # get voting window
-    voting_window = gh.voting.get_initial_voting_window()
+    base_voting_window = gh.voting.get_initial_voting_window()
 
     # get all ready prs (disregarding of the voting window)
     prs = gh.prs.get_ready_prs(api, settings.URN, 0)
@@ -56,7 +44,10 @@ CREATE TABLE IF NOT EXISTS meritocracy_mentioned (
         top_contributors = top_contributors[:settings.MERITOCRACY_TOP_CONTRIBUTORS]
         top_contributors = set(top_contributors)
         top_voters = sorted(total_votes, key=total_votes.get, reverse=True)
-        top_voters = set([user.lower() for user in top_voters[:settings.MERITOCRACY_TOP_VOTERS]])
+        top_voters = map(lambda user: user.lower(), top_voters)
+        top_voters = list(filter(lambda user: user not in settings.MERITOCRACY_VOTERS_BLACKLIST,
+                                 top_voters))
+        top_voters = set(top_voters[:settings.MERITOCRACY_TOP_VOTERS])
         meritocracy = top_voters | top_contributors
         __log.info("generated meritocracy: " + str(meritocracy))
 
@@ -76,30 +67,35 @@ CREATE TABLE IF NOT EXISTS meritocracy_mentioned (
             threshold = gh.voting.get_approval_threshold(api, settings.URN)
             is_approved = vote_total >= threshold and meritocracy_satisfied
 
+            seconds_since_updated = gh.prs.seconds_since_updated(api, pr)
+
+            voting_window = base_voting_window
             # the PR is mitigated or the threshold is not reached ?
             if variance >= threshold or not is_approved:
                 voting_window = gh.voting.get_extended_voting_window(api, settings.URN)
-                if vote_total >= threshold / 2:
+                if (settings.IN_PRODUCTION and vote_total >= threshold / 2 and
+                        seconds_since_updated > base_voting_window and not meritocracy_satisfied):
                     # check if we need to mention the meritocracy
                     try:
                         commit = pr["head"]["sha"]
-                        if not db.query("SELECT * FROM meritocracy_mentioned WHERE commit_hash=?",
-                                        (commit,)):
-                            db.query("INSERT INTO meritocracy_mentioned (commit_hash) VALUES (?)",
-                                     (commit,))
+
+                        mm, created = MeritocracyMentioned.get_or_create(commit_hash=commit)
+                        if created:
+                            meritocracy_mentions = meritocracy - {pr["user"]["login"].lower(),
+                                                                  "chaosbot"}
                             gh.comments.leave_meritocracy_comment(api, settings.URN, pr["number"],
-                                                                  meritocracy)
+                                                                  meritocracy_mentions)
                     except:
                         __log.exception("Failed to process meritocracy mention")
 
             # is our PR in voting window?
-            in_window = gh.prs.is_pr_in_voting_window(api, pr, voting_window)
+            in_window = seconds_since_updated > voting_window
 
             if is_approved:
                 __log.info("PR %d status: will be approved", pr_num)
 
                 gh.prs.post_accepted_status(
-                    api, settings.URN, pr, voting_window, votes, vote_total,
+                    api, settings.URN, pr, seconds_since_updated, voting_window, votes, vote_total,
                     threshold, meritocracy_satisfied)
 
                 if in_window:
@@ -133,8 +129,8 @@ CREATE TABLE IF NOT EXISTS meritocracy_mentioned (
 
                 if in_window:
                     gh.prs.post_rejected_status(
-                        api, settings.URN, pr, voting_window, votes, vote_total,
-                        threshold, meritocracy_satisfied)
+                        api, settings.URN, pr, seconds_since_updated, voting_window, votes,
+                        vote_total, threshold, meritocracy_satisfied)
                     __log.info("PR %d rejected, closing", pr_num)
                     gh.comments.leave_reject_comment(
                         api, settings.URN, pr_num, votes, vote_total, threshold,
@@ -143,12 +139,12 @@ CREATE TABLE IF NOT EXISTS meritocracy_mentioned (
                     gh.prs.close_pr(api, settings.URN, pr)
                 elif vote_total < 0:
                     gh.prs.post_rejected_status(
-                        api, settings.URN, pr, voting_window, votes, vote_total,
-                        threshold, meritocracy_satisfied)
+                        api, settings.URN, pr, seconds_since_updated, voting_window, votes,
+                        vote_total, threshold, meritocracy_satisfied)
                 else:
                     gh.prs.post_pending_status(
-                        api, settings.URN, pr, voting_window, votes, vote_total,
-                        threshold, meritocracy_satisfied)
+                        api, settings.URN, pr, seconds_since_updated, voting_window, votes,
+                        vote_total, threshold, meritocracy_satisfied)
 
             for user in votes:
                 if user in total_votes:
