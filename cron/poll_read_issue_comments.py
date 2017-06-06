@@ -139,10 +139,8 @@ def handle_vote_command(api, command, issue_id, comment_id, votes):
         sub_command = command.pop(0)
         if sub_command == "close":
             gh.issues.close_issue(api, settings.URN, issue_id)
-            gh.comments.leave_issue_closed_comment(api, settings.URN, issue_id)
         elif sub_command == "reopen":
             gh.issues.open_issue(api, settings.URN, issue_id)
-            gh.comments.leave_issue_reopened_comment(api, settings.URN, issue_id)
         else:
             # Implement other commands
             pass
