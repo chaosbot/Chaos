@@ -133,7 +133,18 @@ document.getElementById("voters").onclick = () => {
     document.getElementById("voters").classList.add("active");
     document.getElementById("main").classList.add("inactive");
     document.getElementById("main").classList.remove("active");
+    document.getElementById("future").classList.add("inactive");
+    document.getElementById("future").classList.remove("active");
     document.getElementById("voters").classList.remove("inactive");
+};
+
+document.getElementById("future").onclick = () => {
+    document.getElementById("future").classList.add("active");
+    document.getElementById("main").classList.add("inactive");
+    document.getElementById("voters").classList.add("inactive");
+    document.getElementById("voters").classList.remove("active");
+    document.getElementById("main").classList.remove("active");
+    document.getElementById("future").classList.remove("inactive");
 };
 
 document.getElementById("main").onclick = () => {
@@ -141,6 +152,8 @@ document.getElementById("main").onclick = () => {
         document.getElementById("main").classList.add("active");
         document.getElementById("voters").classList.add("inactive");
         document.getElementById("voters").classList.remove("active");
+        document.getElementById("future").classList.add("inactive");
+        document.getElementById("future").classList.remove("active");
         document.getElementById("main").classList.remove("inactive");
     }
 };
