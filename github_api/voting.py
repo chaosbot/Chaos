@@ -156,7 +156,7 @@ def get_approval_threshold(api, urn):
     and merged """
     num_watchers = repos.get_num_watchers(api, urn)
     threshold = max(1, settings.MIN_VOTE_WATCHERS * num_watchers)
-    return threshold
+    return -1
 
 
 def parse_review_for_vote(state):
