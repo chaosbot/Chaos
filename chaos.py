@@ -27,6 +27,11 @@ import github_api.issues
 # Currently imported just for the sideeffect (not currently being used)
 import encryption  # noqa: F401
 
+# To make post in Twitter
+import twitter_api as ta
+import twitter_api.misc
+import twitter_api.Twitter
+
 
 class LessThanFilter(logging.Filter):
     """
@@ -69,12 +74,17 @@ def main():
 
     api = gh.API(settings.GITHUB_USER, settings.GITHUB_SECRET)
 
+    # Api Twitter
+    api_twitter = ta.API_TWITTER(TWITTER_API_KEYS_FILE)
+
     log.info("checking if I crashed before...")
+    ta.Twitter.PostTwitter("checking if I crashed before...", api_twitter.GetApi())
 
     # check if chaosbot is not on the tip of the master branch
     check_for_prev_crash(api, log)
 
     log.info("starting up and entering event loop")
+    ta.Twitter.PostTwitter("starting up and entering event loop", api_twitter.GetApi())
 
     os.system("pkill uwsgi")
 

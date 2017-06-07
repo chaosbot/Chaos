@@ -39,7 +39,7 @@ IN_PRODUCTION = GITHUB_USER == "chaosbot"
 HOMEPAGE = "http://chaosthebot.com"
 
 # To Twitter Posts
-_twitter_api_keys = 'twitter_api.secret'
+_twitter_api_keys = 'api_twitter.keys'
 
 # Look for local Keys first
 _twitter_api_keys_file = join(THIS_DIR, _twitter_api_keys)
