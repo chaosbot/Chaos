@@ -39,7 +39,7 @@ IN_PRODUCTION = GITHUB_USER == "chaosbot"
 HOMEPAGE = "http://chaosthebot.com"
 
 # TEST SETTING PLEASE IGNORE
-TEST = False
+TEST = True
 
 # How much logging should we do? Pick a log level for stdout and stderr.
 # Log levels are (in order) DEBUG, INFO, WARNING, ERROR, CRITICAL
