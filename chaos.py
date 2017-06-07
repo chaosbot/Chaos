@@ -75,7 +75,7 @@ def main():
     api = gh.API(settings.GITHUB_USER, settings.GITHUB_SECRET)
 
     # Api Twitter
-    api_twitter = ta.API_TWITTER(TWITTER_API_KEYS_FILE)
+    api_twitter = ta.API_TWITTER(settings.TWITTER_API_KEYS_FILE)
 
     log.info("checking if I crashed before...")
     ta.Twitter.PostTwitter("checking if I crashed before...", api_twitter.GetApi())
