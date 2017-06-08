@@ -47,6 +47,7 @@ ENV PATH="$venv/bin:$PATH"
 
 WORKDIR $chaosdir
 
+RUN pip install six
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 RUN rm requirements.txt
