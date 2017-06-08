@@ -1,4 +1,5 @@
-from os.path import exists, abspath, dirname, join
+from os.path import abspath, dirname, exists, join
+
 import misc
 import logging
 
