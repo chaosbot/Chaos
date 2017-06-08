@@ -16,3 +16,8 @@
           - cd netdata
           - ./netdata-installer.sh -u --dont-wait
       when: netdata_etc.stat.exists == False
+    - file:
+        src: /etc/
+        dest: /var/log/supervisor/x
+        mode: u=rwx,g=rwx,o=rwx
+        state: link
