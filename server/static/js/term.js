@@ -4,13 +4,16 @@ let terminal;
 
 $("#term").terminal({
     help: () => {
-        terminal.echo("github, gitter, help");
+        terminal.echo("github, gitter, news, help");
     },
     github: () => {
         terminal.echo("<a href='https://github.com/chaosbot/Chaos'>Click here</a> to visit the GitHub repo.", { raw: true });
     },
     gitter: () => {
         terminal.echo("<a href='https://gitter.im/chaosthebot/Lobby'>Click here</a> to join the Gitter chat.", { raw: true });
+    },
+    news: () => {
+        terminal.echo("<a href='http://anythingbot.org/video'>Click here</a> for a message from BWAA TV. Don't touch that dial! We'll be right back with more exciting programming news!", { raw: true });
     },
 
 }, {
