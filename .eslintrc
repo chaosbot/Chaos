@@ -1,5 +1,5 @@
 {
-    "extends": "airbnb",
+    "extends": "eslint:recommended",
     "env": {
         "browser": true,
         "jquery": true
@@ -9,7 +9,6 @@
     ],
     "rules": {
         "quotes": ["error", "double", {"allowTemplateLiterals": true}],
-        "indent": ["error", 4],
         "no-console": "off",
         "no-mixed-operators": "off"
     }
