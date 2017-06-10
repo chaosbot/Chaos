@@ -8,12 +8,14 @@ from lib.db.models import MeritocracyMentioned
 import settings
 import github_api as gh
 
+from twitter_api import Twitter as tw
+
 THIS_DIR = dirname(abspath(__file__))
 
 __log = logging.getLogger("pull_requests")
 
 
-def poll_pull_requests(api):
+def poll_pull_requests(api, api_twitter):
     __log.info("looking for PRs")
 
     # get voting window
@@ -94,6 +96,11 @@ def poll_pull_requests(api):
             if is_approved:
                 __log.info("PR %d status: will be approved", pr_num)
 
+                # Make a tweet
+                message_twitter = datetime.datetime.ctime(datetime.datetime.now()) + \
+                                  " - PR {pr_num} status: will be approved".format(pr_num=pr_num)
+                tw.PostTwitter(message_twitter, api_twitter)
+
                 gh.prs.post_accepted_status(
                     api, settings.URN, pr, seconds_since_updated, voting_window, votes, vote_total,
                     threshold, meritocracy_satisfied)
@@ -104,13 +111,21 @@ def poll_pull_requests(api):
                     try:
                         sha = gh.prs.merge_pr(api, settings.URN, pr, votes, vote_total,
                                               threshold, meritocracy_satisfied)
+                        message_twitter = datetime.datetime.ctime(datetime.datetime.now()) + \
+                                          "PR {pr_num} approved for merging".format(pr_num=pr_num)
+                        tw.PostTwitter(message_twitter, api_twitter)
                     # some error, like suddenly there's a merge conflict, or some
                     # new commits were introduced between finding this ready pr and
                     # merging it
+                    # Make a tweet
                     except gh.exceptions.CouldntMerge:
                         __log.info("couldn't merge PR %d for some reason, skipping",
                                    pr_num)
                         gh.issues.label_issue(api, settings.URN, pr_num, ["can't merge"])
+                        message_twitter = datetime.datetime.ctime(datetime.datetime.now()) +\
+                                          "Couldn't merge PR {pr_num} for some reason, \
+                                            skipping".format(pr_num=pr_num)
+                        tw.PostTwitter(message_twitter, api_twitter)
                         continue
 
                     gh.comments.leave_accept_comment(

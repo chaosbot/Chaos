@@ -11,6 +11,7 @@ import settings
 import schedule
 import cron
 import shutil
+import datetime
 
 # this import must happen before any github api stuff gets imported.  it sets
 # up caching on the api functions so we don't run out of api requests
@@ -78,13 +79,17 @@ def main():
     api_twitter = ta.API_TWITTER(settings.TWITTER_API_KEYS_FILE)
 
     log.info("checking if I crashed before...")
-    ta.Twitter.PostTwitter("checking if I crashed before...", api_twitter.GetApi())
+    ta.Twitter.PostTwitter(datetime.datetime.ctime(datetime.datetime.now()) + \
+                           " - checking if I crashed before...", \
+                           api_twitter.GetApi())
 
     # check if chaosbot is not on the tip of the master branch
     check_for_prev_crash(api, log)
 
     log.info("starting up and entering event loop")
-    ta.Twitter.PostTwitter("starting up and entering event loop", api_twitter.GetApi())
+    ta.Twitter.PostTwitter(datetime.datetime.ctime(datetime.datetime.now()) + \
+                           " - starting up and entering event loop", \
+                           api_twitter.GetApi())
 
     os.system("pkill uwsgi")
 
@@ -96,7 +101,7 @@ def main():
                       "--daemonize", "/root/workspace/Chaos/log/uwsgi.log"])
 
     # Schedule all cron jobs to be run
-    cron.schedule_jobs(api)
+    cron.schedule_jobs(api,api_twitter)
 
     log.info("Setting description to {desc}".format(desc=settings.REPO_DESCRIPTION))
     github_api.repos.set_desc(api, settings.URN, settings.REPO_DESCRIPTION)
