@@ -249,10 +249,8 @@ def get_ready_prs(api, urn, window):
 
         # if master successfully passes travis build check this pr
         if master_build_passed:
-            build_failed = has_build_failed(api, urn, pr["head"]["sha"])
-
             # if this PR fails - add label and close it if it's stale
-            if build_failed:
+            if has_build_failed(api, urn, pr["head"]["sha"]):
                 issues.label_issue(api, urn, pr_num, ["ci failed"])
                 handle_broken_pr(api, urn, pr, delta, "ci")
                 continue
@@ -264,7 +262,9 @@ def get_ready_prs(api, urn, window):
         mergeable = get_is_mergeable(api, urn, pr_num)
 
         if mergeable is True:
-            issues.unlabel_issue(api, urn, pr_num, ["conflicts", "ci failed"])
+            issues.unlabel_issue(api, urn, pr_num, ["conflicts"])
+            if has_build_passed(api, urn, pr["head"]["sha"]):
+                issues.unlabel_issue(api, urn, pr_num, ["ci failed"])
             yield pr
         elif mergeable is False:
             issues.label_issue(api, urn, pr_num, ["conflicts"])
