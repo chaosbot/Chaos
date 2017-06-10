@@ -8,7 +8,6 @@
         "jquery"
     ],
     "rules": {
-        "quotes": ["error", "double", {"allowTemplateLiterals": true}],
         "no-console": "off",
         "no-mixed-operators": "off"
     }
