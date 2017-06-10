@@ -1,8 +1,16 @@
 {
     "extends": "eslint:recommended",
     "env": {
+        "es6": true,
         "browser": true,
         "jquery": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
     },
     "plugins": [
         "jquery"
