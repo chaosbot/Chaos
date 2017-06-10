@@ -14,16 +14,12 @@ def GetKeys(twitter_keys_path):
         key = f.read()
         if (k == 'consumer_key'):
             consumer_key = decrypt(key)
-            # consumer_key = 'N5JrjZDqCtQ346nXF80BV20v9'
         if (k == 'consumer_secret'):
             consumer_secret = decrypt(key)
-            # consumer_secret = 'enEPaLQXPjYERBhPOxrWws4l6uFjC0YD7klwRRITR09z6bHmI2'
         if (k == 'access_token'):
             access_token = decrypt(key)
-            # access_token = '732737955962486786-V84lxJ35cep5hNOPaQ6WYBs40AvRTX4'
         if (k == 'access_secret'):
             access_secret = decrypt(key)
-            # access_secret = 'PKNttIB5rExAFgaqaFZP1OOl7yppsExltzNkNmTZmnPQ4'
         f.close()
     """
     for k in keys:
