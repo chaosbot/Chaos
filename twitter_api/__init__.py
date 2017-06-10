@@ -12,6 +12,6 @@ class API_TWITTER():
                                  consumer_secret=str(self.__twitter_keys['consumer_secret']),
                                  access_token_key=str(self.__twitter_keys['access_token']),
                                  access_token_secret=str(self.__twitter_keys['access_secret']))
-        
+
     def GetApi(self):
         return self.__api
