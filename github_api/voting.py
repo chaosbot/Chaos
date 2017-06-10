@@ -18,7 +18,7 @@ def get_votes(api, urn, pr, meritocracy):
     can't acquire approval votes, then change the pr """
 
     votes = {}
-    meritocracy_satisfied = False
+    meritocracy_satisfied = 0
     pr_owner = pr["user"]["login"]
     pr_num = pr["number"]
 
@@ -33,7 +33,7 @@ def get_votes(api, urn, pr, meritocracy):
     for vote_owner, (is_current, vote) in reviews.items():
         if (vote > 0 and is_current and vote_owner != pr_owner
                 and vote_owner.lower() in meritocracy):
-            meritocracy_satisfied = True
+            meritocracy_satisfied += 1
             break
 
     # by virtue of creating the PR, the owner defaults to a vote of 1

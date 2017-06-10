@@ -43,6 +43,7 @@ def get_all_issue_comments(api, urn, page=1, since=None):
                                     "login": comment["user"]["login"],
                                     "id": comment["user"]["id"]
                                 }
+        issue_comment["number"] = comment["number"]
         yield issue_comment
 
 
@@ -104,6 +105,17 @@ but it does not have a positive meritocracy review.
 
 Please review: {meritocracy}
     """.strip().format(meritocracy=meritocracy_str)
+    return leave_comment(api, urn, pr, body)
+
+
+def leave_expedite_comment(api, urn, pr, meritocracy):
+    meritocracy_str = " ".join(map(lambda user: "@" + user, meritocracy))
+    body = """
+:warning: This PR is nominated to be **expedited**.
+This requires **{num}** positive reviews from the meritocracy.
+
+Please review: {meritocracy}
+    """.strip().format(meritocracy=meritocracy_str, num=settings.FAST_PR_MERITOCRATS)
     return leave_comment(api, urn, pr, body)
 
 

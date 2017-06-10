@@ -3,7 +3,7 @@ import json
 import os
 import sys
 from os.path import join, abspath, dirname
-from lib.db.models import MeritocracyMentioned
+from lib.db.models import MeritocracyMentioned, Issue
 
 import settings
 import github_api as gh
@@ -65,16 +65,41 @@ def poll_pull_requests(api):
             # is our PR approved or rejected?
             vote_total, variance = gh.voting.get_vote_sum(api, votes, contributors)
             threshold = gh.voting.get_approval_threshold(api, settings.URN)
-            is_approved = vote_total >= threshold and meritocracy_satisfied
+            is_approved = vote_total >= threshold and meritocracy_satisfied > 0
 
             seconds_since_updated = gh.prs.seconds_since_updated(api, pr)
 
+            half_window = False
+
+            # read the db to see if this PR is expedited by /vote fast...
+            try:
+                issue = Issue.get(issue_id=pr["id"])
+                half_window = issue.expedited and \
+                    meritocracy_satisfied >= settings.FAST_PR_MERITOCRATS
+
+            except Issue.DoesNotExist:
+                pass  # not expedited
+
+            except:
+                __log.exception("Failed to get expedited status")
+
             voting_window = base_voting_window
+
+            if half_window:
+                voting_window /= 2
+
+                # Add the "expedited label"
+                gh.issues.label_issue(api, settings.URN, pr["number"], "expedited")
+
             # the PR is mitigated or the threshold is not reached ?
             if variance >= threshold or not is_approved:
                 voting_window = gh.voting.get_extended_voting_window(api, settings.URN)
+
+                if half_window:
+                    voting_window /= 2
+
                 if (settings.IN_PRODUCTION and vote_total >= threshold / 2 and
-                        seconds_since_updated > base_voting_window and not meritocracy_satisfied):
+                        seconds_since_updated > base_voting_window and meritocracy_satisfied == 0):
                     # check if we need to mention the meritocracy
                     try:
                         commit = pr["head"]["sha"]
@@ -96,14 +121,14 @@ def poll_pull_requests(api):
 
                 gh.prs.post_accepted_status(
                     api, settings.URN, pr, seconds_since_updated, voting_window, votes, vote_total,
-                    threshold, meritocracy_satisfied)
+                    threshold, meritocracy_satisfied > 0)
 
                 if in_window:
                     __log.info("PR %d approved for merging!", pr_num)
 
                     try:
                         sha = gh.prs.merge_pr(api, settings.URN, pr, votes, vote_total,
-                                              threshold, meritocracy_satisfied)
+                                              threshold, meritocracy_satisfied > 0)
                     # some error, like suddenly there's a merge conflict, or some
                     # new commits were introduced between finding this ready pr and
                     # merging it
@@ -115,7 +140,7 @@ def poll_pull_requests(api):
 
                     gh.comments.leave_accept_comment(
                         api, settings.URN, pr_num, sha, votes, vote_total,
-                        threshold, meritocracy_satisfied)
+                        threshold, meritocracy_satisfied > 0)
                     gh.issues.label_issue(api, settings.URN, pr_num, ["accepted"])
 
                     # chaosbot rewards merge owners with a follow
@@ -130,21 +155,21 @@ def poll_pull_requests(api):
                 if in_window:
                     gh.prs.post_rejected_status(
                         api, settings.URN, pr, seconds_since_updated, voting_window, votes,
-                        vote_total, threshold, meritocracy_satisfied)
+                        vote_total, threshold, meritocracy_satisfied > 0)
                     __log.info("PR %d rejected, closing", pr_num)
                     gh.comments.leave_reject_comment(
                         api, settings.URN, pr_num, votes, vote_total, threshold,
-                        meritocracy_satisfied)
+                        meritocracy_satisfied > 0)
                     gh.issues.label_issue(api, settings.URN, pr_num, ["rejected"])
                     gh.prs.close_pr(api, settings.URN, pr)
                 elif vote_total < 0:
                     gh.prs.post_rejected_status(
                         api, settings.URN, pr, seconds_since_updated, voting_window, votes,
-                        vote_total, threshold, meritocracy_satisfied)
+                        vote_total, threshold, meritocracy_satisfied > 0)
                 else:
                     gh.prs.post_pending_status(
                         api, settings.URN, pr, seconds_since_updated, voting_window, votes,
-                        vote_total, threshold, meritocracy_satisfied)
+                        vote_total, threshold, meritocracy_satisfied > 0)
 
             for user in votes:
                 if user in total_votes:

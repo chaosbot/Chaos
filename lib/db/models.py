@@ -28,6 +28,11 @@ class Comment(BaseModel):
 
 class Issue(BaseModel):
     issue_id = pw.IntegerField(primary_key=True)
+    number = pw.IntegerField()
+    created_at = pw.DateField()
+    user = pw.ForeignKeyField(User, related_name='poster')
+    is_pr = pw.BooleanField()
+    expedited = pw.BooleanField()
 
 
 class ActiveIssueCommands(BaseModel):

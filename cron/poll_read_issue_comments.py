@@ -1,13 +1,14 @@
 import logging
 import arrow
 import re
+import json
 from requests.exceptions import HTTPError
 
 import settings
 import github_api as gh
 
 from lib.db.models import Comment, User, ActiveIssueCommands, Issue
-from lib.db.models import RunTimes, InactiveIssueCommands
+from lib.db.models import RunTimes, InactiveIssueCommands, MeritocracyMentioned
 
 '''
 Command Syntax
@@ -21,7 +22,7 @@ Command Syntax
 
 # If no subcommands, map cmd: None
 COMMAND_LIST = {
-        "/vote": ("close", "reopen")
+        "/vote": ("close", "reopen", "fast")
     }
 
 __log = logging.getLogger("read_issue_comments")
@@ -35,13 +36,34 @@ def get_seconds_remaining(api, comment_id):
     return seconds_remaining
 
 
+def insert_or_update_issue(api, issue_id, number):
+    # get more info on the issue
+    gh_issue = gh.issue.open_issue(api, settings.URN, number)
+
+    # get user from db
+    user, _ = User.get_or_create(user_id=gh_issue["user"]["id"],
+                                 defaults={"login": gh_issue["user"]["login"]})
+
+    # db insert
+    issue, _ = Issue.get_or_create(issue_id=issue_id,
+                                   defaults={
+                                       "issue_id": issue_id,
+                                       "number": number,
+                                       "user": user,
+                                       "created_at": gh_issue["created_at"],
+                                       "expedited": False,
+                                       "is_pr": "pull_request" in gh_issue,
+                                       })
+
+    return issue
+
+
 def insert_or_update(api, cmd_obj):
     # Find the comment, or create it if it doesn't exit
     comment_id = cmd_obj["global_comment_id"]
-    issue, _ = Issue.get_or_create(issue_id=cmd_obj["issue_id"])
     user, _ = User.get_or_create(user_id=cmd_obj["user"]["id"],
                                  defaults={"login": cmd_obj["user"]["login"]})
-
+    issue = insert_or_update_issue(api, cmd_obj["issue_id"], cmd_obj["number"])
     comment, _ = Comment.get_or_create(comment_id=comment_id,
                                        defaults={
                                            "user": user, "text": cmd_obj["comment_text"],
@@ -135,7 +157,75 @@ def get_command_votes(api, urn, comment_id):
     return votes
 
 
-def handle_vote_command(api, command, issue_id, comment_id, votes):
+def get_meritocracy(api):
+    with open('server/voters.json', 'r+') as fp:
+        total_votes = {}
+        fs = fp.read()
+        if fs:
+            total_votes = json.loads(fs)
+
+        top_contributors = sorted(gh.repos.get_contributors(api, settings.URN),
+                                  key=lambda user: user["total"], reverse=True)
+        top_contributors = [item["author"]["login"].lower() for item in top_contributors]
+        top_contributors = top_contributors[:settings.MERITOCRACY_TOP_CONTRIBUTORS]
+        top_contributors = set(top_contributors)
+
+        top_voters = sorted(total_votes, key=total_votes.get, reverse=True)
+        top_voters = map(lambda user: user.lower(), top_voters)
+        top_voters = list(filter(lambda user: user not in settings.MERITOCRACY_VOTERS_BLACKLIST,
+                                 top_voters))
+        top_voters = set(top_voters[:settings.MERITOCRACY_TOP_VOTERS])
+        meritocracy = top_voters | top_contributors
+
+        return meritocracy
+
+
+def fast_vote(api, cmdmeta):
+            comment_updated_at = cmdmeta.comment.updated_at
+            comment_created_at = cmdmeta.comment.created_at
+            comment_poster = cmdmeta.comment.user
+            issue_created_at = cmdmeta.issue.created_at
+
+            # This must be a PR
+            if not cmdmeta.issue.is_pr:
+                return
+
+            # The post should not have been updated
+            if comment_updated_at != comment_created_at:
+                return
+
+            # The comment poster must be in the meritocracy
+            meritocracy = get_meritocracy(api)
+            if comment_poster not in meritocracy:
+                return
+
+            # The comment must posted within 5 min of the issue
+            if (arrow.get(comment_created_at) -
+                    arrow.get(issue_created_at)).total_seconds() > 5*60:
+                return
+
+            # Leave a note on the issue that it is expedited
+            Issue.update(expedited=True).where(Issue.issue_id == cmdmeta.issue.issue_id).execute()
+
+            # mention the meritocracy immediately
+            try:
+                pr = gh.prs.get_pr(api, settings.URN, cmdmeta.issue.number)
+                commit = pr["head"]["sha"]
+
+                mm, created = MeritocracyMentioned.get_or_create(commit_hash=commit)
+                if created:
+                    meritocracy_mentions = meritocracy - {pr["user"]["login"].lower(),
+                                                          "chaosbot"}
+                    gh.comments.leave_expedite_comment(api,
+                                                       settings.URN, pr["number"],
+                                                       meritocracy_mentions)
+            except:
+                __log.exception("Failed to process meritocracy mention")
+
+
+def handle_vote_command(api, command, cmdmeta, votes):
+    issue_id = cmdmeta.issue.issue_id
+
     orig_command = command[:]
     # Check for correct command syntax, ie, subcommands
     log_warning = False
@@ -145,6 +235,9 @@ def handle_vote_command(api, command, issue_id, comment_id, votes):
             gh.issues.close_issue(api, settings.URN, issue_id)
         elif sub_command == "reopen":
             gh.issues.open_issue(api, settings.URN, issue_id)
+        elif sub_command == "fast":
+            fast_vote(api, cmdmeta)
+
         else:
             # Implement other commands
             pass
@@ -176,7 +269,7 @@ def handle_comment(api, cmd):
                                                                        comment=comment_text))
 
         if command == "/vote":
-            handle_vote_command(api, parsed_comment, issue_id, comment_id, votes)
+            handle_vote_command(api, parsed_comment, cmd, votes)
 
         update_command_ran(api, comment_id, "Command Ran")
 

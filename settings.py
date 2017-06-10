@@ -92,7 +92,8 @@ REPO_LABELS = {
     "mergeable": "dddddd",
     "can't merge": "ededed",
     "ci failed": "ff9800",
-    "crash report": "ff0000"
+    "crash report": "ff0000",
+    "expedited": "f49542",
 }
 
 # PRs that have merge conflicts and haven't been touched in this many hours
@@ -123,6 +124,9 @@ MERITOCRACY_TOP_VOTERS = 10
 MERITOCRACY_VOTERS_BLACKLIST = {"e-beach"}
 # Make sure usernames are lowercased
 MERITOCRACY_VOTERS_BLACKLIST = {user.lower() for user in MERITOCRACY_VOTERS_BLACKLIST}
+
+# Number of meritocrats needed to expedite a PR
+FAST_PR_MERITOCRATS = 5
 
 # Database settings
 DB_ADAPTER = "sqlite"
