@@ -4,6 +4,7 @@ import os
 import sys
 from os.path import join, abspath, dirname
 from lib.db.models import MeritocracyMentioned
+import datetime
 
 import settings
 import github_api as gh
@@ -125,6 +126,7 @@ def poll_pull_requests(api, api_twitter):
                         message_twitter = datetime.datetime.ctime(datetime.datetime.now()) +\
                                           "Couldn't merge PR {pr_num} for some reason, \
                                             skipping".format(pr_num=pr_num)
+
                         tw.PostTwitter(message_twitter, api_twitter)
                         continue
 
