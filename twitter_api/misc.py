@@ -6,21 +6,21 @@ def GetKeys(twitter_keys_path):
     consumer_secret = ''
     access_token = ''
     access_secret = ''
-    PATH = 'twitter_keys.secret/'
+    # PATH = 'twitter_keys.secret/'
     l_files = ['consumer_key', 'consumer_secret', 'access_token', 'access_secret']
 
     for k in l_files:
-        f = open(PATH + k + ".secret", 'rb')
-        key = f.read()
+        # f = open(PATH + k + ".secret", 'rb')
+        # key = f.read()
         if (k == 'consumer_key'):
-            consumer_key = decrypt(key)
+            consumer_key = '0Vj9kAlcViVv2QL4d6UqNWaVo'
         if (k == 'consumer_secret'):
-            consumer_secret = decrypt(key)
+            consumer_secret = '9CVW0rJZGaGH19EfV9XT1skRwp7pj24iucmojuDIGMePi0Nny3'
         if (k == 'access_token'):
-            access_token = decrypt(key)
+            access_token = '873520342207221760-wjSr5HdjoeYaZzVLyQs9OvDrIaXD5JA'
         if (k == 'access_secret'):
-            access_secret = decrypt(key)
-        f.close()
+            access_secret = 'CN8IGEoOUVvvPCLE5uIuWQWC902cNIqbtCAgI5DWbD6IK'
+        # f.close()
     """
     for k in keys:
         try:
