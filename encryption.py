@@ -45,4 +45,4 @@ def create_decryptor(private_location, public_location):
     return decrypt
 
 
-decrypt = create_decryptor("/etc/privkey", "server/pubkey.txt")
+decrypt = create_decryptor("etc/privkey", "server/pubkey.txt")
