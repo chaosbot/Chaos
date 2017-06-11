@@ -96,13 +96,6 @@ def poll_pull_requests(api, api_twitter):
 
             if is_approved:
                 __log.info("PR %d status: will be approved", pr_num)
-
-                # Make a tweet
-                message_twitter = datetime.datetime.ctime(
-                    datetime.datetime.now()) +\
-                    " - PR {pr_num} status: will be approved".format(pr_num=pr_num)
-                tw.PostTwitter(message_twitter, api_twitter)
-
                 gh.prs.post_accepted_status(
                     api, settings.URN, pr, seconds_since_updated, voting_window, votes, vote_total,
                     threshold, meritocracy_satisfied)
