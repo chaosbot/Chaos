@@ -1,4 +1,4 @@
-FROM ubuntu:trusty
+FROM ubuntu:trusty-20170602
 
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8

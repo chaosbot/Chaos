@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from os.path import dirname, abspath, join, exists
+from os.path import exists
 import os
 import time
 import sys
@@ -11,6 +11,7 @@ import settings
 import schedule
 import cron
 import shutil
+import datetime
 
 # this import must happen before any github api stuff gets imported.  it sets
 # up caching on the api functions so we don't run out of api requests
@@ -26,6 +27,11 @@ import github_api.issues
 # Has a sideeffect of creating private key if one doesn't exist already
 # Currently imported just for the sideeffect (not currently being used)
 import encryption  # noqa: F401
+
+# To make post in Twitter
+import twitter_api as ta
+# import twitter_api.misc
+# import twitter_api.Twitter
 
 
 class LessThanFilter(logging.Filter):
@@ -64,6 +70,7 @@ def main():
 
     logging.getLogger("requests").propagate = False
     logging.getLogger("sh").propagate = False
+    logging.getLogger("peewee").propagate = False
 
     log = logging.getLogger("chaosbot")
 
@@ -73,24 +80,37 @@ def main():
 
     api = gh.API(settings.GITHUB_USER, settings.GITHUB_SECRET)
 
+    # Api Twitter
+    api_twitter = ta.API_TWITTER(settings.TWITTER_API_KEYS_FILE)
+
     log.info("checking if I crashed before...")
+    ta.Twitter.PostTwitter(datetime.datetime.ctime(datetime.datetime.now()) +
+                           " - checking if I crashed before...",
+                           api_twitter.GetApi())
 
     # check if chaosbot is not on the tip of the master branch
     check_for_prev_crash(api, log)
 
     log.info("starting up and entering event loop")
+    ta.Twitter.PostTwitter(datetime.datetime.ctime(datetime.datetime.now()) +
+                           " - starting up and entering event loop",
+                           api_twitter.GetApi())
 
-    os.system("pkill chaos_server")
     os.system("pkill chaos_redditbot")
+    os.system("pkill uwsgi")
 
-    server_dir = join(dirname(abspath(__file__)), "server")
-    subprocess.Popen([sys.executable, "server.py"], cwd=server_dir)
+    subprocess.Popen(["/root/.virtualenvs/chaos/bin/uwsgi",
+                      "--socket", "127.0.0.1:8085",
+                      "--wsgi-file", "webserver.py",
+                      "--callable", "__hug_wsgi__",
+                      "--check-static", "/root/workspace/Chaos/server/",
+                      "--daemonize", "/root/workspace/Chaos/log/uwsgi.log"])
 
     # Start Reddit bot
     subprocess.Popen([sys.executable, "redditchaosbot.py"])
 
     # Schedule all cron jobs to be run
-    cron.schedule_jobs(api)
+    cron.schedule_jobs(api, api_twitter)
 
     log.info("Setting description to {desc}".format(
                  desc=settings.REPO_DESCRIPTION))

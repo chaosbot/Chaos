@@ -61,7 +61,19 @@ def _extract_args(sig_args, sig_defaults, args, kwargs, whitelist, blacklist):
     return to_use
 
 
+class JSONEncoder(json.JSONEncoder):
+    """ custom json serializer for our key-serializing function.  knows how to
+    serialize things like sets """
+    def default(self, obj):
+        if isinstance(obj, set):
+            obj = list(obj)
+            obj.sort()
+            return obj
+
+        return json.JSONEncoder.default(self, obj)
+
+
 def _json_keyify(args):
     """ converts arguments into a deterministic key used for memoizing """
     args = tuple(sorted(args.items(), key=lambda e: e[0]))
-    return json.dumps(args)
+    return json.dumps(args, cls=JSONEncoder)

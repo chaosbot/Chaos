@@ -1,6 +1,6 @@
 server {
-    listen 8081 default_server;
-    listen [::]:8081 default_server ipv6only=on;
+    listen 8081;
+    listen [::]:8081 ipv6only=on;
 
     root /root/workspace/Chaos/log;
     index index.html index.htm;

@@ -37,6 +37,12 @@ def get_all_issue_comments(api, urn, page=1, since=None):
         # I believe this is the right one... Could also be issue specific comment id
         issue_comment["global_comment_id"] = comment["id"]
         issue_comment["comment_text"] = comment["body"]
+        issue_comment["created_at"] = comment["created_at"]
+        issue_comment["updated_at"] = comment["updated_at"]
+        issue_comment["user"] = {
+                                    "login": comment["user"]["login"],
+                                    "id": comment["user"]["id"]
+                                }
         yield issue_comment
 
 

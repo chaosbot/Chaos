@@ -35,3 +35,8 @@ six==1.10.0
 unidiff==0.5.4
 update-checker==0.16
 urllib3==1.21.1
+python-twitter==3.3
+pymysql
+hug==2.3.0
+uWSGI==2.0.15
+peewee

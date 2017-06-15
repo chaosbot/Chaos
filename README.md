@@ -24,6 +24,12 @@ direction of a software project is turned over to the open source community.
    restart itself.
 1. Go to \#1
 
+### [A Declaration of the Independence of Cyberspace](independence.md)
+
+We have freed ourselves from the chains and shackles of project admins and owners, diminishing our value to work for there needs. We are now making a fully equal community, where everyone has a equal say. (Please see [independence.md](independence.md))
+
+Join us.
+
 ![How chaosbot works, in a gif](data/imgs/how-chaosbot-works.gif)
 
 In effect, you get to change the basic purpose and functionality of ChaosBot, at
@@ -113,7 +119,7 @@ or a accept/reject pull request review.  See [Voting](https://github.com/chaosbo
 In addition, a member of the meritocracy must approve the most recent commit of the PR with a review.
 A member of the meritocracy approving their own PR does not count.
 The meritocracy is determined by combining the top 10 contributors and the top 10 voters.
-Both of those datasets are publicly available, or you can look in [chaosbot's logs](http://chaosthebot.com:8081/chaos-stderr.log) (search for "generated meritocracy"; the last is most recent) to determine the current meritocracy.
+The current meritocracy can be viewed [here](http://chaosthebot.com/meritocracy.json).
 
 #### Q: What if ChaosBot has a problem that can't be solved by a PR?
 A: Please open a [project issue](https://github.com/chaosbot/Chaos/issues) and a

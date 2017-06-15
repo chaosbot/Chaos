@@ -32,7 +32,26 @@ else:
 URN = misc.get_self_urn()
 GITHUB_USER, GITHUB_REPO = URN.split("/")
 
+# if we are running in production
+# if we switch to an org this will need changing
+IN_PRODUCTION = GITHUB_USER == "chaosbot"
+
 HOMEPAGE = "http://chaosthebot.com"
+
+# To Twitter Posts
+_twitter_api_keys = 'api_twitter.keys'
+
+# Look for local Keys first
+_twitter_api_keys_file = join(THIS_DIR, _twitter_api_keys)
+
+# fall back to system twitter keys
+if not exists(_twitter_api_keys):
+    _twitter_api_keys_file = join('/etc/', _twitter_api_keys)
+
+if exists(_twitter_api_keys_file):
+    TWITTER_API_KEYS_FILE = _twitter_api_keys_file
+else:
+    TWITTER_API_KEYS_FILE = None
 
 # TEST SETTING PLEASE IGNORE
 TEST = False
@@ -87,7 +106,8 @@ REPO_LABELS = {
     "conflicts": "fbca04",
     "mergeable": "dddddd",
     "can't merge": "ededed",
-    "ci failed": "ff9800"
+    "ci failed": "ff9800",
+    "crash report": "ff0000"
 }
 
 # PRs that have merge conflicts and haven't been touched in this many hours
@@ -113,6 +133,11 @@ MERITOCRACY_TOP_CONTRIBUTORS = 10
 
 # The top n voters will be allowed in the meritocracy
 MERITOCRACY_TOP_VOTERS = 10
+
+# These users are not allowed in the meritorcracy through being a top voter
+MERITOCRACY_VOTERS_BLACKLIST = {"e-beach"}
+# Make sure usernames are lowercased
+MERITOCRACY_VOTERS_BLACKLIST = {user.lower() for user in MERITOCRACY_VOTERS_BLACKLIST}
 
 # Database settings
 DB_ADAPTER = "sqlite"
