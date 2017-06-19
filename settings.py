@@ -36,7 +36,7 @@ GITHUB_USER, GITHUB_REPO = URN.split("/")
 # if we switch to an org this will need changing
 IN_PRODUCTION = GITHUB_USER == "chaosbot"
 
-HOMEPAGE = "http://chaosthebot.com"
+HOMEPAGE = "http://chaosbot.org"
 
 # To Twitter Posts
 _twitter_api_keys = 'api_twitter.keys'

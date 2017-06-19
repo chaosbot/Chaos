@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/chaosbot/Chaos.svg?branch=master)](https://travis-ci.org/chaosbot/Chaos)
 [![Gitter chat](https://badges.gitter.im/chaosthebot/gitter.svg)](https://gitter.im/chaosthebot/Lobby)
-[![ChaosBot](https://img.shields.io/badge/Chaos-Bot-green.svg)](http://chaosthebot.com/)
+[![ChaosBot](https://img.shields.io/badge/Chaos-Bot-green.svg)](http://chaosbot.org/)
 [![Uptime Robot status](https://img.shields.io/uptimerobot/status/m779059690-a73926b71d851b3fe2304f12.svg)](https://stats.uptimerobot.com/O7m2ghl4M)
 
 > Chaos, the vacant and infinite space which existed according to the ancient
