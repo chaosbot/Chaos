@@ -38,6 +38,7 @@ class LessThanFilter(logging.Filter):
     """
     Source: https://stackoverflow.com/questions/2302315
     """
+
     def __init__(self, exclusive_maximum, name=""):
         super(LessThanFilter, self).__init__(name)
         self.max_level = exclusive_maximum
@@ -58,10 +59,14 @@ def main():
     logging_handler_err = logging.StreamHandler(sys.stderr)
     logging_handler_err.setLevel(settings.LOG_LEVEL_ERR)
 
-    logging.basicConfig(level=logging.NOTSET,
-                        format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                        datefmt='%m-%d %H:%M',
-                        handlers=[logging_handler_out, logging_handler_err])
+    logging.basicConfig(
+        level=logging.NOTSET,
+        format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+        datefmt='%m-%d %H:%M',
+        handlers=[
+            logging_handler_out,
+            logging_handler_err
+        ])
 
     logging.getLogger("requests").propagate = False
     logging.getLogger("sh").propagate = False
@@ -91,6 +96,7 @@ def main():
                            " - starting up and entering event loop",
                            api_twitter.GetApi())
 
+    os.system("pkill chaos_redditbot")
     os.system("pkill uwsgi")
 
     subprocess.Popen(["/root/.virtualenvs/chaos/bin/uwsgi",
@@ -100,10 +106,14 @@ def main():
                       "--check-static", "/root/workspace/Chaos/server/",
                       "--daemonize", "/root/workspace/Chaos/log/uwsgi.log"])
 
+    # Start Reddit bot
+    subprocess.Popen([sys.executable, "redditchaosbot.py"])
+
     # Schedule all cron jobs to be run
     cron.schedule_jobs(api, api_twitter)
 
-    log.info("Setting description to {desc}".format(desc=settings.REPO_DESCRIPTION))
+    log.info("Setting description to {desc}".format(
+                 desc=settings.REPO_DESCRIPTION))
     github_api.repos.set_desc(api, settings.URN, settings.REPO_DESCRIPTION)
 
     log.info("Ensure creation of issue/PR labels")
@@ -138,7 +148,8 @@ def check_for_prev_crash(api, log):
             # Currently, I'm just reading the last 200 lines... which I think
             # ought to be enough, but if anyone has a better way to do this,
             # please do it.
-            dump = subprocess.check_output(["tail", "-n", "200", settings.CHAOSBOT_STDERR_LOG])
+            dump = subprocess.check_output(
+                ["tail", "-n", "200", settings.CHAOSBOT_STDERR_LOG])
 
             # Create a github issue for the problem
             title = "Help! I crashed! --CB"

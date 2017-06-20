@@ -2,8 +2,10 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding, rsa
 
+__all__ = ["encrypt", "decrypt"]
 
-def create_decryptor(private_location, public_location):
+
+def create_crypto_functions(private_location, public_location):
     try:
         with open(private_location, "rb") as key_file:
             private_key = serialization.load_pem_private_key(
@@ -32,6 +34,14 @@ def create_decryptor(private_location, public_location):
         )
         public_file.write(pem)
 
+    def encrypt(plaintext):
+        return public_key.encrypt(plaintext,
+                                  padding.OAEP(
+                                      padding.MGF1(hashes.SHA1()),
+                                      hashes.SHA1(),
+                                      None
+                                      ))
+
     def decrypt(ciphertext):
         return private_key.decrypt(
             ciphertext,
@@ -42,7 +52,7 @@ def create_decryptor(private_location, public_location):
             )
         )
 
-    return decrypt
+    return encrypt, decrypt
 
 
-decrypt = create_decryptor("privkey", "server/pubkey.txt")
+encrypt, decrypt = create_crypto_functions("/etc/privkey", "server/pubkey.txt")
