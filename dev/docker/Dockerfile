@@ -23,7 +23,7 @@ RUN add-apt-repository ppa:fkrull/deadsnakes
 RUN apt-get -y update
 
 # python requirement dependencies
-RUN apt-get -y install\
+RUN apt-get -y --force-yes install\
         python3.6\
         # dependencies for ansible's dependency module "cryptography"
         build-essential\
